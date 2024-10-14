@@ -46,8 +46,8 @@
                                 <i class="fas fa-user nav-icon"></i> Mi cuenta
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-sign-in-alt nav-icon"></i> Iniciar sesión</a></li>
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-user-plus nav-icon"></i> Registrarse</a></li>
+                                <li><a class="dropdown-item" href="iniciarSesion.php"><i class="fas fa-sign-in-alt nav-icon"></i> Iniciar sesión</a></li>
+                                <li><a class="dropdown-item" href="registro.php"><i class="fas fa-user-plus nav-icon"></i> Registrarse</a></li>
                             </ul>
                         </li>
 
