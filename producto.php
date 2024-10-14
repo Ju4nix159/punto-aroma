@@ -80,7 +80,7 @@ include 'header.php';
                         </button>
                     </form>
 
-                    <a href="#" class="btn btn-outline-secondary mt-3">Volver al Catálogo</a>
+                    <a href="catalogo.php" class="btn btn-outline-secondary mt-3">Volver al Catálogo</a>
                 </div>
             </div>
 
@@ -107,7 +107,6 @@ include 'header.php';
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
