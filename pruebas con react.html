@@ -1,0 +1,138 @@
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Leaf, Flame, Spray, Star, Send } from "lucide-react"
+import Image from "next/image"
+
+export default function PuntoAromaLanding() {
+  return (
+    <div className="flex flex-col min-h-screen bg-white">
+      <header className="px-4 lg:px-6 h-16 flex items-center">
+        <div className="flex items-center justify-between w-full">
+          <span className="text-2xl font-bold text-[#83AF37]">Punto Aroma</span>
+          <nav className="hidden md:flex gap-4 sm:gap-6">
+            <a className="text-[#83AF37] hover:underline" href="#productos">
+              Productos
+            </a>
+            <a className="text-[#83AF37] hover:underline" href="#testimonios">
+              Testimonios
+            </a>
+            <a className="text-[#83AF37] hover:underline" href="#contacto">
+              Contacto
+            </a>
+          </nav>
+          <Button className="bg-[#6B2D5C] hover:bg-[#551D47] text-white">Comprar Ahora</Button>
+        </div>
+      </header>
+      <main className="flex-1">
+        <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 bg-gradient-to-b from-[#83AF37]/10 to-white">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center space-y-4 text-center">
+              <div className="space-y-2">
+                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none text-[#83AF37]">
+                  Descubre la Magia de los Aromas
+                </h1>
+                <p className="mx-auto max-w-[700px] text-gray-600 md:text-xl">
+                  Transforma tu espacio con nuestros sahumerios, velas aromáticas y perfumes exclusivos.
+                </p>
+              </div>
+              <div className="space-x-4">
+                <Button className="bg-[#6B2D5C] hover:bg-[#551D47] text-white">Explorar Productos</Button>
+                <Button variant="outline" className="border-[#83AF37] text-[#83AF37]">Más Información</Button>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section id="productos" className="w-full py-12 md:py-24 lg:py-32">
+          <div className="container px-4 md:px-6">
+            <h2 className="text-3xl font-bold text-center mb-12 text-[#83AF37]">Nuestros Productos</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="flex flex-col items-center p-4 bg-[#83AF37]/5 rounded-lg">
+                <Leaf className="w-12 h-12 mb-4 text-[#83AF37]" />
+                <h3 className="text-xl font-semibold mb-2">Sahumerios</h3>
+                <p className="text-center text-gray-600">Aromas naturales para purificar tu espacio.</p>
+              </div>
+              <div className="flex flex-col items-center p-4 bg-[#83AF37]/5 rounded-lg">
+                <Flame className="w-12 h-12 mb-4 text-[#83AF37]" />
+                <h3 className="text-xl font-semibold mb-2">Velas Aromáticas</h3>
+                <p className="text-center text-gray-600">Ilumina y perfuma tu hogar con nuestras velas.</p>
+              </div>
+              <div className="flex flex-col items-center p-4 bg-[#83AF37]/5 rounded-lg">
+                <Spray className="w-12 h-12 mb-4 text-[#83AF37]" />
+                <h3 className="text-xl font-semibold mb-2">Perfumes</h3>
+                <p className="text-center text-gray-600">Fragancias únicas para cada ocasión.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-t from-[#83AF37]/10 to-white">
+          <div className="container px-4 md:px-6">
+            <h2 className="text-3xl font-bold text-center mb-12 text-[#83AF37]">Galería de Productos</h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <Image
+                  key={i}
+                  src={`/placeholder.svg?height=200&width=300`}
+                  alt={`Producto ${i}`}
+                  width={300}
+                  height={200}
+                  className="rounded-lg object-cover"
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+        <section id="testimonios" className="w-full py-12 md:py-24 lg:py-32">
+          <div className="container px-4 md:px-6">
+            <h2 className="text-3xl font-bold text-center mb-12 text-[#83AF37]">Lo que dicen nuestros clientes</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {[1, 2].map((i) => (
+                <div key={i} className="p-6 bg-[#83AF37]/5 rounded-lg">
+                  <div className="flex items-center mb-4">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star key={star} className="w-5 h-5 text-yellow-400 fill-current" />
+                    ))}
+                  </div>
+                  <p className="text-gray-600 mb-4">
+                    "Los productos de Punto Aroma han transformado mi hogar. Los aromas son increíbles y duraderos."
+                  </p>
+                  <p className="font-semibold">- Cliente Satisfecho {i}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+        <section id="contacto" className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-[#83AF37]/10 to-white">
+          <div className="container px-4 md:px-6">
+            <h2 className="text-3xl font-bold text-center mb-12 text-[#83AF37]">Contáctanos</h2>
+            <form className="max-w-md mx-auto">
+              <div className="space-y-4">
+                <Input placeholder="Nombre" />
+                <Input type="email" placeholder="Email" />
+                <Input placeholder="Asunto" />
+                <textarea
+                  className="w-full h-32 px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:border-[#83AF37]"
+                  placeholder="Mensaje"
+                ></textarea>
+                <Button className="w-full bg-[#6B2D5C] hover:bg-[#551D47] text-white">
+                  Enviar Mensaje
+                  <Send className="w-4 h-4 ml-2" />
+                </Button>
+              </div>
+            </form>
+          </div>
+        </section>
+      </main>
+      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t bg-[#83AF37]/5">
+        <p className="text-xs text-gray-600">© 2024 Punto Aroma. Todos los derechos reservados.</p>
+        <nav className="sm:ml-auto flex gap-4 sm:gap-6">
+          <a className="text-xs hover:underline underline-offset-4 text-gray-600" href="#">
+            Términos de Servicio
+          </a>
+          <a className="text-xs hover:underline underline-offset-4 text-gray-600" href="#">
+            Política de Privacidad
+          </a>
+        </nav>
+      </footer>
+    </div>
+  )
+}
