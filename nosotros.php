@@ -1,3 +1,7 @@
+<?php 
+    include 'header.php';
+
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,101 +10,6 @@
     <title>Punto Aroma - Descubre la Magia de los Aromas</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        :root {
-            --primary-color: #83AF37;
-            --secondary-color: #6B2D5C;
-        }
-        .bg-primary-light {
-            background-color: rgba(131, 175, 55, 0.1);
-        }
-        .text-primary-custom {
-            color: var(--primary-color);
-        }
-        .btn-primary-custom {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-        .btn-primary-custom:hover {
-            background-color: #6f9430;
-            border-color: #6f9430;
-        }
-        .btn-secondary-custom {
-            background-color: var(--secondary-color);
-            border-color: var(--secondary-color);
-        }
-        .btn-secondary-custom:hover {
-            background-color: #551D47;
-            border-color: #551D47;
-        }
-        /* Estilos para la línea de tiempo */
-        .timeline {
-            position: relative;
-            padding: 0;
-            list-style: none;
-        }
-        .timeline:before {
-            content: '';
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 50%;
-            width: 2px;
-            margin-left: -1px;
-            background-color: var(--primary-color);
-        }
-        .timeline > li {
-            position: relative;
-            margin-bottom: 50px;
-        }
-        .timeline > li:before,
-        .timeline > li:after {
-            content: " ";
-            display: table;
-        }
-        .timeline > li:after {
-            clear: both;
-        }
-        .timeline > li > .timeline-panel {
-            float: left;
-            position: relative;
-            width: 46%;
-            padding: 20px;
-            border: 1px solid #d4d4d4;
-            border-radius: 8px;
-            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.175);
-        }
-        .timeline > li > .timeline-badge {
-            color: #fff;
-            width: 50px;
-            height: 50px;
-            line-height: 50px;
-            font-size: 1.4em;
-            text-align: center;
-            position: absolute;
-            top: 16px;
-            left: 50%;
-            margin-left: -25px;
-            background-color: var(--primary-color);
-            z-index: 100;
-            border-radius: 50%;
-        }
-        .timeline > li.timeline-inverted > .timeline-panel {
-            float: right;
-        }
-        .timeline > li.timeline-inverted > .timeline-panel:before {
-            border-left-width: 0;
-            border-right-width: 15px;
-            left: -15px;
-            right: auto;
-        }
-        .timeline > li.timeline-inverted > .timeline-panel:after {
-            border-left-width: 0;
-            border-right-width: 14px;
-            left: -14px;
-            right: auto;
-        }
-    </style>
 </head>
 <body>
     <!-- Código anterior sin cambios -->

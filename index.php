@@ -1,58 +1,29 @@
+<?php
+include 'header.php';
+
+?>
+
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Punto Aroma - Descubre la Magia de los Aromas</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-</head>
+
 <body>
-    <header class="py-3 bg-white border-bottom">
-        <div class="container d-flex flex-wrap justify-content-center">
-            <a href="/" class="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto text-dark text-decoration-none">
-                <span class="fs-4 fw-bold text-primary-custom">Punto Aroma</span>
-            </a>
-            <nav class="navbar navbar-expand-lg navbar-light">
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link text-primary-custom" href="#productos">Productos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-primary-custom" href="#galeria">Galería</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-primary-custom" href="#testimonios">Testimonios</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-primary-custom" href="#contacto">Contacto</a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-        </div>
-    </header>
+
 
     <main>
-        <section class="py-5 text-center bg-primary-light">
+        <section id="hero" class="py-5 text-center bg-primary-light">
             <div class="container">
                 <h1 class="display-4 fw-bold text-primary-custom mb-4" data-aos="fade-up">Descubre la Magia de los Aromas</h1>
                 <p class="lead mb-4" data-aos="fade-up" data-aos-delay="200">Transforma tu espacio con nuestros sahumerios, velas aromáticas y perfumes exclusivos.</p>
                 <div class="d-grid gap-2 d-sm-flex justify-content-sm-center" data-aos="fade-up" data-aos-delay="400">
-                    <button type="button" class="btn btn-primary-custom btn-lg px-4 gap-3">Explorar Productos</button>
-                    <button type="button" class="btn btn-secondary-custom btn-lg px-4">Más Información</button> </div>
+                    <a href="catalogo.php"><button type="button" class="btn btn-primary-custom btn-lg px-4 gap-3">Explorar Catalogo</button></a>
+                    <a href="nosotros.php"><button type="button" class="btn btn-secondary-custom btn-lg px-4">Sobre nosotros</button></a>
+                </div>
             </div>
         </section>
 
-        <section id="productos" class="py-5">
+        <section id="destacados" class="py-5">
             <div class="container">
-                <h2 class="text-center mb-5 text-primary-custom" data-aos="fade-up">Nuestros Productos</h2>
+                <h2 class="text-center mb-5 text-primary-custom" data-aos="fade-up">Nuestros Productos Destacados</h2>
                 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
                     <div class="col" data-aos="fade-up">
                         <div class="card h-100 bg-primary-light border-0">
@@ -94,7 +65,7 @@
             </div>
         </section>
 
-        <section id="galeria" class="py-5 bg-primary-light">
+        <section id="ofertas" class="py-5 bg-primary-light">
             <div class="container">
                 <h2 class="text-center mb-5 text-primary-custom" data-aos="fade-up">Galería de Productos</h2>
                 <div class="product-gallery">
@@ -181,8 +152,7 @@
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+
     <script>
         AOS.init({
             duration: 1000,
@@ -190,4 +160,5 @@
         });
     </script>
 </body>
+
 </html>

@@ -1,3 +1,8 @@
+<?php 
+    include 'header.php';
+
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,46 +11,6 @@
     <title>Iniciar Sesión / Registrarse - Punto Aroma</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        :root {
-            --primary-color: #83AF37;
-            --secondary-color: #6B2D5C;
-        }
-        .bg-primary-light {
-            background-color: rgba(131, 175, 55, 0.1);
-        }
-        .text-primary-custom {
-            color: var(--primary-color);
-        }
-        .btn-primary-custom {
-            background-color: var(--secondary-color);
-            border-color: var(--secondary-color);
-            color: white;
-            transition: transform 0.3s ease;
-        }
-        .btn-primary-custom:hover {
-            background-color: var(--secondary-color);
-            border-color: var(--secondary-color);
-            color: white;
-            transform: scale(1.05);
-        }
-        .btn-secondary-custom {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-            color: white;
-            transition: transform 0.3s ease;
-        }
-        .btn-secondary-custom:hover {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-            color: white;
-            transform: scale(1.05);
-        }
-        .form-container {
-            max-width: 400px;
-            margin: 0 auto;
-        }
-    </style>
 </head>
 <body>
     <header class="py-3 bg-white border-bottom">
