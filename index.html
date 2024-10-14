@@ -1,100 +1,193 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ecommerce - Productos Aromáticos</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>Punto Aroma - Descubre la Magia de los Aromas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
-
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">MiEcommerce</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item"><a class="nav-link" href="#">Inicio</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Productos</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Sobre Nosotros</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Contacto</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Blog</a></li>
-                <li class="nav-item"><a class="nav-link btn btn-primary carrito-btn" href="#">Carrito</a></li>
-            </ul>
+    <header class="py-3 bg-white border-bottom">
+        <div class="container d-flex flex-wrap justify-content-center">
+            <a href="/" class="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto text-dark text-decoration-none">
+                <span class="fs-4 fw-bold text-primary-custom">Punto Aroma</span>
+            </a>
+            <nav class="navbar navbar-expand-lg navbar-light">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link text-primary-custom" href="#productos">Productos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-primary-custom" href="#galeria">Galería</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-primary-custom" href="#testimonios">Testimonios</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-primary-custom" href="#contacto">Contacto</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
         </div>
-    </nav>
+    </header>
 
-    <!-- Hero Section -->
-    <section class="hero text-center">
-        <div class="container">
-            <h1 class="hero-title">Conecta con tu esencia interior</h1>
-            <p class="hero-subtitle">Encuentra velas, sahumerios y perfumes artesanales que armonizan tu espacio y espíritu.</p>
-            <a href="#" class="btn btn-primary btn-lg">Explorar colecciones</a>
-        </div>
-    </section>
+    <main>
+        <section class="py-5 text-center bg-primary-light">
+            <div class="container">
+                <h1 class="display-4 fw-bold text-primary-custom mb-4" data-aos="fade-up">Descubre la Magia de los Aromas</h1>
+                <p class="lead mb-4" data-aos="fade-up" data-aos-delay="200">Transforma tu espacio con nuestros sahumerios, velas aromáticas y perfumes exclusivos.</p>
+                <div class="d-grid gap-2 d-sm-flex justify-content-sm-center" data-aos="fade-up" data-aos-delay="400">
+                    <button type="button" class="btn btn-primary-custom btn-lg px-4 gap-3">Explorar Productos</button>
+                    <button type="button" class="btn btn-secondary-custom btn-lg px-4">Más Información</button> </div>
+            </div>
+        </section>
 
-    <!-- Productos Destacados -->
-    <section class="productos-destacados py-5">
-        <div class="container">
-            <h2 class="text-center">Nuestros productos destacados</h2>
-            <p class="text-center">Hechos a mano con ingredientes naturales para cuidar de ti y de tu entorno.</p>
-            <div class="row">
-                <!-- Producto 1 -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <img src="https://via.placeholder.com/300" class="card-img-top" alt="Producto 1">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">Vela Aromática</h5>
-                            <p class="card-text">$15.00</p>
-                            <a href="#" class="btn btn-secondary">Añadir al carrito</a>
+        <section id="productos" class="py-5">
+            <div class="container">
+                <h2 class="text-center mb-5 text-primary-custom" data-aos="fade-up">Nuestros Productos</h2>
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+                    <div class="col" data-aos="fade-up">
+                        <div class="card h-100 bg-primary-light border-0">
+                            <div class="card-body text-center">
+                                <i class="bi bi-tree fs-1 text-primary-custom mb-3"></i>
+                                <h3 class="card-title">Sahumerios</h3>
+                                <p class="card-text">Aromas naturales para purificar tu espacio.</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <!-- Producto 2 -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <img src="https://via.placeholder.com/300" class="card-img-top" alt="Producto 2">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">Sahumerio Natural</h5>
-                            <p class="card-text">$8.00</p>
-                            <a href="#" class="btn btn-secondary">Añadir al carrito</a>
+                    <div class="col" data-aos="fade-up" data-aos-delay="200">
+                        <div class="card h-100 bg-primary-light border-0">
+                            <div class="card-body text-center">
+                                <i class="bi bi-fire fs-1 text-primary-custom mb-3"></i>
+                                <h3 class="card-title">Velas Aromáticas</h3>
+                                <p class="card-text">Ilumina y perfuma tu hogar con nuestras velas.</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <!-- Producto 3 -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <img src="https://via.placeholder.com/300" class="card-img-top" alt="Producto 3">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">Perfume Floral</h5>
-                            <p class="card-text">$20.00</p>
-                            <a href="#" class="btn btn-secondary">Añadir al carrito</a>
+                    <div class="col" data-aos="fade-up" data-aos-delay="400">
+                        <div class="card h-100 bg-primary-light border-0">
+                            <div class="card-body text-center">
+                                <i class="bi bi-droplet fs-1 text-primary-custom mb-3"></i>
+                                <h3 class="card-title">Perfumes</h3>
+                                <p class="card-text">Fragancias únicas para cada ocasión.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col" data-aos="fade-up" data-aos-delay="600">
+                        <div class="card h-100 bg-primary-light border-0">
+                            <div class="card-body text-center">
+                                <i class="bi bi-flower1 fs-1 text-primary-custom mb-3"></i>
+                                <h3 class="card-title">Aceites Esenciales</h3>
+                                <p class="card-text">Esencias puras para aromaterapia y bienestar.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Footer -->
-    <footer class="footer bg-dark text-white py-4">
-        <div class="container text-center">
-            <p>&copy; 2024 MiEcommerce. Todos los derechos reservados.</p>
-            <p><a href="#" class="text-white">Términos y condiciones</a> | <a href="#" class="text-white">Política de privacidad</a></p>
+        <section id="galeria" class="py-5 bg-primary-light">
+            <div class="container">
+                <h2 class="text-center mb-5 text-primary-custom" data-aos="fade-up">Galería de Productos</h2>
+                <div class="product-gallery">
+                    <img src="/placeholder.svg?height=250&width=250" alt="Perfume 1" data-aos="zoom-in">
+                    <img src="/placeholder.svg?height=250&width=250" alt="Vela Aromática" data-aos="zoom-in" data-aos-delay="100">
+                    <img src="/placeholder.svg?height=250&width=250" alt="Sahumerio" data-aos="zoom-in" data-aos-delay="200">
+                    <img src="/placeholder.svg?height=250&width=250" alt="Perfume 2" data-aos="zoom-in" data-aos-delay="300">
+                    <img src="/placeholder.svg?height=250&width=250" alt="Aceite Esencial" data-aos="zoom-in" data-aos-delay="400">
+                    <img src="/placeholder.svg?height=250&width=250" alt="Perfume 3" data-aos="zoom-in" data-aos-delay="500">
+                    <img src="/placeholder.svg?height=250&width=250" alt="Vela Aromática 2" data-aos="zoom-in" data-aos-delay="600">
+                    <img src="/placeholder.svg?height=250&width=250" alt="Perfume 4" data-aos="zoom-in" data-aos-delay="700">
+                </div>
+            </div>
+        </section>
+
+        <section id="testimonios" class="py-5">
+            <div class="container">
+                <h2 class="text-center mb-5 text-primary-custom" data-aos="fade-up">Lo que dicen nuestros clientes</h2>
+                <div id="testimonialCarousel" class="carousel slide testimonial-carousel" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <div class="card bg-primary-light border-0">
+                                <div class="card-body text-center">
+                                    <p class="card-text">"Los productos de Punto Aroma han transformado mi hogar. Los aromas son increíbles y duraderos."</p>
+                                    <footer class="blockquote-footer mt-2">María G.</footer>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <div class="card bg-primary-light border-0">
+                                <div class="card-body text-center">
+                                    <p class="card-text">"Las velas aromáticas son perfectas para crear un ambiente relajante después de un largo día de trabajo."</p>
+                                    <footer class="blockquote-footer mt-2">Carlos R.</footer>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <div class="card bg-primary-light border-0">
+                                <div class="card-body text-center">
+                                    <p class="card-text">"Los sahumerios de Punto Aroma son los mejores que he probado. Calidad superior y aromas únicos."</p>
+                                    <footer class="blockquote-footer mt-2">Ana L.</footer>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Anterior</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Siguiente</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="contacto" class="py-5 bg-primary-light">
+            <div class="container">
+                <h2 class="text-center mb-5 text-primary-custom" data-aos="fade-up">Contáctanos</h2>
+                <div class="row justify-content-center">
+                    <div class="col-md-6">
+                        <form data-aos="fade-up" data-aos-delay="200">
+                            <div class="mb-3">
+                                <input type="text" class="form-control" placeholder="Nombre">
+                            </div>
+                            <div class="mb-3">
+                                <input type="email" class="form-control" placeholder="Email">
+                            </div>
+                            <div class="mb-3">
+                                <textarea class="form-control" rows="4" placeholder="Mensaje"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary-custom w-100">Enviar Mensaje</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="py-3 bg-primary-light mt-5">
+        <div class="container">
+            <p class="text-center text-muted mb-0">&copy; 2024 Punto Aroma. Todos los derechos reservados.</p>
         </div>
     </footer>
 
-    <!-- Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 1000,
+            once: true,
+        });
+    </script>
 </body>
-
 </html>
