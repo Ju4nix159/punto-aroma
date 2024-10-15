@@ -48,7 +48,7 @@ include 'header.php';
                                 <div class="product-count">
                                     <div class="d-flex">
                                         <button type="button" class="btn-primary-custom qtyminus" onclick="decrementQuantity('lavanda')">-</button>
-                                        <input type="text" name="quantity" value="1" class="qty">
+                                        <input type="number" id="quantity-lavanda" class="cantidad" value="0" min="0" readonly>
                                         <button type="button" class="btn-primary-custom qtyplus" onclick="incrementQuantity('lavanda')">+</button>
                                     </div>
                                 </div>
@@ -107,6 +107,70 @@ include 'header.php';
         </div>
     </footer>
 
+    <script>
+        const fragrances = ['lavanda', 'vainilla', 'canela'];
+        const pricePerUnit = 14.99;
+        let currentImageIndex = 0;
+        const images = document.querySelectorAll('.gall-thumbnail');
+
+        function incrementQuantity(fragrance) {
+            const input = document.getElementById(`quantity-${fragrance}`);
+            input.value = parseInt(input.value) + 1;
+            updateTotalPrice();
+        }
+
+        function decrementQuantity(fragrance) {
+            const input = document.getElementById(`quantity-${fragrance}`);
+            if (parseInt(input.value) > 0) {
+                input.value = parseInt(input.value) - 1;
+                updateTotalPrice();
+            }
+        }
+
+        function updateTotalPrice() {
+            let total = 0;
+            fragrances.forEach(fragrance => {
+                const quantity = parseInt(document.getElementById(`quantity-${fragrance}`).value);
+                total += quantity * pricePerUnit;
+            });
+            document.getElementById('total-price').textContent = total.toFixed(2);
+        }
+
+        function addToCart() {
+            let cartItems = [];
+            fragrances.forEach(fragrance => {
+                const quantity = parseInt(document.getElementById(`quantity-${fragrance}`).value);
+                if (quantity > 0) {
+                    cartItems.push({
+                        fragrance,
+                        quantity
+                    });
+                }
+            });
+
+            if (cartItems.length > 0) {
+                console.log('Productos agregados al carrito:', cartItems);
+                alert('Productos agregados al carrito con éxito!');
+            } else {
+                alert('Por favor, selecciona al menos un producto para agregar al carrito.');
+            }
+        }
+
+        function setMainImage(src) {
+            document.getElementById('main-image').src = src;
+            document.querySelectorAll('.gall-thumbnail').forEach(thumb => {
+                thumb.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        function changeImage(direction) {
+            currentImageIndex += direction;
+            if (currentImageIndex < 0) currentImageIndex = images.length - 1;
+            if (currentImageIndex >= images.length) currentImageIndex = 0;
+            setMainImage(images[currentImageIndex].src);
+        }
+    </script>
 </body>
 
 </html>

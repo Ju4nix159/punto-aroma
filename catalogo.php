@@ -1,13 +1,10 @@
 <?php
 include 'header.php';
 ?>
-
 <!DOCTYPE html>
-
 <head>
     <title>Catálogo - Punto Aroma</title>
 </head>
-
 <body>
     <main class="py-5">
         <div class="container">
@@ -127,7 +124,6 @@ include 'header.php';
                                 </button>
                             </div>
                         </div>
-
                         <!-- Producto 2 -->
                         <div class="col">
                             <div class="card h-100 product-card">
@@ -270,7 +266,6 @@ include 'header.php';
             </div>
         </div>
     </main>
-
     <!-- Modal de Vista Rápida -->
     <div class="modal fade" id="quickViewModal" tabindex="-1" aria-labelledby="quickViewModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -290,7 +285,7 @@ include 'header.php';
                             <h4>Fragancias disponibles:</h4>
                             <ul id="quickViewFragrances"></ul>
                             <p><strong>Precio: </strong><span id="quickViewPrice"></span></p>
-                            <button class="btn btn-primary-custom">Añadir al carrito</button>
+                            <button class="btn btn-primary-custom">Mas informacion</button>
                         </div>
                     </div>
                 </div>
@@ -303,7 +298,6 @@ include 'header.php';
             <p class="text-center text-muted mb-0">&copy; 2024 Punto Aroma. Todos los derechos reservados.</p>
         </div>
     </footer>
-
     <script>
         // Datos de ejemplo para los productos
         const products = [{
@@ -363,7 +357,6 @@ include 'header.php';
                 fragrances: ["Jazmín", "Jazmín y Vainilla", "Jazmín y Sándalo"]
             }
         ];
-
         // Función para actualizar el modal de vista rápida
         function updateQuickViewModal(productId) {
             const product = products.find(p => p.id === productId);
@@ -380,7 +373,6 @@ include 'header.php';
                 });
             }
         }
-
         // Event listener para los botones de vista rápida
         document.querySelectorAll('.quick-view-btn').forEach(button => {
             button.addEventListener('click', function() {
@@ -388,7 +380,6 @@ include 'header.php';
                 updateQuickViewModal(productId);
             });
         });
-
         // Detener la propagación del evento de clic en los botones
         document.querySelectorAll('.add-to-cart-btn, .quick-view-btn').forEach(button => {
             button.addEventListener('click', function(event) {
@@ -397,5 +388,4 @@ include 'header.php';
         });
     </script>
 </body>
-
 </html>

@@ -8,9 +8,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-
     <link rel="stylesheet" href="styles.css">
-
+    
 </head>
 
 <body>
@@ -30,7 +29,7 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link text-primary-custom" href="index.php#destacados">Destacados</a>
+                            <a class="nav-link text-primary-custom" href="catalogo.php">Catalogo</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-primary-custom" href="index.php#ofertas">Ofertas</a>
@@ -51,9 +50,8 @@
                             </ul>
                         </li>
 
-
                         <li class="nav-item">
-                            <a class="nav-link" href="#" id="cart-icon" onclick="toggleCart()">
+                            <a class="nav-link" href="#" id="cart-icon" onclick="toggleCart(event)">
                                 <i class="fas fa-shopping-cart"></i>
                             </a>
                         </li>
@@ -70,7 +68,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <script>
-        let cartItems = [{
+        let cartItems = [
+            {
                 id: 1,
                 name: "Vela Aromática de Lavanda",
                 price: 14.99,
@@ -84,12 +83,36 @@
             }
         ];
 
-        function toggleCart() {
+        function toggleCart(event) {
+            event.stopPropagation(); // Prevenir que el clic en el icono cierre el carrito
             const cart = document.getElementById('cart');
+            const dropdownMenu = document.querySelector('.dropdown-menu.show'); // Selecciona el dropdown que está visible
+
+            // Cierra el dropdown si está abierto
+            if (dropdownMenu) {
+                dropdownMenu.classList.remove('show'); // Esto cerrará el dropdown de "Mi cuenta"
+                const dropdownToggle = document.querySelector('.dropdown-toggle');
+                dropdownToggle.setAttribute('aria-expanded', 'false'); // Cambia el atributo aria
+            }
+
             cart.classList.toggle('hidden'); // Alterna la clase 'hidden' para mostrar/ocultar el carrito
-            updateCart(); // Si esta función actualiza el contenido del carrito, la dejamos como está
+            updateCart(); // Actualiza el contenido del carrito
         }
 
+        // Cierra el carrito si se hace clic fuera de él
+        document.addEventListener('click', function(event) {
+            const cart = document.getElementById('cart');
+            const cartIcon = document.getElementById('cart-icon');
+
+            if (!cart.contains(event.target) && !cartIcon.contains(event.target)) {
+                cart.classList.add('hidden'); // Cierra el carrito si se hace clic fuera
+            }
+        });
+
+        // Añadir un evento click al carrito para evitar que se cierre al hacer clic dentro
+        document.getElementById('cart').addEventListener('click', function(event) {
+            event.stopPropagation(); // Evita que el clic dentro del carrito cierre el carrito
+        });
 
         function updateCart() {
             const cartContent = document.getElementById('cart-content');
@@ -97,8 +120,7 @@
                 cartContent.innerHTML = `
                     <div class="empty-cart">
                         <p>Tu carrito está vacío</p>
-                        <a href="catalogo.php"><button class="btn btn-primary-custom">Catalogo</button><a/>
-
+                        <a href="catalogo.php"><button class="btn btn-primary-custom">Catalogo</button></a>
                         <p>Para agregar productos al carrito, debes iniciar sesión.</p>
                         <a href="iniciarSesion.php"><button class="btn btn-primary-custom">Iniciar Sesión</button></a>
                     </div>
