@@ -167,7 +167,9 @@ INSERT INTO sexo (id_sexo, nombre, descripcion) VALUES
 INSERT INTO usuario (id_usuario, id_permiso, id_estado_usuario, email, contraseña) VALUES 
 (1, 1, 1, 'admin@empresa.com', 'admin123'),
 (2, 2, 1, 'usuario1@empresa.com', 'user123'),
-(3, 2, 1, 'usuario2@empresa.com', 'user456');
+(3, 2, 1, 'usuario2@empresa.com', 'user456'),
+(4, 1, 1, 'juanimelillo@gmail.com', '1234');
+
 
 -- Insertar datos en info_usuario
 INSERT INTO info_usuario (id_info_usuario, id_usuario, id_sexo, nombre, apellido, dni, fecha_nacimiento, telefono) VALUES 
