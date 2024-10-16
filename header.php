@@ -1,3 +1,8 @@
+<?php
+session_start();
+$usuario = isset($_SESSION["usuario"]) ? $_SESSION["usuario"] : null;
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,7 +14,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    
 </head>
 
 <body>
@@ -19,7 +23,7 @@
                 <span class="fs-4 fw-bold text-primary-custom">Punto Aroma</span>
             </a>
 
-            <nav class="navbar navbar-expand-lg navbar-light ">
+            <nav class="navbar navbar-expand-lg navbar-light">
                 <form class="d-flex mx-auto">
                     <input class="form-control me-2" type="search" placeholder="Buscar productos..." aria-label="Search">
                 </form>
@@ -29,7 +33,7 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link text-primary-custom" href="catalogo.php">Catalogo</a>
+                            <a class="nav-link text-primary-custom" href="catalogo.php">Catálogo</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-primary-custom" href="index.php#ofertas">Ofertas</a>
@@ -40,13 +44,20 @@
                         <li class="nav-item">
                             <a class="nav-link text-primary-custom" href="index.php#contacto">Contacto</a>
                         </li>
+
+                        <!-- Dropdown "Mi cuenta" -->
                         <li id="miCuenta" class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-user nav-icon"></i> Mi cuenta
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="iniciarSesion.php"><i class="fas fa-sign-in-alt nav-icon"></i> Iniciar sesión</a></li>
-                                <li><a class="dropdown-item" href="registro.php"><i class="fas fa-user-plus nav-icon"></i> Registrarse</a></li>
+                                <?php if ($usuario): ?>
+                                    <li><a class="dropdown-item" href="panelUsuario.php"><i class="fas fa-user-circle nav-icon"></i> Panel de Usuario</a></li>
+                                    <li><a class="dropdown-item" href="logout.php"><i class="fas fa-sign-out-alt nav-icon"></i> Cerrar Sesión</a></li>
+                                <?php else: ?>
+                                    <li><a class="dropdown-item" href="iniciarSesion.php"><i class="fas fa-sign-in-alt nav-icon"></i> Iniciar Sesión</a></li>
+                                    <li><a class="dropdown-item" href="registro.php"><i class="fas fa-user-plus nav-icon"></i> Registrarse</a></li>
+                                <?php endif; ?>
                             </ul>
                         </li>
 
@@ -59,140 +70,65 @@
                 </div>
             </nav>
         </div>
+
+        <!-- Carrito -->
         <div id="cart" class="hidden">
             <h2 class="cart-title">Tu Carrito</h2>
             <div id="cart-content"></div>
         </div>
     </header>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <script>
-        let cartItems = [
-            {
-                id: 1,
-                name: "Vela Aromática de Lavanda",
-                price: 14.99,
-                quantity: 2
-            },
-            {
-                id: 2,
-                name: "Sahumerio de Sándalo",
-                price: 9.99,
-                quantity: 1
-            }
-        ];
+        const cartItems = []; // Simulación de carrito vacío
 
         function toggleCart(event) {
-            event.stopPropagation(); // Prevenir que el clic en el icono cierre el carrito
+            event.stopPropagation(); 
             const cart = document.getElementById('cart');
-            const dropdownMenu = document.querySelector('.dropdown-menu.show'); // Selecciona el dropdown que está visible
-
-            // Cierra el dropdown si está abierto
+            const dropdownMenu = document.querySelector('.dropdown-menu.show');
             if (dropdownMenu) {
-                dropdownMenu.classList.remove('show'); // Esto cerrará el dropdown de "Mi cuenta"
+                dropdownMenu.classList.remove('show');
                 const dropdownToggle = document.querySelector('.dropdown-toggle');
-                dropdownToggle.setAttribute('aria-expanded', 'false'); // Cambia el atributo aria
+                dropdownToggle.setAttribute('aria-expanded', 'false');
             }
-
-            cart.classList.toggle('hidden'); // Alterna la clase 'hidden' para mostrar/ocultar el carrito
-            updateCart(); // Actualiza el contenido del carrito
+            cart.classList.toggle('hidden');
+            updateCart();
         }
 
-        // Cierra el carrito si se hace clic fuera de él
+        // Cierra el carrito si se hace clic fuera
         document.addEventListener('click', function(event) {
             const cart = document.getElementById('cart');
             const cartIcon = document.getElementById('cart-icon');
-
             if (!cart.contains(event.target) && !cartIcon.contains(event.target)) {
-                cart.classList.add('hidden'); // Cierra el carrito si se hace clic fuera
+                cart.classList.add('hidden');
             }
         });
 
-        // Añadir un evento click al carrito para evitar que se cierre al hacer clic dentro
         document.getElementById('cart').addEventListener('click', function(event) {
-            event.stopPropagation(); // Evita que el clic dentro del carrito cierre el carrito
+            event.stopPropagation();
         });
 
         function updateCart() {
             const cartContent = document.getElementById('cart-content');
+            const usuarioIniciado = <?php echo $usuario ? 'true' : 'false'; ?>;
+
             if (cartItems.length === 0) {
-                cartContent.innerHTML = `
-                    <div class="empty-cart">
-                        <p>Tu carrito está vacío</p>
-                        <a href="catalogo.php"><button class="btn btn-primary-custom">Catalogo</button></a>
-                        <p>Para agregar productos al carrito, debes iniciar sesión.</p>
-                        <a href="iniciarSesion.php"><button class="btn btn-primary-custom">Iniciar Sesión</button></a>
-                    </div>
-                `;
-            } else {
-                let content = `
-                    <table>
-                        <tr>
-                            <th>Producto</th>
-                            <th>Cantidad</th>
-                            <th>Total</th>
-                        </tr>
-                `;
-                let total = 0;
-                cartItems.forEach(item => {
-                    const itemTotal = item.price * item.quantity;
-                    total += itemTotal;
-                    content += `
-                        <tr>
-                            <td>
-                                <div class="product-info">
-                                    <span class="product-name">${item.name}</span>
-                                    <button class="remove-btn" onclick="removeItem(${item.id})">Eliminar</button>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="quantity-control">
-                                    <div class="quantity-buttons">
-                                        <button class="quantity-btn" onclick="changeQuantity(${item.id}, -1)">-</button>
-                                        <input type="number" class="quantity-input" value="${item.quantity}" onchange="updateQuantity(${item.id}, this.value)">
-                                        <button class="quantity-btn" onclick="changeQuantity(${item.id}, 1)">+</button>
-                                    </div>
-                                    <span class="product-price">$${item.price.toFixed(2)} c/u</span>
-                                </div>
-                            </td>
-                            <td>$${itemTotal.toFixed(2)}</td>
-                        </tr>
-                    `;
-                });
-                content += `
-                    </table>
-                    <div class="cart-footer">
-                        <div class="total">Total a Pagar: $${total.toFixed(2)}</div>
-                        <button class="btn btn-primary-custom">Terminar Compra</button>
-                    </div>
-                `;
-                cartContent.innerHTML = content;
+                if (usuarioIniciado) {
+                    cartContent.innerHTML = `
+                        <div class="empty-cart">
+                            <p>Tu carrito está vacío.</p>
+                        </div>`;
+                } else {
+                    cartContent.innerHTML = `
+                        <div class="empty-cart">
+                            <p>Para agregar productos al carrito, debes iniciar sesión.</p>
+                            <a href="iniciarSesion.php"><button class="btn btn-primary-custom">Iniciar Sesión</button></a>
+                        </div>`;
+                }
             }
         }
 
-        function changeQuantity(id, change) {
-            const item = cartItems.find(item => item.id === id);
-            if (item) {
-                item.quantity = Math.max(1, item.quantity + change);
-                updateCart();
-            }
-        }
-
-        function updateQuantity(id, newQuantity) {
-            const item = cartItems.find(item => item.id === id);
-            if (item) {
-                item.quantity = Math.max(1, parseInt(newQuantity) || 1);
-                updateCart();
-            }
-        }
-
-        function removeItem(id) {
-            cartItems = cartItems.filter(item => item.id !== id);
-            updateCart();
-        }
-
-        // Initialize the cart
         updateCart();
     </script>
 </body>

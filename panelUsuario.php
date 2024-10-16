@@ -3,34 +3,13 @@ include 'header.php';
 
 ?>
 <!DOCTYPE html>
-<html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Usuario - Punto Aroma</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
 
 </head>
 
 <body>
-    <header class="py-3 bg-white border-bottom">
-        <div class="container d-flex flex-wrap justify-content-center">
-            <a href="/" class="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto text-dark text-decoration-none">
-                <span class="fs-4 fw-bold text-primary-custom">Punto Aroma</span>
-            </a>
-            <div class="dropdown">
-                <button class="btn btn-primary-custom dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                    Mi Cuenta
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <li><a class="dropdown-item" href="#">Cerrar Sesión</a></li>
-                </ul>
-            </div>
-        </div>
-    </header>
-
     <main class="py-5">
         <div class="container">
             <h1 class="mb-4 text-primary-custom">Panel de Usuario</h1>
@@ -207,7 +186,6 @@ include 'header.php';
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

@@ -14,6 +14,21 @@ DELETE FROM estado_usuario;
 DELETE FROM sexo;
 
 
+DROP TABLE IF EXISTS productos_pedido;
+DROP TABLE IF EXISTS pedidos;
+DROP TABLE IF EXISTS fragancias;
+DROP TABLE IF EXISTS imagenes;
+DROP TABLE IF EXISTS usuario_domicilio;
+DROP TABLE IF EXISTS domicilio;
+DROP TABLE IF EXISTS info_usuario;
+DROP TABLE IF EXISTS usuario;
+DROP TABLE IF EXISTS estado_producto;
+DROP TABLE IF EXISTS productos;
+DROP TABLE IF EXISTS categorias;
+DROP TABLE IF EXISTS permisos;
+DROP TABLE IF EXISTS estado_usuario;
+DROP TABLE IF EXISTS sexo;
+
 
 -- Tabla de categorías
 CREATE TABLE categorias (
@@ -29,6 +44,7 @@ CREATE TABLE productos (
     nombre VARCHAR(100),
     descripcion TEXT,
     id_categoria INT,
+    precio DECIMAL(10, 2),
     CONSTRAINT FK_productos_id_categoria_END FOREIGN KEY (id_categoria) REFERENCES categorias(id_categoria)
 );
 
@@ -198,31 +214,31 @@ INSERT INTO estado_producto (id_estado_producto, nombre, descripcion) VALUES
 (2, 'Agotado', 'Producto fuera de stock');
 
 -- Insertar datos en productos (muchos productos)
-INSERT INTO productos (id_producto, n_producto, nombre, descripcion, id_categoria) VALUES 
-(1, 'PRD001', 'Perfume Floral', 'Un perfume con fragancias florales', 1),
-(2, 'PRD002', 'Perfume Amaderado', 'Un perfume con fragancia amaderada', 1),
-(3, 'PRD003', 'Difusor de Vainilla', 'Un difusor con aroma a vainilla', 2),
-(4, 'PRD004', 'Vela Aromática', 'Una vela con aroma a lavanda', 2),
-(5, 'PRD005', 'Perfume Cítrico', 'Un perfume con fragancias cítricas', 1),
-(6, 'PRD006', 'Perfume Dulce', 'Un perfume con un toque dulce', 1),
-(7, 'PRD007', 'Difusor de Eucalipto', 'Un difusor con aroma a eucalipto', 2),
-(8, 'PRD008', 'Vela Aromática Coco', 'Una vela con aroma a coco', 2),
-(9, 'PRD009', 'Perfume Deportivo', 'Un perfume ideal para actividades deportivas', 1),
-(10, 'PRD010', 'Perfume de Noche', 'Un perfume ideal para la noche', 1),
-(11, 'PRD011', 'Difusor de Frutos Rojos', 'Un difusor con aroma a frutos rojos', 2),
-(12, 'PRD012', 'Vela Aromática Canela', 'Una vela con aroma a canela', 2),
-(13, 'PRD013', 'Perfume de Viaje', 'Un perfume ideal para llevar en viajes', 1),
-(14, 'PRD014', 'Perfume de Verano', 'Un perfume fresco para el verano', 1),
-(15, 'PRD015', 'Difusor de Lavanda', 'Un difusor con aroma a lavanda', 2),
-(16, 'PRD016', 'Vela Aromática Limón', 'Una vela con aroma a limón', 2),
-(17, 'PRD017', 'Perfume de Otoño', 'Un perfume cálido para el otoño', 1),
-(18, 'PRD018', 'Perfume de Invierno', 'Un perfume suave para el invierno', 1),
-(19, 'PRD019', 'Difusor de Té Verde', 'Un difusor con aroma a té verde', 2),
-(20, 'PRD020', 'Vela Aromática Jazmín', 'Una vela con aroma a jazmín', 2),
-(21, 'PRD021', 'Perfume Exótico', 'Un perfume con fragancias exóticas', 1),
-(22, 'PRD022', 'Perfume Clásico', 'Un perfume con un toque clásico', 1),
-(23, 'PRD023', 'Difusor de Menta', 'Un difusor con aroma a menta', 2),
-(24, 'PRD024', 'Vela Aromática Naranja', 'Una vela con aroma a naranja', 2);
+INSERT INTO productos (id_producto, n_producto, nombre, descripcion, id_categoria, precio) VALUES 
+(1, 'PRD001', 'Perfume Floral', 'Un perfume con fragancias florales', 1, 25.50),
+(2, 'PRD002', 'Perfume Amaderado', 'Un perfume con fragancia amaderada', 1, 30.00),
+(3, 'PRD003', 'Difusor de Vainilla', 'Un difusor con aroma a vainilla', 2, 15.75),
+(4, 'PRD004', 'Vela Aromática', 'Una vela con aroma a lavanda', 2, 12.50),
+(5, 'PRD005', 'Perfume Cítrico', 'Un perfume con fragancias cítricas', 1, 28.00),
+(6, 'PRD006', 'Perfume Dulce', 'Un perfume con un toque dulce', 1, 22.40),
+(7, 'PRD007', 'Difusor de Eucalipto', 'Un difusor con aroma a eucalipto', 2, 18.90),
+(8, 'PRD008', 'Vela Aromática Coco', 'Una vela con aroma a coco', 2, 14.30),
+(9, 'PRD009', 'Perfume Deportivo', 'Un perfume ideal para actividades deportivas', 1, 27.50),
+(10, 'PRD010', 'Perfume de Noche', 'Un perfume ideal para la noche', 1, 35.00),
+(11, 'PRD011', 'Difusor de Frutos Rojos', 'Un difusor con aroma a frutos rojos', 2, 16.20),
+(12, 'PRD012', 'Vela Aromática Canela', 'Una vela con aroma a canela', 2, 13.50),
+(13, 'PRD013', 'Perfume de Viaje', 'Un perfume ideal para llevar en viajes', 1, 20.00),
+(14, 'PRD014', 'Perfume de Verano', 'Un perfume fresco para el verano', 1, 25.00),
+(15, 'PRD015', 'Difusor de Lavanda', 'Un difusor con aroma a lavanda', 2, 17.50),
+(16, 'PRD016', 'Vela Aromática Limón', 'Una vela con aroma a limón', 2, 12.00),
+(17, 'PRD017', 'Perfume de Otoño', 'Un perfume cálido para el otoño', 1, 29.00),
+(18, 'PRD018', 'Perfume de Invierno', 'Un perfume suave para el invierno', 1, 24.50),
+(19, 'PRD019', 'Difusor de Té Verde', 'Un difusor con aroma a té verde', 2, 19.00),
+(20, 'PRD020', 'Vela Aromática Jazmín', 'Una vela con aroma a jazmín', 2, 15.00),
+(21, 'PRD021', 'Perfume Exótico', 'Un perfume con fragancias exóticas', 1, 32.00),
+(22, 'PRD022', 'Perfume Clásico', 'Un perfume con un toque clásico', 1, 26.50),
+(23, 'PRD023', 'Difusor de Menta', 'Un difusor con aroma a menta', 2, 18.00),
+(24, 'PRD024', 'Vela Aromática Naranja', 'Una vela con aroma a naranja', 2, 14.75);
 
 INSERT INTO fragancias (id_fragancia, id_producto, id_estado_producto, nombre, stock, sku) VALUES 
 (1, 1, 1, 'Fragancia Floral Suave', 50, 'SKU001'),
@@ -321,7 +337,10 @@ INSERT INTO productos_pedido (id_compra, id_pedido, id_fragancia, id_producto, c
 (24, 22, 1, 24, 3, 500.00), 
 (25, 23, 1, 5, 2, 300.00);
 
-
+-- Select all data from productos along with the category name
+SELECT p.*, c.nombre AS categoria
+FROM productos p
+JOIN categorias c ON p.id_categoria = c.id_categoria;
 -- Select all data from categorias
 SELECT * FROM categorias;
 

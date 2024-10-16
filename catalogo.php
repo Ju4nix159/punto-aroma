@@ -1,10 +1,21 @@
 <?php
 include 'header.php';
+include 'admin/config/sbd.php';
+
+$sql_catalogo = $con->prepare("SELECT p.*, c.nombre AS categoria
+FROM productos p
+JOIN categorias c ON p.id_categoria = c.id_categoria;");
+$sql_catalogo->execute();
+$productos = $sql_catalogo->fetchAll(PDO::FETCH_ASSOC);
+
+
 ?>
 <!DOCTYPE html>
+
 <head>
     <title>Catálogo - Punto Aroma</title>
 </head>
+
 <body>
     <main class="py-5">
         <div class="container">
@@ -106,143 +117,33 @@ include 'header.php';
                 <div class="col-md-9">
                     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
                         <!-- Producto 1 -->
-                        <div class="col">
-                            <div class="card h-100 product-card">
-                                <a href="producto.php" class="text-decoration-none text-dark">
-                                    <img src="/placeholder.svg?height=200&width=300" class="card-img-top" alt="Sahumerio de Lavanda">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Sahumerio de Lavanda</h5>
-                                        <p class="card-text"><small class="text-muted">Categoría: Sahumerios</small></p>
-                                        <p class="card-text"><strong>$9.99</strong></p>
+                        <?php foreach ($productos as $producto) { ?>
+                            <div class="col">
+                                <div class="card h-100 product-card">
+                                    <a href="producto.php?id_producto=<?php echo $producto["id_producto"] ?>" class="text-decoration-none text-dark">
+                                        <img src="/placeholder.svg?height=200&width=300" class="card-img-top" alt="<?php echo $producto["id_producto"] ?>">
+                                        <div class="card-body">
+                                            <h5 class="card-title"><?php echo $producto["nombre"] ?></h5>
+                                            <p class="card-text"><small class="text-muted">Categoría: <?php echo $producto["categoria"] ?></small></p>
+                                            <p class="card-text"><strong><?php echo $producto["precio"] ?></strong></p>
+                                        </div>
+                                    </a>
+                                    <div class="card-footer">
+                                        <button class="btn btn-primary-custom w-100 add-to-cart-btn" onclick="añadirCarrito(<?php echo $producto['id_producto']?>)">Añadir</button>
                                     </div>
-                                </a>
-                                <div class="card-footer">
-                                    <button class="btn btn-primary-custom w-100 add-to-cart-btn" data-product-id="1">Añadir</button>
+                                    <button class="btn btn-sm btn-secondary-custom quick-view-btn"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#quickViewModal"
+                                        data-product-id="<?php echo $producto['id_producto']; ?>"
+                                        data-product-name="<?php echo $producto['nombre']; ?>"
+                                        data-product-description="<?php echo $producto['descripcion']; ?>"
+                                        data-product-price="<?php echo $producto['precio']; ?>">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+
                                 </div>
-                                <button class="btn btn-sm btn-secondary-custom quick-view-btn" data-bs-toggle="modal" data-bs-target="#quickViewModal" data-product-id="1">
-                                    <i class="bi bi-eye"></i>
-                                </button>
                             </div>
-                        </div>
-                        <!-- Producto 2 -->
-                        <div class="col">
-                            <div class="card h-100 product-card">
-                                <img src="/placeholder.svg?height=200&width=300" class="card-img-top" alt="Vela Aromática de Vainilla">
-                                <div class="card-body">
-                                    <h5 class="card-title">Vela Aromática de Vainilla</h5>
-                                    <p class="card-text"><small class="text-muted">Categoría: Velas Aromáticas</small></p>
-                                    <p class="card-text"><strong>$14.99</strong></p>
-                                </div>
-                                <div class="card-footer">
-                                    <button class="btn btn-primary-custom w-100">Añadir</button>
-                                </div>
-                                <button class="btn btn-sm btn-secondary-custom quick-view-btn" data-bs-toggle="modal" data-bs-target="#quickViewModal" data-product-id="2">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <!-- Producto 3 -->
-                        <div class="col">
-                            <div class="card h-100 product-card">
-                                <img src="/placeholder.svg?height=200&width=300" class="card-img-top" alt="Perfume Cítrico">
-                                <div class="card-body">
-                                    <h5 class="card-title">Perfume Cítrico</h5>
-                                    <p class="card-text"><small class="text-muted">Categoría: Perfumes</small></p>
-                                    <p class="card-text"><strong>$24.99</strong></p>
-                                </div>
-                                <div class="card-footer">
-                                    <button class="btn btn-primary-custom w-100">Añadir</button>
-                                </div>
-                                <button class="btn btn-sm btn-secondary-custom quick-view-btn" data-bs-toggle="modal" data-bs-target="#quickViewModal" data-product-id="3">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <!-- Producto 4 -->
-                        <div class="col">
-                            <div class="card h-100 product-card">
-                                <img src="/placeholder.svg?height=200&width=300" class="card-img-top" alt="Sahumerio de Sándalo">
-                                <div class="card-body">
-                                    <h5 class="card-title">Sahumerio de Sándalo</h5>
-                                    <p class="card-text"><small class="text-muted">Categoría: Sahumerios</small></p>
-                                    <p class="card-text"><strong>$11.99</strong></p>
-                                </div>
-                                <div class="card-footer">
-                                    <button class="btn btn-primary-custom w-100">Añadir</button>
-                                </div>
-                                <button class="btn btn-sm btn-secondary-custom quick-view-btn" data-bs-toggle="modal" data-bs-target="#quickViewModal" data-product-id="4">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <!-- Producto 5 -->
-                        <div class="col">
-                            <div class="card h-100 product-card">
-                                <img src="/placeholder.svg?height=200&width=300" class="card-img-top" alt="Vela Aromática de Canela">
-                                <div class="card-body">
-                                    <h5 class="card-title">Vela Aromática de Canela</h5>
-                                    <p class="card-text"><small class="text-muted">Categoría: Velas Aromáticas</small></p>
-                                    <p class="card-text"><strong>$16.99</strong></p>
-                                </div>
-                                <div class="card-footer">
-                                    <button class="btn btn-primary-custom w-100">Añadir</button>
-                                </div>
-                                <button class="btn btn-sm btn-secondary-custom quick-view-btn" data-bs-toggle="modal" data-bs-target="#quickViewModal" data-product-id="5">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <!-- Producto 6 -->
-                        <div class="col">
-                            <div class="card h-100 product-card">
-                                <img src="/placeholder.svg?height=200&width=300" class="card-img-top" alt="Perfume Floral">
-                                <div class="card-body">
-                                    <h5 class="card-title">Perfume Floral</h5>
-                                    <p class="card-text"><small class="text-muted">Categoría: Perfumes</small></p>
-                                    <p class="card-text"><strong>$29.99</strong></p>
-                                </div>
-                                <div class="card-footer">
-                                    <button class="btn btn-primary-custom w-100">Añadir</button>
-                                </div>
-                                <button class="btn btn-sm btn-secondary-custom quick-view-btn" data-bs-toggle="modal" data-bs-target="#quickViewModal" data-product-id="6">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <!-- Producto 7 -->
-                        <div class="col">
-                            <div class="card h-100 product-card">
-                                <img src="/placeholder.svg?height=200&width=300" class="card-img-top" alt="Sahumerio de Palo Santo">
-                                <div class="card-body">
-                                    <h5 class="card-title">Sahumerio de Palo Santo</h5>
-                                    <p class="card-text"><small class="text-muted">Categoría: Sahumerios</small></p>
-                                    <p class="card-text"><strong>$13.99</strong></p>
-                                </div>
-                                <div class="card-footer">
-                                    <button class="btn btn-primary-custom w-100">Añadir</button>
-                                </div>
-                                <button class="btn btn-sm btn-secondary-custom quick-view-btn" data-bs-toggle="modal" data-bs-target="#quickViewModal" data-product-id="7">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <!-- Producto 8 -->
-                        <div class="col">
-                            <div class="card h-100 product-card">
-                                <img src="/placeholder.svg?height=200&width=300" class="card-img-top" alt="Vela Aromática de Jazmín">
-                                <div class="card-body">
-                                    <h5 class="card-title">Vela Aromática de Jazmín</h5>
-                                    <p class="card-text"><small class="text-muted">Categoría: Velas Aromáticas</small></p>
-                                    <p class="card-text"><strong>$15.99</strong></p>
-                                </div>
-                                <div class="card-footer">
-                                    <button class="btn btn-primary-custom w-100">Añadir</button>
-                                </div>
-                                <button class="btn btn-sm btn-secondary-custom quick-view-btn" data-bs-toggle="modal" data-bs-target="#quickViewModal" data-product-id="8">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-                            </div>
-                        </div>
+                        <?php } ?>
                     </div>
                     <!-- Paginación mejorada -->
                     <nav aria-label="Page navigation" class="mt-4">
@@ -285,7 +186,7 @@ include 'header.php';
                             <h4>Fragancias disponibles:</h4>
                             <ul id="quickViewFragrances"></ul>
                             <p><strong>Precio: </strong><span id="quickViewPrice"></span></p>
-                            <button class="btn btn-primary-custom">Mas informacion</button>
+                            <a href=""><button class="btn btn-primary-custom">Mas informacion</button></a>
                         </div>
                     </div>
                 </div>
@@ -298,94 +199,7 @@ include 'header.php';
             <p class="text-center text-muted mb-0">&copy; 2024 Punto Aroma. Todos los derechos reservados.</p>
         </div>
     </footer>
-    <script>
-        // Datos de ejemplo para los productos
-        const products = [{
-                id: 1,
-                name: "Sahumerio de Lavanda",
-                description: "Relájate con el aroma suave y calmante de nuestro sahumerio de lavanda.",
-                price: "$9.99",
-                fragrances: ["Lavanda", "Lavanda y Vainilla", "Lavanda y Eucalipto"]
-            },
-            {
-                id: 2,
-                name: "Vela Aromática de Vainilla",
-                description: "Disfruta del aroma dulce y acogedor de nuestra vela de vainilla.",
-                price: "$14.99",
-                fragrances: ["Vainilla", "Vainilla y Canela", "Vainilla y Coco"]
-            },
-            {
-                id: 3,
-                name: "Perfume Cítrico",
-                description: "Refréscate con nuestro perfume de notas cítricas y energizantes.",
-                price: "$24.99",
-                fragrances: ["Limón", "Naranja", "Pomelo"]
-            },
-            {
-                id: 4,
-                name: "Sahumerio de Sándalo",
-                description: "Experimenta la calidez y el misticismo del aroma a sándalo.",
-                price: "$11.99",
-                fragrances: ["Sándalo", "Sándalo y Pachuli", "Sándalo y Cedro"]
-            },
-            {
-                id: 5,
-                name: "Vela Aromática de Canela",
-                description: "Crea un ambiente cálido y acogedor con nuestra vela de canela.",
-                price: "$16.99",
-                fragrances: ["Canela", "Canela y Manzana", "Canela y Naranja"]
-            },
-            {
-                id: 6,
-                name: "Perfume Floral",
-                description: "Envuélvete en un bouquet de aromas florales frescos y delicados.",
-                price: "$29.99",
-                fragrances: ["Jazmín", "Rosa", "Gardenia"]
-            },
-            {
-                id: 7,
-                name: "Sahumerio de Palo Santo",
-                description: "Purifica tu espacio con el aroma sagrado del palo santo.",
-                price: "$13.99",
-                fragrances: ["Palo Santo", "Palo Santo y Salvia", "Palo Santo y Romero"]
-            },
-            {
-                id: 8,
-                name: "Vela Aromática de Jazmín",
-                description: "Llena tu hogar con el aroma exótico y relajante del jazmín.",
-                price: "$15.99",
-                fragrances: ["Jazmín", "Jazmín y Vainilla", "Jazmín y Sándalo"]
-            }
-        ];
-        // Función para actualizar el modal de vista rápida
-        function updateQuickViewModal(productId) {
-            const product = products.find(p => p.id === productId);
-            if (product) {
-                document.getElementById('quickViewTitle').textContent = product.name;
-                document.getElementById('quickViewDescription').textContent = product.description;
-                document.getElementById('quickViewPrice').textContent = product.price;
-                const fragrancesList = document.getElementById('quickViewFragrances');
-                fragrancesList.innerHTML = '';
-                product.fragrances.forEach(fragrance => {
-                    const li = document.createElement('li');
-                    li.textContent = fragrance;
-                    fragrancesList.appendChild(li);
-                });
-            }
-        }
-        // Event listener para los botones de vista rápida
-        document.querySelectorAll('.quick-view-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                const productId = parseInt(this.getAttribute('data-product-id'));
-                updateQuickViewModal(productId);
-            });
-        });
-        // Detener la propagación del evento de clic en los botones
-        document.querySelectorAll('.add-to-cart-btn, .quick-view-btn').forEach(button => {
-            button.addEventListener('click', function(event) {
-                event.stopPropagation(); // Evita que el clic se propague al enlace
-            });
-        });
-    </script>
+    <script src="app.js"></script>
 </body>
+
 </html>
