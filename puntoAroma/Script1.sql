@@ -1,40 +1,46 @@
-DELETE FROM productos;
-DELETE FROM productos_pedido;
-DELETE FROM pedidos;
-DELETE FROM imagenes;
-DELETE FROM usuario_domicilio;
-DELETE FROM domicilio;
-DELETE FROM info_usuario;
-DELETE FROM usuario;
-DELETE FROM estado_producto;
-DELETE FROM categorias;
-DELETE FROM permisos;
-DELETE FROM estado_usuario;
-DELETE FROM sexo;
-DELETE FROM atributo;
-DELETE FROM productos;
-DELETE FROM aromas;
-DELETE FROM color;
-DELETE FROM tamaño;
-
 
 DROP TABLE IF EXISTS productos_pedido;
+GO
 DROP TABLE IF EXISTS pedidos;
+GO
+DROP TABLE IF EXISTS variante_tipo_precio;
+GO
+DROP TABLE IF EXISTS tipo_precio;
+GO
 DROP TABLE IF EXISTS imagenes;
-DROP TABLE IF EXISTS usuario_domicilio;
-DROP TABLE IF EXISTS domicilio;
-DROP TABLE IF EXISTS info_usuario;
-DROP TABLE IF EXISTS usuario;
-DROP TABLE IF EXISTS estado_producto;
-DROP TABLE IF EXISTS categorias;
-DROP TABLE IF EXISTS permisos;
-DROP TABLE IF EXISTS estado_usuario;
-DROP TABLE IF EXISTS sexo;
-DROP TABLE IF EXISTS atributo;
+GO
+DROP TABLE IF EXISTS variantes;
+GO
 DROP TABLE IF EXISTS productos;
-DROP TABLE IF EXISTS aromas;
-DROP TABLE IF EXISTS color;
+GO
 DROP TABLE IF EXISTS tamaño;
+GO
+DROP TABLE IF EXISTS color;
+GO
+DROP TABLE IF EXISTS aromas;
+GO
+DROP TABLE IF EXISTS categorias;
+GO
+DROP TABLE IF EXISTS estado_producto;
+GO
+DROP TABLE IF EXISTS usuario_domicilio;
+GO
+DROP TABLE IF EXISTS domicilio;
+GO
+DROP TABLE IF EXISTS info_usuario;
+GO
+DROP TABLE IF EXISTS sexo;
+GO
+DROP TABLE IF EXISTS usuario;
+GO
+DROP TABLE IF EXISTS estado_usuario;
+GO
+DROP TABLE IF EXISTS permisos;
+GO
+
+
+
+
 
 
 -- Tabla de categorías
@@ -47,19 +53,20 @@ CREATE TABLE categorias (
 -- Tabla de aromas
 CREATE TABLE aromas (
     id_aroma INT PRIMARY KEY,
-    nombre VARCHAR(100),
+    nombre VARCHAR(100)
 );
 
 -- Tabla de color
 CREATE TABLE color (
     id_color INT PRIMARY KEY,
-    nombre VARCHAR(100),
+    nombre VARCHAR(100)
 );
 
 -- Tabla de tamaño
 CREATE TABLE tamaño (
     id_tamaño INT PRIMARY KEY,
     nombre VARCHAR(100),
+    cantidad INT
 );
 
 
@@ -88,21 +95,21 @@ CREATE TABLE estado_producto (
     descripcion TEXT
 );
 
--- Tabla de atributo (variante del producto)
-CREATE TABLE atributo (
-    id_atributo INT PRIMARY KEY,
+-- Tabla de variante (variante del producto)
+CREATE TABLE variantes (
+    sku VARCHAR(100) PRIMARY KEY,
     id_producto INT,
+
     id_estado_producto INT,
+    id_aroma INT,
     id_color INT,
     id_tamaño INT,
-    id_aroma INT,
     stock INT,
-    sku VARCHAR(100),
-    CONSTRAINT FK_atributo_id_producto_END FOREIGN KEY (id_producto) REFERENCES productos(id_producto),
-    CONSTRAINT FK_atributo_id_estado_producto_END FOREIGN KEY (id_estado_producto) REFERENCES estado_producto(id_estado_producto),
-    CONSTRAINT FK_atributo_id_color FOREIGN KEY (id_color) REFERENCES color(id_color),
-    CONSTRAINT FK_atributo_id_tamaño FOREIGN KEY (id_tamaño) REFERENCES tamaño(id_tamaño),
-    CONSTRAINT FK_atributo_id_aroma FOREIGN KEY (id_aroma) REFERENCES aromas(id_aroma)
+    CONSTRAINT FK_variante_id_producto_END          FOREIGN KEY (id_producto)           REFERENCES productos(id_producto),
+    CONSTRAINT FK_variante_id_estado_producto_END   FOREIGN KEY (id_estado_producto)    REFERENCES estado_producto(id_estado_producto),
+    CONSTRAINT FK_variante_id_aroma                 FOREIGN KEY (id_aroma)              REFERENCES aromas(id_aroma),
+    CONSTRAINT FK_variante_id_color                 FOREIGN KEY (id_color)              REFERENCES color(id_color),
+    CONSTRAINT FK_variante_id_tamaño                FOREIGN KEY (id_tamaño)             REFERENCES tamaño(id_tamaño)
 );
 
 -- Tabla de pedidos
@@ -117,13 +124,13 @@ CREATE TABLE pedidos (
 CREATE TABLE productos_pedido (
     id_compra INT PRIMARY KEY,
     id_pedido INT,
-    id_atributo INT,
+    id_variante INT,
     id_producto INT,
     sku VARCHAR(100),
     cantidad INT,
     precio DECIMAL(10, 2),
     CONSTRAINT FK_productos_pedido_id_pedido_END FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido),
-    CONSTRAINT FK_productos_pedido_id_atributo_END FOREIGN KEY (id_atributo) REFERENCES atributo(id_atributo),
+    CONSTRAINT FK_productos_pedido_id_variante_END FOREIGN KEY (id_variante) REFERENCES variante(sku),
 );
 
 -- Tabla de permisos
@@ -192,6 +199,29 @@ CREATE TABLE usuario_domicilio (
     CONSTRAINT FK_usuario_domicilio_id_info_usuario_END FOREIGN KEY (id_info_usuario) REFERENCES info_usuario(id_info_usuario),
     CONSTRAINT FK_usuario_domicilio_id_domicilio_END FOREIGN KEY (id_domicilio) REFERENCES domicilio(id_domicilio)
 );
+
+-- Crear tabla tipo_precio
+CREATE TABLE tipo_precio (
+    id_tipo_precio INT PRIMARY KEY,
+    nombre VARCHAR(100),
+    descripcion TEXT
+);
+
+-- Crear tabla variante_tipo_precio
+CREATE TABLE variante_tipo_precio (
+    sku VARCHAR(100),
+    id_producto INT,
+    id_tipo_precio INT,
+    precio DECIMAL(10, 2),
+    cantidad_minima INT,
+    PRIMARY KEY (sku, id_tipo_precio, id_producto),
+    CONSTRAINT FK_variante_tipo_precio_sku               FOREIGN KEY (sku)               REFERENCES variante(sku),
+    CONSTRAINT FK_variante_tipo_precio_id_tipo_precio    FOREIGN KEY (id_tipo_precio)    REFERENCES tipo_precio(id_tipo_precio),
+    CONSTRAINT FK_variante_tipo_precio_id_producto       FOREIGN KEY (id_producto)       REFERENCES variantes(id_producto)
+
+);
+
+
 
 -- Insertar datos en permisos (solo algunos registros)
 -- Insertar datos en permisos (solo algunos registros)
@@ -307,7 +337,7 @@ INSERT INTO tamaño (id_tamaño, nombre) VALUES
 
 
 
-INSERT INTO atributo (id_atributo, id_producto, id_estado_producto, id_color, id_tamaño, id_aroma, stock, sku) VALUES 
+INSERT INTO variante (id_variante, id_producto, id_estado_producto, id_color, id_tamaño, id_aroma, stock, sku) VALUES 
 (1, 1, 1, 1, 1, 1, 50, 'SKU001'),
 (2, 1, 1, 2, 2, 2, 30, 'SKU002'),
 (3, 2, 1, 3, 3, 3, 20, 'SKU003'),
@@ -377,7 +407,7 @@ INSERT INTO pedidos (id_pedido, id_usuario, total, fecha) VALUES
 
 
 -- Insertar datos en productos_pedido (muchos productos por pedido)
-INSERT INTO productos_pedido (id_compra, id_pedido, id_atributo, id_producto, sku, cantidad, precio) VALUES 
+INSERT INTO productos_pedido (id_compra, id_pedido, id_variante, id_producto, sku, cantidad, precio) VALUES 
 (1, 1, 1, 1, 'SKU001', 2, 600.25), 
 (2, 1, 2, 1, 'SKU002', 1, 300.00), 
 (3, 1, 3, 2, 'SKU003', 1, 750.00), 
@@ -431,7 +461,7 @@ JOIN categorias c ON p.id_categoria = c.id_categoria;
 
 -- Select all attributes of a specific product
 SELECT p.nombre AS producto, a.sku, ep.nombre AS estado_producto, c.nombre AS color, t.nombre AS tamaño, ar.nombre AS aroma
-FROM atributo a
+FROM variante a
 JOIN productos p ON a.id_producto = p.id_producto
 JOIN estado_producto ep ON a.id_estado_producto = ep.id_estado_producto
 JOIN color c ON a.id_color = c.id_color
@@ -441,32 +471,14 @@ WHERE p.id_producto = 1;
 
 
 
--- Crear tabla tipo_precio
-CREATE TABLE tipo_precio (
-    id_tipo_precio INT PRIMARY KEY,
-    nombre VARCHAR(100),
-    descripcion TEXT
-);
-
--- Crear tabla atributo_tipo_precio
-CREATE TABLE atributo_tipo_precio (
-    id_atributo INT,
-    id_tipo_precio INT,
-    precio DECIMAL(10, 2),
-    cantidad_minima INT,
-    PRIMARY KEY (id_atributo, id_tipo_precio),
-    CONSTRAINT FK_atributo_tipo_precio_id_atributo FOREIGN KEY (id_atributo) REFERENCES atributo(id_atributo),
-    CONSTRAINT FK_atributo_tipo_precio_id_tipo_precio FOREIGN KEY (id_tipo_precio) REFERENCES tipo_precio(id_tipo_precio)
-);
-
 
 
 INSERT INTO tipo_precio (id_tipo_precio, nombre, descripcion) VALUES 
 (1, 'Precio Minorista', 'Precio para ventas al por menor'),
 (2, 'Precio Mayorista', 'Precio para ventas al por mayor');
 
--- Insertar datos en atributo_tipo_precio
-INSERT INTO atributo_tipo_precio (id_atributo, id_tipo_precio, precio) VALUES 
+-- Insertar datos en variante_tipo_precio
+INSERT INTO variante_tipo_precio (id_variante, id_tipo_precio, precio) VALUES 
 (1, 1, 600.25), 
 (2, 1, 300.00), 
 (3, 1, 750.00), 
@@ -534,8 +546,8 @@ SELECT * FROM imagenes;
 -- Select all data from estado_producto
 SELECT * FROM estado_producto;
 
--- Select all data from atributo
-SELECT * FROM atributo;
+-- Select all data from variante
+SELECT * FROM variantes;
 
 -- Select all data from pedidos
 SELECT * FROM pedidos;

@@ -7,6 +7,13 @@
         private $password = "";
         private $charset = "utf8";
         
+
+        /* private $hostname = ".";
+        private $database = "puntoAroma";
+        private $username = "sa";
+        private $password = "123456";
+        private $charset = "utf8";
+         */
         function conectar()
         {
             try{
