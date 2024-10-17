@@ -80,57 +80,7 @@ $usuario = isset($_SESSION["usuario"]) ? $_SESSION["usuario"] : null;
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-    <script>
-        const cartItems = []; // Simulación de carrito vacío
-
-        function toggleCart(event) {
-            event.stopPropagation(); 
-            const cart = document.getElementById('cart');
-            const dropdownMenu = document.querySelector('.dropdown-menu.show');
-            if (dropdownMenu) {
-                dropdownMenu.classList.remove('show');
-                const dropdownToggle = document.querySelector('.dropdown-toggle');
-                dropdownToggle.setAttribute('aria-expanded', 'false');
-            }
-            cart.classList.toggle('hidden');
-            updateCart();
-        }
-
-        // Cierra el carrito si se hace clic fuera
-        document.addEventListener('click', function(event) {
-            const cart = document.getElementById('cart');
-            const cartIcon = document.getElementById('cart-icon');
-            if (!cart.contains(event.target) && !cartIcon.contains(event.target)) {
-                cart.classList.add('hidden');
-            }
-        });
-
-        document.getElementById('cart').addEventListener('click', function(event) {
-            event.stopPropagation();
-        });
-
-        function updateCart() {
-            const cartContent = document.getElementById('cart-content');
-            const usuarioIniciado = <?php echo $usuario ? 'true' : 'false'; ?>;
-
-            if (cartItems.length === 0) {
-                if (usuarioIniciado) {
-                    cartContent.innerHTML = `
-                        <div class="empty-cart">
-                            <p>Tu carrito está vacío.</p>
-                        </div>`;
-                } else {
-                    cartContent.innerHTML = `
-                        <div class="empty-cart">
-                            <p>Para agregar productos al carrito, debes iniciar sesión.</p>
-                            <a href="iniciarSesion.php"><button class="btn btn-primary-custom">Iniciar Sesión</button></a>
-                        </div>`;
-                }
-            }
-        }
-
-        updateCart();
-    </script>
+    <script src="app.js"></script>
 </body>
 
 </html>
