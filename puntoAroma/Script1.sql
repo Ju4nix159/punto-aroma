@@ -1,46 +1,26 @@
 
+
+
+-- Drop tables if they exist
 DROP TABLE IF EXISTS productos_pedido;
-GO
 DROP TABLE IF EXISTS pedidos;
-GO
 DROP TABLE IF EXISTS variante_tipo_precio;
-GO
 DROP TABLE IF EXISTS tipo_precio;
-GO
-DROP TABLE IF EXISTS imagenes;
-GO
 DROP TABLE IF EXISTS variantes;
-GO
+DROP TABLE IF EXISTS imagenes;
 DROP TABLE IF EXISTS productos;
-GO
 DROP TABLE IF EXISTS tamaño;
-GO
 DROP TABLE IF EXISTS color;
-GO
 DROP TABLE IF EXISTS aromas;
-GO
 DROP TABLE IF EXISTS categorias;
-GO
-DROP TABLE IF EXISTS estado_producto;
-GO
-DROP TABLE IF EXISTS usuario_domicilio;
-GO
-DROP TABLE IF EXISTS domicilio;
-GO
 DROP TABLE IF EXISTS info_usuario;
-GO
-DROP TABLE IF EXISTS sexo;
-GO
+DROP TABLE IF EXISTS usuario_domicilio;
+DROP TABLE IF EXISTS domicilio;
 DROP TABLE IF EXISTS usuario;
-GO
 DROP TABLE IF EXISTS estado_usuario;
-GO
 DROP TABLE IF EXISTS permisos;
-GO
-
-
-
-
+DROP TABLE IF EXISTS sexo;
+DROP TABLE IF EXISTS estado_producto;
 
 
 -- Tabla de categorías
@@ -62,12 +42,6 @@ CREATE TABLE color (
     nombre VARCHAR(100)
 );
 
--- Tabla de tamaño
-CREATE TABLE tamaño (
-    id_tamaño INT PRIMARY KEY,
-    nombre VARCHAR(100),
-    cantidad INT
-);
 
 
 
@@ -97,19 +71,18 @@ CREATE TABLE estado_producto (
 
 -- Tabla de variante (variante del producto)
 CREATE TABLE variantes (
-    sku VARCHAR(100) PRIMARY KEY,
-    id_producto INT,
+    sku VARCHAR(100) ,
 
+    id_producto INT ,
     id_estado_producto INT,
     id_aroma INT,
     id_color INT,
-    id_tamaño INT,
     stock INT,
+    CONSTRAINT PK_variante_sku_END PRIMARY KEY (sku),
     CONSTRAINT FK_variante_id_producto_END          FOREIGN KEY (id_producto)           REFERENCES productos(id_producto),
     CONSTRAINT FK_variante_id_estado_producto_END   FOREIGN KEY (id_estado_producto)    REFERENCES estado_producto(id_estado_producto),
     CONSTRAINT FK_variante_id_aroma                 FOREIGN KEY (id_aroma)              REFERENCES aromas(id_aroma),
     CONSTRAINT FK_variante_id_color                 FOREIGN KEY (id_color)              REFERENCES color(id_color),
-    CONSTRAINT FK_variante_id_tamaño                FOREIGN KEY (id_tamaño)             REFERENCES tamaño(id_tamaño)
 );
 
 -- Tabla de pedidos
@@ -124,13 +97,12 @@ CREATE TABLE pedidos (
 CREATE TABLE productos_pedido (
     id_compra INT PRIMARY KEY,
     id_pedido INT,
-    id_variante INT,
     id_producto INT,
     sku VARCHAR(100),
     cantidad INT,
     precio DECIMAL(10, 2),
     CONSTRAINT FK_productos_pedido_id_pedido_END FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido),
-    CONSTRAINT FK_productos_pedido_id_variante_END FOREIGN KEY (id_variante) REFERENCES variante(sku),
+    CONSTRAINT FK_productos_pedido_sku_END FOREIGN KEY (sku) REFERENCES variantes(sku),
 );
 
 -- Tabla de permisos
@@ -209,15 +181,13 @@ CREATE TABLE tipo_precio (
 
 -- Crear tabla variante_tipo_precio
 CREATE TABLE variante_tipo_precio (
-    sku VARCHAR(100),
     id_producto INT,
     id_tipo_precio INT,
     precio DECIMAL(10, 2),
     cantidad_minima INT,
-    PRIMARY KEY (sku, id_tipo_precio, id_producto),
-    CONSTRAINT FK_variante_tipo_precio_sku               FOREIGN KEY (sku)               REFERENCES variante(sku),
+    PRIMARY KEY (id_tipo_precio, id_producto),
     CONSTRAINT FK_variante_tipo_precio_id_tipo_precio    FOREIGN KEY (id_tipo_precio)    REFERENCES tipo_precio(id_tipo_precio),
-    CONSTRAINT FK_variante_tipo_precio_id_producto       FOREIGN KEY (id_producto)       REFERENCES variantes(id_producto)
+    CONSTRAINT FK_variante_tipo_precio_sku               FOREIGN KEY (id_producto)       REFERENCES productos(id_producto),
 
 );
 
@@ -328,47 +298,40 @@ INSERT INTO color (id_color, nombre) VALUES
 (9, 'Naranja'),
 (10, 'Gris');
 
--- Insertar datos en tamaño
-INSERT INTO tamaño (id_tamaño, nombre) VALUES 
-(1, 'Pequeño'),
-(2, 'Mediano'),
-(3, 'Grande'),
-(4, 'Extra Grande');
 
 
-
-INSERT INTO variante (id_variante, id_producto, id_estado_producto, id_color, id_tamaño, id_aroma, stock, sku) VALUES 
-(1, 1, 1, 1, 1, 1, 50, 'SKU001'),
-(2, 1, 1, 2, 2, 2, 30, 'SKU002'),
-(3, 2, 1, 3, 3, 3, 20, 'SKU003'),
-(4, 2, 2, 4, 4, 4, 0, 'SKU004'),
-(5, 3, 1, 5, 1, 5, 15, 'SKU005'),
-(6, 3, 1, 6, 2, 6, 10, 'SKU006'),
-(7, 4, 1, 7, 3, 7, 40, 'SKU007'),
-(8, 4, 1, 8, 4, 8, 25, 'SKU008'),
-(9, 5, 1, 9, 1, 9, 45, 'SKU009'),
-(10, 5, 1, 10, 2, 10, 30, 'SKU010'),
-(11, 6, 1, 1, 3, 1, 50, 'SKU011'),
-(12, 6, 1, 2, 4, 2, 20, 'SKU012'),
-(13, 7, 1, 3, 1, 3, 10, 'SKU013'),
-(14, 8, 1, 4, 2, 4, 15, 'SKU014'),
-(15, 9, 1, 5, 3, 5, 25, 'SKU015'),
-(16, 9, 1, 6, 4, 6, 20, 'SKU016'),
-(17, 10, 1, 7, 1, 7, 30, 'SKU017'),
-(18, 11, 1, 8, 2, 8, 15, 'SKU018'),
-(19, 12, 1, 9, 3, 9, 18, 'SKU019'),
-(20, 13, 1, 10, 4, 10, 12, 'SKU020'),
-(21, 14, 1, 1, 1, 1, 40, 'SKU021'),
-(22, 15, 1, 2, 2, 2, 30, 'SKU022'),
-(23, 16, 1, 3, 3, 3, 25, 'SKU023'),
-(24, 17, 1, 4, 4, 4, 35, 'SKU024'),
-(25, 18, 1, 5, 1, 5, 28, 'SKU025'),
-(26, 19, 1, 6, 2, 6, 22, 'SKU026'),
-(27, 20, 1, 7, 3, 7, 18, 'SKU027'),
-(28, 21, 1, 8, 4, 8, 50, 'SKU028'),
-(29, 22, 1, 9, 1, 9, 40, 'SKU029'),
-(30, 23, 1, 10, 2, 10, 10, 'SKU030'),
-(31, 24, 1, 1, 3, 1, 15, 'SKU031');
+INSERT INTO variantes (sku, id_producto, id_estado_producto, id_aroma, id_color, stock) VALUES 
+('SKU001', 1, 1, 1, 1, 50),
+('SKU002', 1, 1, 2, 2, 30),
+('SKU003', 2, 1, 3, 3, 20),
+('SKU004', 2, 2, 4, 4, 0),
+('SKU005', 3, 1, 5, 1, 15),
+('SKU006', 3, 1, 6, 2, 10),
+('SKU007', 4, 1, 7, 3, 40),
+('SKU008', 4, 1, 8, 4, 25),
+('SKU009', 5, 1, 9, 1, 45),
+('SKU010', 5, 1, 10, 2, 30),
+('SKU011', 6, 1, 1, 3, 50),
+('SKU012', 6, 1, 2, 4, 20),
+('SKU013', 7, 1, 3, 1, 10),
+('SKU014', 8, 1, 4, 2, 15),
+('SKU015', 9, 1, 5, 3, 25),
+('SKU016', 9, 1, 6, 4, 20),
+('SKU017', 10, 1, 7, 1, 30),
+('SKU018', 11, 1, 8, 2, 15),
+('SKU019', 12, 1, 9, 3, 18),
+('SKU020', 13, 1, 10, 4, 12),
+('SKU021', 14, 1, 1, 1, 40),
+('SKU022', 15, 1, 2, 2, 30),
+('SKU023', 16, 1, 3, 3, 25),
+('SKU024', 17, 1, 4, 4, 35),
+('SKU025', 18, 1, 5, 1, 28),
+('SKU026', 19, 1, 6, 2, 22),
+('SKU027', 20, 1, 7, 3, 18),
+('SKU028', 21, 1, 8, 4, 50),
+('SKU029', 22, 1, 9, 1, 40),
+('SKU030', 23, 1, 10, 2, 10),
+('SKU031', 24, 1, 1, 3, 15);
 
 
 -- Insertar datos en imágenes (1 imagen por producto)
@@ -407,70 +370,49 @@ INSERT INTO pedidos (id_pedido, id_usuario, total, fecha) VALUES
 
 
 -- Insertar datos en productos_pedido (muchos productos por pedido)
-INSERT INTO productos_pedido (id_compra, id_pedido, id_variante, id_producto, sku, cantidad, precio) VALUES 
-(1, 1, 1, 1, 'SKU001', 2, 600.25), 
-(2, 1, 2, 1, 'SKU002', 1, 300.00), 
-(3, 1, 3, 2, 'SKU003', 1, 750.00), 
-(4, 1, 4, 2, 'SKU004', 3, 116.92),
-(5, 2, 5, 3, 'SKU005', 2, 900.00), 
-(6, 2, 6, 3, 'SKU006', 1, 600.00), 
-(7, 3, 7, 4, 'SKU007', 1, 300.00), 
-(8, 3, 8, 4, 'SKU008', 2, 400.00), 
-(9, 4, 9, 5, 'SKU009', 1, 500.00), 
-(10, 4, 10, 5, 'SKU010', 3, 1200.00), 
-(11, 5, 11, 6, 'SKU011', 1, 600.00), 
-(12, 5, 12, 6, 'SKU012', 2, 150.00), 
-(13, 6, 13, 7, 'SKU013', 1, 700.00), 
-(14, 6, 14, 8, 'SKU014', 1, 900.00), 
-(15, 7, 15, 9, 'SKU015', 2, 140.00), 
-(16, 7, 16, 9, 'SKU016', 3, 600.00), 
-(17, 8, 17, 10, 'SKU017', 1, 800.00), 
-(18, 8, 18, 11, 'SKU018', 2, 500.00), 
-(19, 9, 19, 12, 'SKU019', 1, 200.00), 
-(20, 9, 20, 13, 'SKU020', 3, 900.00), 
-(21, 10, 21, 14, 'SKU021', 1, 400.00), 
-(22, 10, 22, 15, 'SKU022', 2, 500.00), 
-(23, 11, 23, 16, 'SKU023', 1, 600.00), 
-(24, 11, 24, 17, 'SKU024', 3, 500.00), 
-(25, 12, 25, 18, 'SKU025', 2, 300.00),
-(26, 12, 26, 19, 'SKU026', 1, 150.00),
-(27, 13, 27, 20, 'SKU027', 2, 450.00),
-(28, 13, 28, 21, 'SKU028', 1, 500.00),
-(29, 14, 29, 22, 'SKU029', 3, 600.00),
-(30, 14, 30, 23, 'SKU030', 2, 700.00),
-(31, 15, 31, 24, 'SKU031', 1, 800.00),
-(32, 15, 1, 1, 'SKU001', 2, 900.00),
-(33, 16, 2, 2, 'SKU002', 1, 1000.00),
-(34, 16, 3, 3, 'SKU003', 3, 1100.00),
-(35, 17, 4, 4, 'SKU004', 2, 1200.00),
-(36, 17, 5, 5, 'SKU005', 1, 1300.00),
-(37, 18, 6, 6, 'SKU006', 3, 1400.00),
-(38, 18, 7, 7, 'SKU007', 2, 1500.00),
-(39, 19, 8, 8, 'SKU008', 1, 1600.00),
-(40, 19, 9, 9, 'SKU009', 3, 1700.00),
-(41, 20, 10, 10, 'SKU010', 2, 1800.00),
-(42, 20, 11, 11, 'SKU011', 1, 1900.00);
-
-
-
---consultas:
--- Select all data from productos along with the category name
-SELECT p.*, c.nombre AS categoria
-FROM productos p
-JOIN categorias c ON p.id_categoria = c.id_categoria;
-
--- Select all attributes of a specific product
-SELECT p.nombre AS producto, a.sku, ep.nombre AS estado_producto, c.nombre AS color, t.nombre AS tamaño, ar.nombre AS aroma
-FROM variante a
-JOIN productos p ON a.id_producto = p.id_producto
-JOIN estado_producto ep ON a.id_estado_producto = ep.id_estado_producto
-JOIN color c ON a.id_color = c.id_color
-JOIN tamaño t ON a.id_tamaño = t.id_tamaño
-JOIN aromas ar ON a.id_aroma = ar.id_aroma
-WHERE p.id_producto = 1;
-
-
-
+INSERT INTO productos_pedido (id_compra, id_pedido, id_producto, sku, cantidad, precio) VALUES 
+(1, 1, 1, 'SKU001', 2, 600.25), 
+(2, 1, 1, 'SKU002', 1, 300.00), 
+(3, 1, 2, 'SKU003', 1, 750.00), 
+(4, 1, 2, 'SKU004', 3, 116.92),
+(5, 2, 3, 'SKU005', 2, 900.00), 
+(6, 2, 3, 'SKU006', 1, 600.00), 
+(7, 3, 4, 'SKU007', 1, 300.00), 
+(8, 3, 4, 'SKU008', 2, 400.00), 
+(9, 4, 5, 'SKU009', 1, 500.00), 
+(10, 4, 5, 'SKU010', 3, 1200.00), 
+(11, 5, 6, 'SKU011', 1, 600.00), 
+(12, 5, 6, 'SKU012', 2, 150.00), 
+(13, 6, 7, 'SKU013', 1, 700.00), 
+(14, 6, 8, 'SKU014', 1, 900.00), 
+(15, 7, 9, 'SKU015', 2, 140.00), 
+(16, 7, 9, 'SKU016', 3, 600.00), 
+(17, 8, 10, 'SKU017', 1, 800.00), 
+(18, 8, 11, 'SKU018', 2, 500.00), 
+(19, 9, 12, 'SKU019', 1, 200.00), 
+(20, 9, 13, 'SKU020', 3, 900.00), 
+(21, 10, 14, 'SKU021', 1, 400.00), 
+(22, 10, 15, 'SKU022', 2, 500.00), 
+(23, 11, 16, 'SKU023', 1, 600.00), 
+(24, 11, 17, 'SKU024', 3, 500.00), 
+(25, 12, 18, 'SKU025', 2, 300.00),
+(26, 12, 19, 'SKU026', 1, 150.00),
+(27, 13, 20, 'SKU027', 2, 450.00),
+(28, 13, 21, 'SKU028', 1, 500.00),
+(29, 14, 22, 'SKU029', 3, 600.00),
+(30, 14, 23, 'SKU030', 2, 700.00),
+(31, 15, 24, 'SKU031', 1, 800.00),
+(32, 15, 1, 'SKU001', 2, 900.00),
+(33, 16, 2, 'SKU002', 1, 1000.00),
+(34, 16, 3, 'SKU003', 3, 1100.00),
+(35, 17, 4, 'SKU004', 2, 1200.00),
+(36, 17, 5, 'SKU005', 1, 1300.00),
+(37, 18, 6, 'SKU006', 3, 1400.00),
+(38, 18, 7, 'SKU007', 2, 1500.00),
+(39, 19, 8, 'SKU008', 1, 1600.00),
+(40, 19, 9, 'SKU009', 3, 1700.00),
+(41, 20, 10, 'SKU010', 2, 1800.00),
+(42, 20, 11, 'SKU011', 1, 1900.00);
 
 
 INSERT INTO tipo_precio (id_tipo_precio, nombre, descripcion) VALUES 
@@ -478,100 +420,126 @@ INSERT INTO tipo_precio (id_tipo_precio, nombre, descripcion) VALUES
 (2, 'Precio Mayorista', 'Precio para ventas al por mayor');
 
 -- Insertar datos en variante_tipo_precio
-INSERT INTO variante_tipo_precio (id_variante, id_tipo_precio, precio) VALUES 
-(1, 1, 600.25), 
-(2, 1, 300.00), 
-(3, 1, 750.00), 
-(4, 1, 116.92),
-(5, 1, 900.00), 
-(6, 1, 600.00), 
-(7, 1, 300.00), 
-(8, 1, 400.00), 
-(9, 1, 500.00), 
-(10, 1, 1200.00), 
-(11, 1, 600.00), 
-(12, 1, 150.00), 
-(13, 1, 700.00), 
-(14, 1, 900.00), 
-(15, 1, 140.00), 
-(16, 1, 600.00), 
-(17, 1, 800.00), 
-(18, 1, 500.00), 
-(19, 1, 200.00), 
-(20, 1, 900.00), 
-(21, 1, 400.00), 
-(22, 1, 500.00), 
-(23, 1, 600.00), 
-(24, 1, 500.00), 
-(25, 1, 300.00),
-(26, 1, 150.00),
-(27, 1, 450.00),
-(28, 1, 500.00),
-(29, 1, 600.00),
-(30, 1, 700.00),
-(31, 1, 800.00),
-(32, 1, 900.00),
-(33, 1, 1000.00),
-(34, 1, 1100.00),
-(35, 1, 1200.00),
-(36, 1, 1300.00),
-(37, 1, 1400.00),
-(38, 1, 1500.00),
-(39, 1, 1600.00),
-(40, 1, 1700.00),
-(41, 1, 1800.00),
-(42, 1, 1900.00);
+INSERT INTO variante_tipo_precio (id_producto, id_tipo_precio, precio, cantidad_minima) VALUES 
+(1, 1, 600.25, 1), 
+(1, 2, 300.00, 1), 
+(2, 1, 750.00, 1), 
+(2, 2, 116.92, 1),
+(3, 1, 900.00, 1), 
+(3, 2, 600.00, 1), 
+(4, 1, 300.00, 1), 
+(4, 2, 400.00, 1), 
+(5, 1, 500.00, 1), 
+(5, 2, 1200.00, 1), 
+(6, 1, 600.00, 1), 
+(6, 2, 150.00, 1), 
+(7, 1, 700.00, 1), 
+(8, 1, 900.00, 1), 
+(9, 1, 140.00, 1), 
+(9, 2, 600.00, 1), 
+(10, 1, 800.00, 1), 
+(11, 1, 500.00, 1), 
+(12, 1, 200.00, 1), 
+(13, 1, 900.00, 1), 
+(14, 1, 400.00, 1), 
+(15, 1, 500.00, 1), 
+(16, 1, 600.00, 1), 
+(17, 1, 500.00, 1), 
+(18, 1, 300.00, 1),
+(19, 1, 150.00, 1),
+(20, 1, 450.00, 1),
+(21, 1, 500.00, 1),
+(22, 1, 600.00, 1),
+(23, 1, 700.00, 1),
+(24, 1, 800.00, 1);
 
 
 
---ver tablas: 
+-- Select all products with their retail prices (Precio Minorista)
+SELECT p.id_producto, p.nombre, p.descripcion, c.nombre AS categoria, vtp.precio AS precio_minorista
+FROM productos p
+JOIN variante_tipo_precio vtp ON p.id_producto = vtp.id_producto
+JOIN categorias c ON p.id_categoria = c.id_categoria
+WHERE vtp.id_tipo_precio = 1;
+
+-- Select all variants of a product
+SELECT v.*, p.nombre AS producto_nombre, ep.nombre AS estado_producto_nombre, a.nombre AS aroma_nombre, c.nombre AS color_nombre
+FROM variantes v
+JOIN productos p ON v.id_producto = p.id_producto
+JOIN estado_producto ep ON v.id_estado_producto = ep.id_estado_producto
+JOIN aromas a ON v.id_aroma = a.id_aroma
+JOIN color c ON v.id_color = c.id_color
+WHERE v.id_producto = 1;
+
 -- Select all data from categorias
 SELECT * FROM categorias;
+GO
 
 -- Select all data from aromas
 SELECT * FROM aromas;
+GO
 
 -- Select all data from color
 SELECT * FROM color;
+GO
 
--- Select all data from tamaño
-SELECT * FROM tamaño;
 
 -- Select all data from productos
 SELECT * FROM productos;
+GO
 
 -- Select all data from imagenes
 SELECT * FROM imagenes;
+GO
 
 -- Select all data from estado_producto
 SELECT * FROM estado_producto;
+GO
 
--- Select all data from variante
+-- Select all data from variantes
 SELECT * FROM variantes;
+GO
 
 -- Select all data from pedidos
 SELECT * FROM pedidos;
+GO
 
 -- Select all data from productos_pedido
 SELECT * FROM productos_pedido;
+GO
 
 -- Select all data from permisos
 SELECT * FROM permisos;
+GO
 
 -- Select all data from estado_usuario
 SELECT * FROM estado_usuario;
+GO
 
 -- Select all data from usuario
 SELECT * FROM usuario;
+GO
 
 -- Select all data from sexo
 SELECT * FROM sexo;
+GO
 
 -- Select all data from info_usuario
 SELECT * FROM info_usuario;
+GO
 
 -- Select all data from domicilio
 SELECT * FROM domicilio;
+GO
 
 -- Select all data from usuario_domicilio
 SELECT * FROM usuario_domicilio;
+GO
+
+-- Select all data from tipo_precio
+SELECT * FROM tipo_precio;
+GO
+
+-- Select all data from variante_tipo_precio
+SELECT * FROM variante_tipo_precio;
+GO

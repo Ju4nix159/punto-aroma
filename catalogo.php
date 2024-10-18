@@ -2,9 +2,11 @@
 include 'header.php';
 include 'admin/config/sbd.php';
 
-$sql_catalogo = $con->prepare("SELECT p.*, c.nombre AS categoria
+$sql_catalogo = $con->prepare("SELECT p.id_producto, p.nombre, p.descripcion, c.nombre AS categoria, vtp.precio AS precio_minorista
 FROM productos p
-JOIN categorias c ON p.id_categoria = c.id_categoria;");
+JOIN variante_tipo_precio vtp ON p.id_producto = vtp.id_producto
+JOIN categorias c ON p.id_categoria = c.id_categoria
+WHERE vtp.id_tipo_precio = 1;");
 $sql_catalogo->execute();
 $productos = $sql_catalogo->fetchAll(PDO::FETCH_ASSOC);
 
@@ -125,11 +127,11 @@ $productos = $sql_catalogo->fetchAll(PDO::FETCH_ASSOC);
                                         <div class="card-body">
                                             <h5 class="card-title"><?php echo $producto["nombre"] ?></h5>
                                             <p class="card-text"><small class="text-muted">Categoría: <?php echo $producto["categoria"] ?></small></p>
-                                            <p class="card-text"><strong><?php echo $producto["precio"] ?></strong></p>
+                                            <p class="card-text"><strong><?php echo $producto["precio_minorista"] ?></strong></p>
                                         </div>
                                     </a>
                                     <div class="card-footer">
-                                        <button class="btn btn-primary-custom w-100 add-to-cart-btn" onclick="añadirCarrito(<?php echo $producto['id_producto'] ?>, '<?php echo addslashes($producto['nombre']) ?>', <?php echo $producto['precio'] ?>)">Añadir</button>
+                                        <button class="btn btn-primary-custom w-100 add-to-cart-btn" onclick="añadirCarrito(<?php echo $producto['id_producto'] ?>, '<?php echo addslashes($producto['nombre']) ?>', <?php echo $producto['precio_minorista'] ?>)">Añadir</button>
 
                                     </div>
                                     <button class="btn btn-sm btn-secondary-custom quick-view-btn"
@@ -138,7 +140,7 @@ $productos = $sql_catalogo->fetchAll(PDO::FETCH_ASSOC);
                                         data-product-id="<?php echo $producto['id_producto']; ?>"
                                         data-product-name="<?php echo $producto['nombre']; ?>"
                                         data-product-description="<?php echo $producto['descripcion']; ?>"
-                                        data-product-price="<?php echo $producto['precio']; ?>">
+                                        data-product-price="<?php echo $producto['precio_minorista']; ?>">
                                         <i class="bi bi-eye"></i>
                                     </button>
 
