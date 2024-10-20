@@ -37,7 +37,7 @@ CREATE TABLE aromas (
 );
 
 -- Tabla de color
-CREATE TABLE color (
+CREATE TABLE colores (
     id_color INT PRIMARY KEY,
     nombre VARCHAR(100)
 );
@@ -63,7 +63,7 @@ CREATE TABLE imagenes (
 );
 
 -- Tabla de estado de productos
-CREATE TABLE estado_producto (
+CREATE TABLE estados_producto (
     id_estado_producto INT PRIMARY KEY,
     nombre VARCHAR(100),
     descripcion TEXT
@@ -113,14 +113,14 @@ CREATE TABLE permisos (
 );
 
 -- Tabla de estado de usuario
-CREATE TABLE estado_usuario (
+CREATE TABLE estados_usuario (
     id_estado_usuario INT PRIMARY KEY,
     nombre VARCHAR(100),
     descripcion TEXT
 );
 
 -- Tabla de usuario
-CREATE TABLE usuario (
+CREATE TABLE usuarios (
     id_usuario INT PRIMARY KEY,
     id_permiso INT,
     id_estado_usuario INT,
@@ -131,14 +131,14 @@ CREATE TABLE usuario (
 );
 
 -- Tabla de sexo
-CREATE TABLE sexo (
+CREATE TABLE sexos (
     id_sexo INT PRIMARY KEY,
     nombre VARCHAR(100),
     descripcion TEXT
 );
 
 -- Tabla de información del usuario
-CREATE TABLE info_usuario (
+CREATE TABLE info_usuarios (
     id_info_usuario INT PRIMARY KEY,
     id_usuario INT,
     id_sexo INT,
@@ -152,7 +152,7 @@ CREATE TABLE info_usuario (
 );
 
 -- Tabla de domicilio
-CREATE TABLE domicilio (
+CREATE TABLE domicilios (
     id_domicilio INT PRIMARY KEY,
     codigo_postal VARCHAR(10),
     provincia VARCHAR(100),
@@ -163,7 +163,7 @@ CREATE TABLE domicilio (
 );
 
 -- Relación entre info_usuario y domicilio
-CREATE TABLE usuario_domicilio (
+CREATE TABLE usuario_domicilios (
     id_info_usuario INT,
     id_domicilio INT,
     tipo_domicilio VARCHAR(100),
@@ -173,14 +173,14 @@ CREATE TABLE usuario_domicilio (
 );
 
 -- Crear tabla tipo_precio
-CREATE TABLE tipo_precio (
+CREATE TABLE tipo_precios (
     id_tipo_precio INT PRIMARY KEY,
     nombre VARCHAR(100),
     descripcion TEXT
 );
 
 -- Crear tabla variante_tipo_precio
-CREATE TABLE variante_tipo_precio (
+CREATE TABLE variantes_tipo_precio (
     id_producto INT,
     id_tipo_precio INT,
     precio DECIMAL(10, 2),
@@ -200,17 +200,17 @@ INSERT INTO permisos (id_permiso, nombre, descripcion) VALUES
 (2, 'User', 'Permisos de usuario regular');
 
 -- Insertar datos en estado_usuario
-INSERT INTO estado_usuario (id_estado_usuario, nombre, descripcion) VALUES 
+INSERT INTO estados_usuario (id_estado_usuario, nombre, descripcion) VALUES 
 (1, 'Activo', 'Usuario activo'),
 (2, 'Inactivo', 'Usuario inactivo');
 
 -- Insertar datos en sexo
-INSERT INTO sexo (id_sexo, nombre, descripcion) VALUES 
+INSERT INTO sexos (id_sexo, nombre, descripcion) VALUES 
 (1, 'Masculino', 'Hombre'),
 (2, 'Femenino', 'Mujer');
 
 -- Insertar datos en usuarios (pocos registros)
-INSERT INTO usuario (id_usuario, id_permiso, id_estado_usuario, email, contraseña) VALUES 
+INSERT INTO usuarios (id_usuario, id_permiso, id_estado_usuario, email, contraseña) VALUES 
 (1, 1, 1, 'admin@empresa.com', 'admin123'),
 (2, 2, 1, 'usuario1@empresa.com', 'user123'),
 (3, 2, 1, 'usuario2@empresa.com', 'user456'),
@@ -218,18 +218,18 @@ INSERT INTO usuario (id_usuario, id_permiso, id_estado_usuario, email, contrase�
 
 
 -- Insertar datos en info_usuario
-INSERT INTO info_usuario (id_info_usuario, id_usuario, id_sexo, nombre, apellido, dni, fecha_nacimiento, telefono) VALUES 
+INSERT INTO info_usuarios (id_info_usuario, id_usuario, id_sexo, nombre, apellido, dni, fecha_nacimiento, telefono) VALUES 
 (1, 1, 1, 'Juan', 'Pérez', '12345678', '1985-05-15', '1234567890'),
 (2, 2, 2, 'María', 'González', '23456789', '1990-07-10', '0987654321'),
 (3, 3, 1, 'Carlos', 'López', '34567890', '1992-09-20', '1122334455');
 
 -- Insertar datos en domicilio
-INSERT INTO domicilio (id_domicilio, codigo_postal, provincia, localidad, barrio, calle, numero) VALUES 
+INSERT INTO domicilios (id_domicilio, codigo_postal, provincia, localidad, barrio, calle, numero) VALUES 
 (1, '1000', 'Buenos Aires', 'CABA', 'Palermo', 'Calle Falsa', '123'),
 (2, '2000', 'Buenos Aires', 'CABA', 'Belgrano', 'Avenida Siempreviva', '742');
 
 -- Insertar relación entre info_usuario y domicilio
-INSERT INTO usuario_domicilio (id_info_usuario, id_domicilio, tipo_domicilio) VALUES 
+INSERT INTO usuario_domicilios (id_info_usuario, id_domicilio, tipo_domicilio) VALUES 
 (1, 1, 'Residencial'),
 (2, 2, 'Residencial');
 
@@ -239,7 +239,7 @@ INSERT INTO categorias (id_categoria, nombre, descripcion) VALUES
 (2, 'Aromas para el hogar', 'Difusores y velas aromáticas');
 
 -- Insertar datos en estado_producto
-INSERT INTO estado_producto (id_estado_producto, nombre, descripcion) VALUES 
+INSERT INTO estados_producto (id_estado_producto, nombre, descripcion) VALUES 
 (1, 'Disponible', 'Producto en stock'),
 (2, 'Agotado', 'Producto fuera de stock');
 
@@ -286,7 +286,7 @@ INSERT INTO aromas (id_aroma, nombre) VALUES
 (10, 'Jazmín');
 
 -- Insertar datos en color
-INSERT INTO color (id_color, nombre) VALUES 
+INSERT INTO colores (id_color, nombre) VALUES 
 (1, 'Rojo'),
 (2, 'Azul'),
 (3, 'Verde'),
@@ -415,12 +415,12 @@ INSERT INTO productos_pedido (id_compra, id_pedido, id_producto, sku, cantidad, 
 (42, 20, 11, 'SKU011', 1, 1900.00);
 
 
-INSERT INTO tipo_precio (id_tipo_precio, nombre, descripcion) VALUES 
+INSERT INTO tipos_precio (id_tipo_precio, nombre, descripcion) VALUES 
 (1, 'Precio Minorista', 'Precio para ventas al por menor'),
 (2, 'Precio Mayorista', 'Precio para ventas al por mayor');
 
 -- Insertar datos en variante_tipo_precio
-INSERT INTO variante_tipo_precio (id_producto, id_tipo_precio, precio, cantidad_minima) VALUES 
+INSERT INTO variantes_tipo_precio (id_producto, id_tipo_precio, precio, cantidad_minima) VALUES 
 (1, 1, 600.25, 1), 
 (1, 2, 300.00, 1), 
 (2, 1, 750.00, 1), 
