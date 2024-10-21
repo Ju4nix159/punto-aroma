@@ -1,5 +1,30 @@
 <?php
 include 'header.php';
+include 'admin/config/sbd.php';
+
+
+if (isset($_GET['id_producto'])) {
+    $id_producto = intval($_GET['id_producto']);
+    $sql_producto = $con->prepare('SELECT p.id_producto, p.nombre, p.descripcion, vtp.precio AS precio
+FROM productos p
+JOIN variantes_tipo_precio vtp ON p.id_producto = vtp.id_producto
+WHERE p.id_producto = :id_producto AND vtp.id_tipo_precio = 1;');
+    $sql_producto->bindParam(':id_producto', $id_producto, PDO::PARAM_INT);
+    $sql_producto->execute();
+    $info_producto = $sql_producto->fetch(PDO::FETCH_ASSOC);
+
+
+    $sql_variantes = $con->prepare("SELECT DISTINCT a.nombre AS aroma
+        FROM productos p
+        JOIN categorias c ON p.id_categoria = c.id_categoria
+        JOIN variantes v ON p.id_producto = v.id_producto
+        JOIN aromas a ON v.id_aroma = a.id_aroma
+        WHERE c.nombre = 'Perfumes' AND p.id_producto = 1;");
+    $sql_variantes->execute();
+    $variantes = $sql_variantes->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
 ?>
 
 <!DOCTYPE html>
@@ -17,58 +42,44 @@ include 'header.php';
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="index.php" class="text-decoration-none text-primary-custom">Inicio</a></li>
                     <li class="breadcrumb-item"><a href="catalogo.php" class="text-decoration-none text-primary-custom">Catálogo</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Vela Aromática</li>
+                    <li class="breadcrumb-item active" aria-current="page"><?php echo $info_producto["nombre"] ?></li>
                 </ol>
             </nav>
 
             <div class="row">
                 <div class="col-md-6">
                     <div class="product-gall">
-                        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-VCzua0t5irdT7NNSC6l73qiszWElp2.png" alt="Vela Aromática" class="gall-main-image" id="main-image">
+                        <img src="1.webp" alt="<?php echo $info_producto["nombre"] ?>" class="gall-main-image" id="main-image">
                         <button class="gall-nav prev" onclick="changeImage(-1)">&lt;</button>
                         <button class="gall-nav next" onclick="changeImage(1)">&gt;</button>
                         <div class="gall-thumbnails">
-                            <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-VCzua0t5irdT7NNSC6l73qiszWElp2.png" alt="Thumbnail 1" class="gall-thumbnail active" onclick="setMainImage(this.src)">
-                            <img src="/placeholder.svg?height=60&width=60" alt="Thumbnail 2" class="gall-thumbnail" onclick="setMainImage(this.src)">
-                            <img src="/placeholder.svg?height=60&width=60" alt="Thumbnail 3" class="gall-thumbnail" onclick="setMainImage(this.src)">
-                            <img src="/placeholder.svg?height=60&width=60" alt="Thumbnail 4" class="gall-thumbnail" onclick="setMainImage(this.src)">
+                            <img src="1.webp" alt="Thumbnail 1" class="gall-thumbnail active" onclick="setMainImage(this.src)">
+                            <img src="i1.jpg" alt="Thumbnail 2" class="gall-thumbnail" onclick="setMainImage(this.src)">
+                            <img src="i2.jpg" alt="Thumbnail 3" class="gall-thumbnail" onclick="setMainImage(this.src)">
+                            <img src="i3.jpg" alt="Thumbnail 4" class="gall-thumbnail" onclick="setMainImage(this.src)">
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <h1 class="mb-3 text-primary-custom">Vela Aromática</h1>
+                    <h2 class="mb-3 text-primary-custom"><?php echo $info_producto["nombre"] ?></h2>
                     <p class="lead">Disfruta de la calidez y el aroma relajante de nuestras velas aromáticas de alta calidad.</p>
-                    <p><strong>Precio:</strong> $14.99</p>
+                    <p><strong>Precio:</strong> <?php echo $info_producto["precio"] ?></p>
                     <p>Elige entre nuestras diferentes fragancias y personaliza tu experiencia aromática.</p>
 
                     <form id="product-form">
                         <div id="fragrances-list">
-                            <div class="fragrance-item">
-                                <h5>Lavanda</h5>
-                                <div class="product-count">
-                                    <div class="d-flex">
-                                        <button type="button" class="btn-primary-custom qtyminus" onclick="decrementQuantity('lavanda')">-</button>
-                                        <input type="number" id="quantity-lavanda" class="cantidad" value="0" min="0" readonly>
-                                        <button type="button" class="btn-primary-custom qtyplus" onclick="incrementQuantity('lavanda')">+</button>
+                            <?php foreach ($variantes as $variante) { ?>
+                                <div class="fragrance-item">
+                                    <h5><?php echo $variante["aroma"] ?></h5>
+                                    <div class="product-count">
+                                        <div class="d-flex">
+                                            <button type="button" class="btn-primary-custom qtyminus" onclick="decrementQuantity('<?php echo $variante['aroma']?>')">-</button>
+                                            <input type="number" id="quantity-<?php echo $variante['aroma']?>" class="cantidad" value="0" min="0" readonly>
+                                            <button type="button" class="btn-primary-custom qtyplus" onclick="incrementQuantity('<?php echo $variante['aroma']?>')">+</button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="fragrance-item">
-                                <h5>Vainilla</h5>
-                                <div class="quantity-control">
-                                    <button type="button" class="quantity-btn" onclick="decrementQuantity('vainilla')">-</button>
-                                    <input type="number" id="quantity-vainilla" class="cantidad" value="0" min="0" readonly>
-                                    <button type="button" class="quantity-btn" onclick="incrementQuantity('vainilla')">+</button>
-                                </div>
-                            </div>
-                            <div class="fragrance-item">
-                                <h5>Canela</h5>
-                                <div class="quantity-control">
-                                    <button type="button" class="quantity-btn" onclick="decrementQuantity('canela')">-</button>
-                                    <input type="number" id="quantity-canela" class="cantidad" value="0" min="0" readonly>
-                                    <button type="button" class="quantity-btn" onclick="incrementQuantity('canela')">+</button>
-                                </div>
-                            </div>
+                            <?php } ?>
                         </div>
 
                         <div class="mt-4">
@@ -87,7 +98,7 @@ include 'header.php';
             <div class="row mt-5">
                 <div class="col-12">
                     <h3 class="text-primary-custom">Descripción del Producto</h3>
-                    <p>Nuestras velas aromáticas están hechas con cera de soja 100% natural y aceites esenciales de la más alta calidad. Cada vela está diseñada para proporcionar una experiencia sensorial única, llenando tu espacio con aromas relajantes y creando un ambiente acogedor.</p>
+                    <p><?php echo $info_producto["descripcion"] ?></p>
                     <p>Características:</p>
                     <ul>
                         <li>Duración aproximada de 30 horas</li>
@@ -101,18 +112,11 @@ include 'header.php';
         </div>
     </main>
 
-    <footer class="py-3 bg-primary-light mt-5">
-        <div class="container">
-            <p class="text-center text-muted mb-0">&copy; 2024 Punto Aroma. Todos los derechos reservados.</p>
-        </div>
+    <footer class="">
+        <?php include 'footer.php'; ?>
     </footer>
 
     <script>
-        const fragrances = ['lavanda', 'vainilla', 'canela'];
-        const pricePerUnit = 14.99;
-        let currentImageIndex = 0;
-        const images = document.querySelectorAll('.gall-thumbnail');
-
         function incrementQuantity(fragrance) {
             const input = document.getElementById(`quantity-${fragrance}`);
             input.value = parseInt(input.value) + 1;
