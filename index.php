@@ -26,28 +26,28 @@ include 'header.php';
                 <h2 class="text-center mb-5 text-primary-custom" data-aos="fade-up">Nuestros Productos Destacados</h2>
                 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
                     <div class="col" data-aos="fade-up">
-                        <div class="card h-100 bg-primary-light border-0">
+                        <div class="h-100 bg-primary-light border-0">
                             <div class="card-body text-center">
                                 <i class="bi bi-tree fs-1 text-primary-custom mb-3"></i>
-                                <h3 class="card-title">Sahumerios</h3>
+                                <h3 class="card-title text-black">Sahumerios</h3>
                                 <p class="card-text">Aromas naturales para purificar tu espacio.</p>
                             </div>
                         </div>
                     </div>
                     <div class="col" data-aos="fade-up" data-aos-delay="200">
-                        <div class="card h-100 bg-primary-light border-0">
+                        <div class=" h-100 bg-primary-light border-0">
                             <div class="card-body text-center">
                                 <i class="bi bi-fire fs-1 text-primary-custom mb-3"></i>
-                                <h3 class="card-title">Velas Aromáticas</h3>
+                                <h3 class="card-title text-black">Velas Aromáticas</h3>
                                 <p class="card-text">Ilumina y perfuma tu hogar con nuestras velas.</p>
                             </div>
                         </div>
                     </div>
                     <div class="col" data-aos="fade-up" data-aos-delay="400">
-                        <div class="card h-100 bg-primary-light border-0">
+                        <div class=" h-100 bg-primary-light border-0">
                             <div class="card-body text-center">
                                 <i class="bi bi-droplet fs-1 text-primary-custom mb-3"></i>
-                                <h3 class="card-title">Perfumes</h3>
+                                <h3 class="card-title text-black">Perfumes</h3>
                                 <p class="card-text">Fragancias únicas para cada ocasión.</p>
                             </div>
                         </div>
@@ -56,7 +56,7 @@ include 'header.php';
                         <div class="card h-100 bg-primary-light border-0">
                             <div class="card-body text-center">
                                 <i class="bi bi-flower1 fs-1 text-primary-custom mb-3"></i>
-                                <h3 class="card-title">Aceites Esenciales</h3>
+                                <h3 class="card-title text-black">Aceites Esenciales</h3>
                                 <p class="card-text">Esencias puras para aromaterapia y bienestar.</p>
                             </div>
                         </div>
@@ -65,18 +65,58 @@ include 'header.php';
             </div>
         </section>
 
+        <div class="container py-5">
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            <div class="col">
+                <div class="card text-white">
+                    <img src="i1.jpg" class="card-img" alt="Sahumerios Vishnu Masala">
+                    <div class="card-img-overlay d-flex flex-column justify-content-end">
+                        <h5 class="card-index-title">Sahumerios Vishnu Masala</h5>
+                        <p class="card-index-text">Perfumes, flores y fibras vegetales de alta calidad. Aromas: Antiestrés, Energía, Relajación, Sensual, Meditación, Frescura El aroma perdura por más tiempo en el ambiente.</p>
+                        <a href="#" class="btn btn-primary-custom">CONOCELOS</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card text-white">
+                    <img src="i2.jpg" class="card-img" alt="Sahumerios Holi India">
+                    <div class="card-img-overlay d-flex flex-column justify-content-end">
+                        <h5 class="card-index-title">Sahumerios Holi India</h5>
+                        <p class="card-index-text">Renovamos la línea de sahumerios Holi India Pack con más color y los excelentes aromas premium de siempre. Presentación aromas surtido x 100 unidades.</p>
+                        <a href="#" class="btn btn-primary-custom">CONOCELOS</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card text-white">
+                    <img src="i3.jpg" class="card-img" alt="Aromatizantes textiles">
+                    <div class="card-img-overlay d-flex flex-column justify-content-end">
+                        <h5 class="card-index-title">Aromatizantes textiles</h5>
+                        <p class="card-index-text">Perfume para aromatizar ropa y ambientes. Sentirás bien fresco un aroma especial.</p>
+                        <a href="#" class="btn btn-primary-custom">CONOCELOS</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card text-white">
+                    <img src="i4.png" class="card-img" alt="Aceites para hornito">
+                    <div class="card-img-overlay d-flex flex-column justify-content-end">
+                        <h5 class="card-index-title">Aceites para hornito</h5>
+                        <p class="card-index-text">Nuevos aromas y nueva presentación x 5 unidades. Más variedad por el mismo precio.</p>
+                        <a href="#" class="btn btn-primary-custom">CONOCELOS</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
         <section id="ofertas" class="py-5 bg-primary-light">
             <div class="container">
                 <h2 class="text-center mb-5 text-primary-custom" data-aos="fade-up">Galería de Productos</h2>
                 <div class="product-gallery">
-                    <img src="/placeholder.svg?height=250&width=250" alt="Perfume 1" data-aos="zoom-in">
-                    <img src="/placeholder.svg?height=250&width=250" alt="Vela Aromática" data-aos="zoom-in" data-aos-delay="100">
-                    <img src="/placeholder.svg?height=250&width=250" alt="Sahumerio" data-aos="zoom-in" data-aos-delay="200">
-                    <img src="/placeholder.svg?height=250&width=250" alt="Perfume 2" data-aos="zoom-in" data-aos-delay="300">
-                    <img src="/placeholder.svg?height=250&width=250" alt="Aceite Esencial" data-aos="zoom-in" data-aos-delay="400">
-                    <img src="/placeholder.svg?height=250&width=250" alt="Perfume 3" data-aos="zoom-in" data-aos-delay="500">
-                    <img src="/placeholder.svg?height=250&width=250" alt="Vela Aromática 2" data-aos="zoom-in" data-aos-delay="600">
-                    <img src="/placeholder.svg?height=250&width=250" alt="Perfume 4" data-aos="zoom-in" data-aos-delay="700">
+                <?php for ($i = 0; $i < 8; $i++) { ?>
+                    <img src="1.webp" alt="Perfume <?php echo $i?>" data-aos="zoom-in">
+                <?php } ?>
                 </div>
             </div>
         </section>
