@@ -66,7 +66,7 @@ CREATE TABLE imagenes (
 );
 
 -- Tabla de estado de productos
-CREATE TABLE estados_producto (
+CREATE TABLE estados_productos (
     id_estado_producto INT PRIMARY KEY,
     nombre VARCHAR(100),
     descripcion TEXT
@@ -83,9 +83,9 @@ CREATE TABLE variantes (
     stock INT,
     CONSTRAINT PK_variante_sku_END PRIMARY KEY (sku),
     CONSTRAINT FK_variante_id_producto_END          FOREIGN KEY (id_producto)           REFERENCES productos(id_producto),
-    CONSTRAINT FK_variante_id_estado_producto_END   FOREIGN KEY (id_estado_producto)    REFERENCES estado_producto(id_estado_producto),
+    CONSTRAINT FK_variante_id_estado_producto_END   FOREIGN KEY (id_estado_producto)    REFERENCES estados_productos(id_estado_producto),
     CONSTRAINT FK_variante_id_aroma                 FOREIGN KEY (id_aroma)              REFERENCES aromas(id_aroma),
-    CONSTRAINT FK_variante_id_color                 FOREIGN KEY (id_color)              REFERENCES color(id_color),
+    CONSTRAINT FK_variante_id_color                 FOREIGN KEY (id_color)              REFERENCES colores(id_color)
 );
 
 -- Tabla de pedidos
@@ -105,7 +105,7 @@ CREATE TABLE productos_pedido (
     cantidad INT,
     precio DECIMAL(10, 2),
     CONSTRAINT FK_productos_pedido_id_pedido_END FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido),
-    CONSTRAINT FK_productos_pedido_sku_END FOREIGN KEY (sku) REFERENCES variantes(sku),
+    CONSTRAINT FK_productos_pedido_sku_END FOREIGN KEY (sku) REFERENCES variantes(sku)
 );
 
 -- Tabla de permisos
@@ -116,7 +116,7 @@ CREATE TABLE permisos (
 );
 
 -- Tabla de estado de usuario
-CREATE TABLE estados_usuario (
+CREATE TABLE estados_usuarios (
     id_estado_usuario INT PRIMARY KEY,
     nombre VARCHAR(100),
     descripcion TEXT
@@ -128,9 +128,9 @@ CREATE TABLE usuarios (
     id_permiso INT,
     id_estado_usuario INT,
     email VARCHAR(100),
-    contraseña VARCHAR(100),
+    clave VARCHAR(100),
     CONSTRAINT FK_usuario_id_permiso_END FOREIGN KEY (id_permiso) REFERENCES permisos(id_permiso),
-    CONSTRAINT FK_usuario_id_estado_usuario_END FOREIGN KEY (id_estado_usuario) REFERENCES estado_usuario(id_estado_usuario)
+    CONSTRAINT FK_usuario_id_estado_usuario_END FOREIGN KEY (id_estado_usuario) REFERENCES estados_usuarios(id_estado_usuario)
 );
 
 -- Tabla de sexo
@@ -150,8 +150,8 @@ CREATE TABLE info_usuarios (
     dni VARCHAR(20),
     fecha_nacimiento DATE,
     telefono VARCHAR(20),
-    CONSTRAINT FK_info_usuario_id_usuario_END FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario),
-    CONSTRAINT FK_info_usuario_id_sexo_END FOREIGN KEY (id_sexo) REFERENCES sexo(id_sexo)
+    CONSTRAINT FK_info_usuario_id_usuario_END FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
+    CONSTRAINT FK_info_usuario_id_sexo_END FOREIGN KEY (id_sexo) REFERENCES sexos(id_sexo)
 );
 
 -- Tabla de domicilio
@@ -171,12 +171,12 @@ CREATE TABLE usuario_domicilios (
     id_domicilio INT,
     tipo_domicilio VARCHAR(100),
     PRIMARY KEY (id_info_usuario, id_domicilio),
-    CONSTRAINT FK_usuario_domicilio_id_info_usuario_END FOREIGN KEY (id_info_usuario) REFERENCES info_usuario(id_info_usuario),
-    CONSTRAINT FK_usuario_domicilio_id_domicilio_END FOREIGN KEY (id_domicilio) REFERENCES domicilio(id_domicilio)
+    CONSTRAINT FK_usuario_domicilio_id_info_usuario_END FOREIGN KEY (id_info_usuario) REFERENCES info_usuarios(id_info_usuario),
+    CONSTRAINT FK_usuario_domicilio_id_domicilio_END FOREIGN KEY (id_domicilio) REFERENCES domicilios(id_domicilio)
 );
 
 -- Crear tabla tipo_precio
-CREATE TABLE tipo_precios (
+CREATE TABLE tipos_precios (
     id_tipo_precio INT PRIMARY KEY,
     nombre VARCHAR(100),
     descripcion TEXT
@@ -189,8 +189,8 @@ CREATE TABLE variantes_tipo_precio (
     precio DECIMAL(10, 2),
     cantidad_minima INT,
     PRIMARY KEY (id_tipo_precio, id_producto),
-    CONSTRAINT FK_variante_tipo_precio_id_tipo_precio    FOREIGN KEY (id_tipo_precio)    REFERENCES tipo_precio(id_tipo_precio),
-    CONSTRAINT FK_variante_tipo_precio_sku               FOREIGN KEY (id_producto)       REFERENCES productos(id_producto),
+    CONSTRAINT FK_variante_tipo_precio_id_tipo_precio    FOREIGN KEY (id_tipo_precio)    REFERENCES tipos_precios(id_tipo_precio),
+    CONSTRAINT FK_variante_tipo_precio_sku               FOREIGN KEY (id_producto)       REFERENCES productos(id_producto)
 
 );
 
@@ -203,7 +203,7 @@ INSERT INTO permisos (id_permiso, nombre, descripcion) VALUES
 (2, 'User', 'Permisos de usuario regular');
 
 -- Insertar datos en estado_usuario
-INSERT INTO estados_usuario (id_estado_usuario, nombre, descripcion) VALUES 
+INSERT INTO estados_usuarios (id_estado_usuario, nombre, descripcion) VALUES 
 (1, 'Activo', 'Usuario activo'),
 (2, 'Inactivo', 'Usuario inactivo');
 
@@ -213,11 +213,11 @@ INSERT INTO sexos (id_sexo, nombre, descripcion) VALUES
 (2, 'Femenino', 'Mujer');
 
 -- Insertar datos en usuarios (pocos registros)
-INSERT INTO usuarios (id_usuario, id_permiso, id_estado_usuario, email, contraseña) VALUES 
+INSERT INTO usuarios (id_usuario, id_permiso, id_estado_usuario, email, clave) VALUES 
 (1, 1, 1, 'admin@empresa.com', 'admin123'),
 (2, 2, 1, 'usuario1@empresa.com', 'user123'),
-(3, 2, 1, 'usuario2@empresa.com', 'user456'),
-(4, 1, 1, 'juanimelillo@gmail.com', '1234');
+(3, 2, 1, 'usuario2@empresa.com', 'user456');
+
 
 
 -- Insertar datos en info_usuario
@@ -242,7 +242,7 @@ INSERT INTO categorias (id_categoria, nombre, descripcion) VALUES
 (2, 'Aromas para el hogar', 'Difusores y velas aromáticas');
 
 -- Insertar datos en estado_producto
-INSERT INTO estados_producto (id_estado_producto, nombre, descripcion) VALUES 
+INSERT INTO estados_productos (id_estado_producto, nombre, descripcion) VALUES 
 (1, 'Disponible', 'Producto en stock'),
 (2, 'Agotado', 'Producto fuera de stock');
 
@@ -339,38 +339,38 @@ INSERT INTO variantes (sku, id_producto, id_estado_producto, id_aroma, id_color,
 
 -- Insertar datos en imágenes (1 imagen por producto)
 INSERT INTO imagenes (id_imagen, id_producto, ruta, principal) VALUES 
-(1, 1, '/imagenes/perfume_floral.jpg', 1),
-(2, 2, '/imagenes/perfume_amaderado.jpg', 1),
-(3, 3, '/imagenes/difusor_vainilla.jpg', 1),
-(4, 4, '/imagenes/vela_aromatica.jpg', 1),
-(5, 5, '/imagenes/perfume_citrico.jpg', 1),
-(6, 6, '/imagenes/perfume_dulce.jpg', 1),
-(7, 7, '/imagenes/difusor_eucalipto.jpg', 1),
-(8, 8, '/imagenes/vela_aromatica_coco.jpg', 1),
-(9, 9, '/imagenes/perfume_deportivo.jpg', 1),
-(10, 10, '/imagenes/perfume_de_noche.jpg', 1),
-(11, 11, '/imagenes/difusor_frutos_rojos.jpg', 1),
-(12, 12, '/imagenes/vela_aromatica_canela.jpg', 1),
-(13, 13, '/imagenes/perfume_de_viaje.jpg', 1),
-(14, 14, '/imagenes/perfume_de_verano.jpg', 1),
-(15, 15, '/imagenes/difusor_lavanda.jpg', 1),
-(16, 16, '/imagenes/vela_aromatica_limon.jpg', 1),
-(17, 17, '/imagenes/perfume_de_otoño.jpg', 1),
-(18, 18, '/imagenes/perfume_de_invierno.jpg', 1),
-(19, 19, '/imagenes/difusor_te_verde.jpg', 1),
-(20, 20, '/imagenes/vela_aromatica_jazmin.jpg', 1),
-(21, 21, '/imagenes/perfume_exotico.jpg', 1),
-(22, 22, '/imagenes/perfume_clasico.jpg', 1),
-(23, 23, '/imagenes/difusor_menta.jpg', 1),
-(24, 24, '/imagenes/vela_aromatica_naranja.jpg', 1),
-(25, 1, '/imagenes/perfume_floral_2.jpg', 0),
-(26, 1, '/imagenes/perfume_floral_3.jpg', 0),
-(27, 2, '/imagenes/perfume_amaderado_2.jpg', 0),
-(28, 2, '/imagenes/perfume_amaderado_3.jpg', 0),
-(29, 3, '/imagenes/difusor_vainilla_2.jpg', 0),
-(30, 3, '/imagenes/difusor_vainilla_3.jpg', 0),
-(31, 4, '/imagenes/vela_aromatica_2.jpg', 0),
-(32, 4, '/imagenes/vela_aromatica_3.jpg', 0);
+(1, 1, '/imagen/1.webp', 1),
+(2, 2, '/imagen/2.webp', 1),
+(3, 3, '/imagen/3.webp', 1),
+(4, 4, '/imagen/4.webp', 1),
+(5, 5, '/imagen/5.webp', 1),
+(6, 6, '/imagen/6.webp', 1),
+(7, 7, '/imagen/7.webp', 1),
+(8, 8, '/imagen/8.webp', 1),
+(9, 9, '/imagen/9.webp', 1),
+(10, 10, '/imagen/10.webp', 1),
+(11, 11, '/imagen/11.webp', 1),
+(12, 12, '/imagen/12.webp', 1),
+(13, 13, '/imagen/13.webp', 1),
+(14, 14, '/imagen/14.webp', 1),
+(15, 15, '/imagen/15.webp', 1),
+(16, 16, '/imagen/16.webp', 1),
+(17, 17, '/imagen/17.webp', 1),
+(18, 18, '/imagen/18.webp', 1),
+(19, 19, '/imagen/19.jpg', 1),
+(20, 20, '/imagen/20.jpg', 1),
+(21, 21, '/imagen/21.jpg', 1),
+(22, 22, '/imagen/22.jpg', 1),
+(23, 23, '/imagen/23.jpg', 1),
+(24, 24, '/imagen/24.jpg', 1),
+(25, 1, '/imagen/25.jpg', 0),
+(26, 1, '/imagen/26.jpg', 0),
+(27, 2, '/imagen/27.jpg', 0),
+(28, 2, '/imagen/28.jpg', 0),
+(29, 3, '/imagen/29.jpg', 0),
+(30, 3, '/imagen/30.jpg', 0),
+(31, 4, '/imagen/31.jpg', 0),
+(32, 4, '/imagen/32.jpg', 0);
 
 -- Insertar datos en pedidos (muchos pedidos)
 INSERT INTO pedidos (id_pedido, id_usuario, total, fecha) VALUES 
@@ -446,7 +446,7 @@ INSERT INTO productos_pedido (id_compra, id_pedido, id_producto, sku, cantidad, 
 (42, 20, 11, 'SKU011', 1, 1900.00);
 
 
-INSERT INTO tipos_precio (id_tipo_precio, nombre, descripcion) VALUES 
+INSERT INTO tipos_precios (id_tipo_precio, nombre, descripcion) VALUES 
 (1, 'Precio Minorista', 'Precio para ventas al por menor'),
 (2, 'Precio Mayorista', 'Precio para ventas al por mayor');
 
@@ -489,7 +489,7 @@ INSERT INTO variantes_tipo_precio (id_producto, id_tipo_precio, precio, cantidad
 --todos los productos con su precio minorista
 SELECT p.id_producto, p.nombre, p.descripcion, c.nombre AS categoria, vtp.precio AS precio_minorista, i.ruta AS imagen_principal
 FROM productos p
-JOIN variante_tipo_precio vtp ON p.id_producto = vtp.id_producto
+JOIN variantes_tipo_precio vtp ON p.id_producto = vtp.id_producto
 JOIN categorias c ON p.id_categoria = c.id_categoria
 LEFT JOIN imagenes i ON p.id_producto = i.id_producto AND i.principal = 1
 WHERE vtp.id_tipo_precio = 1;
@@ -497,21 +497,39 @@ WHERE vtp.id_tipo_precio = 1;
 -- todos los productos con su precio mayorista
 SELECT p.id_producto, p.nombre, p.descripcion, c.nombre AS categoria, vtp.precio AS precio_minorista, i.ruta AS imagen_principal
 FROM productos p
-JOIN variante_tipo_precio vtp ON p.id_producto = vtp.id_producto
+JOIN variantes_tipo_precio vtp ON p.id_producto = vtp.id_producto
 JOIN categorias c ON p.id_categoria = c.id_categoria
 LEFT JOIN imagenes i ON p.id_producto = i.id_producto AND i.principal = 1
 WHERE vtp.id_tipo_precio = 2;
 
 
 
--- todas las variantes de un producto
+-- todas las variantes de un producto con toda la informacio
 SELECT v.sku, v.stock, p.nombre AS producto_nombre, ep.nombre AS estado_producto_nombre, a.nombre AS aroma_nombre, c.nombre AS color_nombre
 FROM variantes v
 JOIN productos p ON v.id_producto = p.id_producto
-JOIN estado_producto ep ON v.id_estado_producto = ep.id_estado_producto
+JOIN estados_productos ep ON v.id_estado_producto = ep.id_estado_producto
 JOIN aromas a ON v.id_aroma = a.id_aroma
-JOIN color c ON v.id_color = c.id_color
+JOIN colores c ON v.id_color = c.id_color
 WHERE v.id_producto = 1;
+
+
+-- Aromas de productos de la categoría "Sahumerio" 
+SELECT DISTINCT a.nombre AS aroma_nombre
+FROM productos p
+JOIN categorias c ON p.id_categoria = c.id_categoria
+JOIN variantes v ON p.id_producto = v.id_producto
+JOIN aromas a ON v.id_aroma = a.id_aroma
+WHERE c.nombre = 'Perfumes' AND p.id_producto = 1;
+
+-- Colores de productos de la categoría "Velas"
+SELECT DISTINCT co.nombre AS color_nombre
+FROM productos p
+JOIN categorias c ON p.id_categoria = c.id_categoria
+JOIN variantes v ON p.id_producto = v.id_producto
+JOIN colores co ON v.id_color = co.id_color
+WHERE c.nombre = 'Aromas para el hogar' AND p.id_producto = 3;
+
 
 -- todas las images de un producto 
 SELECT i.*
@@ -528,7 +546,7 @@ SELECT * FROM aromas;
 GO
 
 -- Select all data from color
-SELECT * FROM color;
+SELECT * FROM colores;
 GO
 
 
@@ -541,7 +559,7 @@ SELECT * FROM imagenes;
 GO
 
 -- Select all data from estado_producto
-SELECT * FROM estado_producto;
+SELECT * FROM estados_productos;
 GO
 
 -- Select all data from variantes
@@ -561,33 +579,33 @@ SELECT * FROM permisos;
 GO
 
 -- Select all data from estado_usuario
-SELECT * FROM estado_usuario;
+SELECT * FROM estados_usuarios;
 GO
 
 -- Select all data from usuario
-SELECT * FROM usuario;
+SELECT * FROM usuarios;
 GO
 
 -- Select all data from sexo
-SELECT * FROM sexo;
+SELECT * FROM sexos;
 GO
 
 -- Select all data from info_usuario
-SELECT * FROM info_usuario;
+SELECT * FROM info_usuarios;
 GO
 
 -- Select all data from domicilio
-SELECT * FROM domicilio;
+SELECT * FROM domicilios;
 GO
 
 -- Select all data from usuario_domicilio
-SELECT * FROM usuario_domicilio;
+SELECT * FROM usuario_domicilios;
 GO
 
 -- Select all data from tipo_precio
-SELECT * FROM tipo_precio;
+SELECT * FROM tipos_precios;
 GO
 
 -- Select all data from variante_tipo_precio
-SELECT * FROM variante_tipo_precio;
+SELECT * FROM variantes_tipo_precio;
 GO
