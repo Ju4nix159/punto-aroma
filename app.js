@@ -3,14 +3,15 @@ function updateQuickViewModal(button) {
   const productName = button.getAttribute("data-product-name");
   const productDescription = button.getAttribute("data-product-description");
   const productPrice = button.getAttribute("data-product-price");
+  const productImagen = button.getAttribute("data-product-imagen");
 
   // Actualizar el contenido del modal
   document.getElementById("quickViewTitle").textContent = productName;
   document.getElementById("quickViewDescription").textContent =
     productDescription;
   document.getElementById("quickViewPrice").textContent = productPrice;
-
-  /* document.getElementById("quickViewImage").src = productImage; */
+  console.log("..pa/assets/productos" + productImagen);
+  document.getElementById("quickViewImage").src = "../pa/assets/productos" + productImagen;
 
   /* const fragrancesList = document.getElementById("quickViewFragrances");
   fragrancesList.innerHTML = ""; // Limpiar la lista anterior
@@ -64,28 +65,4 @@ document.getElementById("cart").addEventListener("click", function (event) {
   event.stopPropagation();
 });
 
-function updateCart() {
-    const cartContent = document.getElementById("cart-content");
-
-    if (cartItems.length === 0) {
-        cartContent.innerHTML = `
-            <div class="empty-cart">
-                <p>Tu carrito está vacío.</p>
-            </div>`;
-    }
-}
-
-function añadirCarrito(producto, nombre, precio) {
-    let cartItems = JSON.parse(sessionStorage.getItem('cartItems')) || [];
-    let itemIndex = cartItems.findIndex(item => item.producto === producto);
-
-    if (itemIndex !== -1) {
-        cartItems[itemIndex].cantidad += 1;
-    } else {
-        cartItems.push({ producto, nombre, precio, cantidad: 1 });
-    }
-
-    sessionStorage.setItem('cartItems', JSON.stringify(cartItems));
-    updateCart();
-}
 
