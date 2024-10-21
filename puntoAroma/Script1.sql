@@ -51,6 +51,7 @@ CREATE TABLE productos (
     nombre VARCHAR(100),
     descripcion TEXT,
     id_categoria INT,
+    destacado TINYINT DEFAULT 0,
     CONSTRAINT FK_productos_id_categoria_END FOREIGN KEY (id_categoria) REFERENCES categorias(id_categoria)
 );
 
@@ -59,7 +60,9 @@ CREATE TABLE imagenes (
     id_imagen INT PRIMARY KEY,
     id_producto INT,
     ruta TEXT,
+    principal TINYINT DEFAULT 0,
     CONSTRAINT FK_imagenes_id_producto_END FOREIGN KEY (id_producto) REFERENCES productos(id_producto)
+
 );
 
 -- Tabla de estado de productos
@@ -246,31 +249,31 @@ INSERT INTO estado_producto (id_estado_producto, nombre, descripcion) VALUES
 
 
 -- Insertar datos en productos (muchos productos)
-INSERT INTO productos (id_producto, nombre, descripcion, id_categoria) VALUES 
-(1, 'Perfume Floral', 'Un perfume con fragancias florales', 1),
-(2, 'Perfume Amaderado', 'Un perfume con fragancia amaderada', 1),
-(3, 'Difusor de Vainilla', 'Un difusor con aroma a vainilla', 2),
-(4, 'Vela Aromática', 'Una vela con aroma a lavanda', 2),
-(5, 'Perfume Cítrico', 'Un perfume con fragancias cítricas', 1),
-(6, 'Perfume Dulce', 'Un perfume con un toque dulce', 1),
-(7, 'Difusor de Eucalipto', 'Un difusor con aroma a eucalipto', 2),
-(8, 'Vela Aromática Coco', 'Una vela con aroma a coco', 2),
-(9, 'Perfume Deportivo', 'Un perfume ideal para actividades deportivas', 1),
-(10, 'Perfume de Noche', 'Un perfume ideal para la noche', 1),
-(11, 'Difusor de Frutos Rojos', 'Un difusor con aroma a frutos rojos', 2),
-(12, 'Vela Aromática Canela', 'Una vela con aroma a canela', 2),
-(13, 'Perfume de Viaje', 'Un perfume ideal para llevar en viajes', 1),
-(14, 'Perfume de Verano', 'Un perfume fresco para el verano', 1),
-(15, 'Difusor de Lavanda', 'Un difusor con aroma a lavanda', 2),
-(16, 'Vela Aromática Limón', 'Una vela con aroma a limón', 2),
-(17, 'Perfume de Otoño', 'Un perfume cálido para el otoño', 1),
-(18, 'Perfume de Invierno', 'Un perfume suave para el invierno', 1),
-(19, 'Difusor de Té Verde', 'Un difusor con aroma a té verde', 2),
-(20, 'Vela Aromática Jazmín', 'Una vela con aroma a jazmín', 2),
-(21, 'Perfume Exótico', 'Un perfume con fragancias exóticas', 1),
-(22, 'Perfume Clásico', 'Un perfume con un toque clásico', 1),
-(23, 'Difusor de Menta', 'Un difusor con aroma a menta', 2),
-(24, 'Vela Aromática Naranja', 'Una vela con aroma a naranja', 2);
+INSERT INTO productos (id_producto, nombre, descripcion, id_categoria, destacado) VALUES 
+(1, 'Perfume Floral', 'Un perfume con fragancias florales', 1, 1),
+(2, 'Perfume Amaderado', 'Un perfume con fragancia amaderada', 1, 0),
+(3, 'Difusor de Vainilla', 'Un difusor con aroma a vainilla', 2, 1),
+(4, 'Vela Aromática', 'Una vela con aroma a lavanda', 2, 0),
+(5, 'Perfume Cítrico', 'Un perfume con fragancias cítricas', 1, 1),
+(6, 'Perfume Dulce', 'Un perfume con un toque dulce', 1, 0),
+(7, 'Difusor de Eucalipto', 'Un difusor con aroma a eucalipto', 2, 1),
+(8, 'Vela Aromática Coco', 'Una vela con aroma a coco', 2, 0),
+(9, 'Perfume Deportivo', 'Un perfume ideal para actividades deportivas', 1, 1),
+(10, 'Perfume de Noche', 'Un perfume ideal para la noche', 1, 0),
+(11, 'Difusor de Frutos Rojos', 'Un difusor con aroma a frutos rojos', 2, 1),
+(12, 'Vela Aromática Canela', 'Una vela con aroma a canela', 2, 0),
+(13, 'Perfume de Viaje', 'Un perfume ideal para llevar en viajes', 1, 0),
+(14, 'Perfume de Verano', 'Un perfume fresco para el verano', 1, 0),
+(15, 'Difusor de Lavanda', 'Un difusor con aroma a lavanda', 2, 0),
+(16, 'Vela Aromática Limón', 'Una vela con aroma a limón', 2, 0),
+(17, 'Perfume de Otoño', 'Un perfume cálido para el otoño', 1, 0),
+(18, 'Perfume de Invierno', 'Un perfume suave para el invierno', 1, 0),
+(19, 'Difusor de Té Verde', 'Un difusor con aroma a té verde', 2, 0),
+(20, 'Vela Aromática Jazmín', 'Una vela con aroma a jazmín', 2, 0),
+(21, 'Perfume Exótico', 'Un perfume con fragancias exóticas', 1, 0),
+(22, 'Perfume Clásico', 'Un perfume con un toque clásico', 1, 0),
+(23, 'Difusor de Menta', 'Un difusor con aroma a menta', 2, 0),
+(24, 'Vela Aromática Naranja', 'Una vela con aroma a naranja', 2, 0);
 
 -- Insertar datos en aromas
 INSERT INTO aromas (id_aroma, nombre) VALUES 
@@ -335,11 +338,39 @@ INSERT INTO variantes (sku, id_producto, id_estado_producto, id_aroma, id_color,
 
 
 -- Insertar datos en imágenes (1 imagen por producto)
-INSERT INTO imagenes (id_imagen, id_producto, ruta) VALUES 
-(1, 1, '/imagenes/perfume_floral.jpg'),
-(2, 2, '/imagenes/perfume_amaderado.jpg'),
-(3, 3, '/imagenes/difusor_vainilla.jpg'),
-(4, 4, '/imagenes/vela_aromatica.jpg');
+INSERT INTO imagenes (id_imagen, id_producto, ruta, principal) VALUES 
+(1, 1, '/imagenes/perfume_floral.jpg', 1),
+(2, 2, '/imagenes/perfume_amaderado.jpg', 1),
+(3, 3, '/imagenes/difusor_vainilla.jpg', 1),
+(4, 4, '/imagenes/vela_aromatica.jpg', 1),
+(5, 5, '/imagenes/perfume_citrico.jpg', 1),
+(6, 6, '/imagenes/perfume_dulce.jpg', 1),
+(7, 7, '/imagenes/difusor_eucalipto.jpg', 1),
+(8, 8, '/imagenes/vela_aromatica_coco.jpg', 1),
+(9, 9, '/imagenes/perfume_deportivo.jpg', 1),
+(10, 10, '/imagenes/perfume_de_noche.jpg', 1),
+(11, 11, '/imagenes/difusor_frutos_rojos.jpg', 1),
+(12, 12, '/imagenes/vela_aromatica_canela.jpg', 1),
+(13, 13, '/imagenes/perfume_de_viaje.jpg', 1),
+(14, 14, '/imagenes/perfume_de_verano.jpg', 1),
+(15, 15, '/imagenes/difusor_lavanda.jpg', 1),
+(16, 16, '/imagenes/vela_aromatica_limon.jpg', 1),
+(17, 17, '/imagenes/perfume_de_otoño.jpg', 1),
+(18, 18, '/imagenes/perfume_de_invierno.jpg', 1),
+(19, 19, '/imagenes/difusor_te_verde.jpg', 1),
+(20, 20, '/imagenes/vela_aromatica_jazmin.jpg', 1),
+(21, 21, '/imagenes/perfume_exotico.jpg', 1),
+(22, 22, '/imagenes/perfume_clasico.jpg', 1),
+(23, 23, '/imagenes/difusor_menta.jpg', 1),
+(24, 24, '/imagenes/vela_aromatica_naranja.jpg', 1),
+(25, 1, '/imagenes/perfume_floral_2.jpg', 0),
+(26, 1, '/imagenes/perfume_floral_3.jpg', 0),
+(27, 2, '/imagenes/perfume_amaderado_2.jpg', 0),
+(28, 2, '/imagenes/perfume_amaderado_3.jpg', 0),
+(29, 3, '/imagenes/difusor_vainilla_2.jpg', 0),
+(30, 3, '/imagenes/difusor_vainilla_3.jpg', 0),
+(31, 4, '/imagenes/vela_aromatica_2.jpg', 0),
+(32, 4, '/imagenes/vela_aromatica_3.jpg', 0);
 
 -- Insertar datos en pedidos (muchos pedidos)
 INSERT INTO pedidos (id_pedido, id_usuario, total, fecha) VALUES 
@@ -455,21 +486,38 @@ INSERT INTO variante_tipo_precio (id_producto, id_tipo_precio, precio, cantidad_
 
 
 
--- Select all products with their retail prices (Precio Minorista)
-SELECT p.id_producto, p.nombre, p.descripcion, c.nombre AS categoria, vtp.precio AS precio_minorista
+--todos los productos con su precio minorista
+SELECT p.id_producto, p.nombre, p.descripcion, c.nombre AS categoria, vtp.precio AS precio_minorista, i.ruta AS imagen_principal
 FROM productos p
 JOIN variante_tipo_precio vtp ON p.id_producto = vtp.id_producto
 JOIN categorias c ON p.id_categoria = c.id_categoria
+LEFT JOIN imagenes i ON p.id_producto = i.id_producto AND i.principal = 1
 WHERE vtp.id_tipo_precio = 1;
 
--- Select all variants of a product
-SELECT v.*, p.nombre AS producto_nombre, ep.nombre AS estado_producto_nombre, a.nombre AS aroma_nombre, c.nombre AS color_nombre
+-- todos los productos con su precio mayorista
+SELECT p.id_producto, p.nombre, p.descripcion, c.nombre AS categoria, vtp.precio AS precio_minorista, i.ruta AS imagen_principal
+FROM productos p
+JOIN variante_tipo_precio vtp ON p.id_producto = vtp.id_producto
+JOIN categorias c ON p.id_categoria = c.id_categoria
+LEFT JOIN imagenes i ON p.id_producto = i.id_producto AND i.principal = 1
+WHERE vtp.id_tipo_precio = 2;
+
+
+
+-- todas las variantes de un producto
+SELECT v.sku, v.stock, p.nombre AS producto_nombre, ep.nombre AS estado_producto_nombre, a.nombre AS aroma_nombre, c.nombre AS color_nombre
 FROM variantes v
 JOIN productos p ON v.id_producto = p.id_producto
 JOIN estado_producto ep ON v.id_estado_producto = ep.id_estado_producto
 JOIN aromas a ON v.id_aroma = a.id_aroma
 JOIN color c ON v.id_color = c.id_color
 WHERE v.id_producto = 1;
+
+-- todas las images de un producto 
+SELECT i.*
+FROM imagenes i
+JOIN productos p ON i.id_producto = p.id_producto
+WHERE p.id_producto = 1;
 
 -- Select all data from categorias
 SELECT * FROM categorias;

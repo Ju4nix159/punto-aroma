@@ -1,206 +1,101 @@
-<?php 
-    session_start();
-?>
-
-
-
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Punto Aroma - Productos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    
+    <style>
+        :root {
+            --primary-color: #83AF37;
+            --secondary-color: #6B2D5C;
+        }
+        .card {
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card-img-overlay {
+            background-color: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .card:hover .card-img-overlay {
+            opacity: 1;
+        }
+        .card-title, .card-text, .btn-primary-custom {
+            transform: translateY(20px);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+        .card:hover .card-title,
+        .card:hover .card-text,
+        .card:hover .btn-primary-custom {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .btn-primary-custom {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+            color: white;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        .btn-primary-custom:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+            color: white;
+            transform: scale(1.05);
+        }
+    </style>
 </head>
-
 <body>
-    <header class="py-3 bg-white border-bottom sticky-top">
-        <div class="container d-flex flex-wrap justify-content-center">
-            <a href="index.php#hero" class="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto text-dark text-decoration-none">
-                <span class="fs-4 fw-bold text-primary-custom">Punto Aroma</span>
-            </a>
-
-            <nav class="navbar navbar-expand-lg navbar-light ">
-                <form class="d-flex mx-auto">
-                    <input class="form-control me-2" type="search" placeholder="Buscar productos..." aria-label="Search">
-                </form>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link text-primary-custom" href="catalogo.php">Catalogo</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-primary-custom" href="index.php#ofertas">Ofertas</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-primary-custom" href="index.php#testimonios">Testimonios</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-primary-custom" href="index.php#contacto">Contacto</a>
-                        </li>
-                        <li id="miCuenta" class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-user nav-icon"></i> Mi cuenta
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="iniciarSesion.php"><i class="fas fa-sign-in-alt nav-icon"></i> Iniciar sesión</a></li>
-                                <li><a class="dropdown-item" href="registro.php"><i class="fas fa-user-plus nav-icon"></i> Registrarse</a></li>
-                            </ul>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="#" id="cart-icon" onclick="toggleCart(event)">
-                                <i class="fas fa-shopping-cart"></i>
-                            </a>
-                        </li>
-                    </ul>
+    <div class="container py-5">
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            <div class="col">
+                <div class="card text-white">
+                    <img src="/placeholder.svg?height=400&width=600" class="card-img" alt="Sahumerios Vishnu Masala">
+                    <div class="card-img-overlay d-flex flex-column justify-content-end">
+                        <h5 class="card-title">Sahumerios Vishnu Masala</h5>
+                        <p class="card-text">Perfumes, flores y fibras vegetales de alta calidad. Aromas: Antiestrés, Energía, Relajación, Sensual, Meditación, Frescura El aroma perdura por más tiempo en el ambiente.</p>
+                        <a href="#" class="btn btn-primary-custom">CONOCELOS</a>
+                    </div>
                 </div>
-            </nav>
+            </div>
+            <div class="col">
+                <div class="card text-white">
+                    <img src="/placeholder.svg?height=400&width=600" class="card-img" alt="Sahumerios Holi India">
+                    <div class="card-img-overlay d-flex flex-column justify-content-end">
+                        <h5 class="card-title">Sahumerios Holi India</h5>
+                        <p class="card-text">Renovamos la línea de sahumerios Holi India Pack con más color y los excelentes aromas premium de siempre. Presentación aromas surtido x 100 unidades.</p>
+                        <a href="#" class="btn btn-primary-custom">CONOCELOS</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card text-white">
+                    <img src="/placeholder.svg?height=400&width=600" class="card-img" alt="Aromatizantes textiles">
+                    <div class="card-img-overlay d-flex flex-column justify-content-end">
+                        <h5 class="card-title">Aromatizantes textiles</h5>
+                        <p class="card-text">Perfume para aromatizar ropa y ambientes. Sentirás bien fresco un aroma especial.</p>
+                        <a href="#" class="btn btn-primary-custom">CONOCELOS</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card text-white">
+                    <img src="/placeholder.svg?height=400&width=600" class="card-img" alt="Aceites para hornito">
+                    <div class="card-img-overlay d-flex flex-column justify-content-end">
+                        <h5 class="card-title">Aceites para hornito</h5>
+                        <p class="card-text">Nuevos aromas y nueva presentación x 5 unidades. Más variedad por el mismo precio.</p>
+                        <a href="#" class="btn btn-primary-custom">CONOCELOS</a>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div id="cart" class="hidden">
-            <h2 class="cart-title">Tu Carrito</h2>
-            <div id="cart-content"></div>
-        </div>
-    </header>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-    <script>
-        let cartItems = [
-            {
-                id: 1,
-                name: "Vela Aromática de Lavanda",
-                price: 14.99,
-                quantity: 2
-            },
-            {
-                id: 2,
-                name: "Sahumerio de Sándalo",
-                price: 9.99,
-                quantity: 1
-            }
-        ];
-
-        function toggleCart(event) {
-            event.stopPropagation(); // Prevenir que el clic en el icono cierre el carrito
-            const cart = document.getElementById('cart');
-            const dropdownMenu = document.querySelector('.dropdown-menu.show'); // Selecciona el dropdown que está visible
-
-            // Cierra el dropdown si está abierto
-            if (dropdownMenu) {
-                dropdownMenu.classList.remove('show'); // Esto cerrará el dropdown de "Mi cuenta"
-                const dropdownToggle = document.querySelector('.dropdown-toggle');
-                dropdownToggle.setAttribute('aria-expanded', 'false'); // Cambia el atributo aria
-            }
-
-            cart.classList.toggle('hidden'); // Alterna la clase 'hidden' para mostrar/ocultar el carrito
-            updateCart(); // Actualiza el contenido del carrito
-        }
-
-        // Cierra el carrito si se hace clic fuera de él
-        document.addEventListener('click', function(event) {
-            const cart = document.getElementById('cart');
-            const cartIcon = document.getElementById('cart-icon');
-
-            if (!cart.contains(event.target) && !cartIcon.contains(event.target)) {
-                cart.classList.add('hidden'); // Cierra el carrito si se hace clic fuera
-            }
-        });
-
-        // Añadir un evento click al carrito para evitar que se cierre al hacer clic dentro
-        document.getElementById('cart').addEventListener('click', function(event) {
-            event.stopPropagation(); // Evita que el clic dentro del carrito cierre el carrito
-        });
-
-        function updateCart() {
-            const cartContent = document.getElementById('cart-content');
-            if (cartItems.length === 0) {
-                cartContent.innerHTML = `
-                    <div class="empty-cart">
-                        <p>Tu carrito está vacío</p>
-                        <a href="catalogo.php"><button class="btn btn-primary-custom">Catalogo</button></a>
-                        <p>Para agregar productos al carrito, debes iniciar sesión.</p>
-                        <a href="iniciarSesion.php"><button class="btn btn-primary-custom">Iniciar Sesión</button></a>
-                    </div>
-                `;
-            } else {
-                let content = `
-                    <table>
-                        <tr>
-                            <th>Producto</th>
-                            <th>Cantidad</th>
-                            <th>Total</th>
-                        </tr>
-                `;
-                let total = 0;
-                cartItems.forEach(item => {
-                    const itemTotal = item.price * item.quantity;
-                    total += itemTotal;
-                    content += `
-                        <tr>
-                            <td>
-                                <div class="product-info">
-                                    <span class="product-name">${item.name}</span>
-                                    <button class="remove-btn" onclick="removeItem(${item.id})">Eliminar</button>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="quantity-control">
-                                    <div class="quantity-buttons">
-                                        <button class="quantity-btn" onclick="changeQuantity(${item.id}, -1)">-</button>
-                                        <input type="number" class="quantity-input" value="${item.quantity}" onchange="updateQuantity(${item.id}, this.value)">
-                                        <button class="quantity-btn" onclick="changeQuantity(${item.id}, 1)">+</button>
-                                    </div>
-                                    <span class="product-price">$${item.price.toFixed(2)} c/u</span>
-                                </div>
-                            </td>
-                            <td>$${itemTotal.toFixed(2)}</td>
-                        </tr>
-                    `;
-                });
-                content += `
-                    </table>
-                    <div class="cart-footer">
-                        <div class="total">Total a Pagar: $${total.toFixed(2)}</div>
-                        <button class="btn btn-primary-custom">Terminar Compra</button>
-                    </div>
-                `;
-                cartContent.innerHTML = content;
-            }
-        }
-
-        function changeQuantity(id, change) {
-            const item = cartItems.find(item => item.id === id);
-            if (item) {
-                item.quantity = Math.max(1, item.quantity + change);
-                updateCart();
-            }
-        }
-
-        function updateQuantity(id, newQuantity) {
-            const item = cartItems.find(item => item.id === id);
-            if (item) {
-                item.quantity = Math.max(1, parseInt(newQuantity) || 1);
-                updateCart();
-            }
-        }
-
-        function removeItem(id) {
-            cartItems = cartItems.filter(item => item.id !== id);
-            updateCart();
-        }
-
-        // Initialize the cart
-        updateCart();
-    </script>
 </body>
-
 </html>
