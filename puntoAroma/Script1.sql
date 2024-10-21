@@ -514,6 +514,8 @@ JOIN colores c ON v.id_color = c.id_color
 WHERE v.id_producto = 1;
 
 
+
+
 -- Aromas de productos de la categoría "Sahumerio" 
 SELECT DISTINCT a.nombre AS aroma_nombre
 FROM productos p
@@ -530,12 +532,20 @@ JOIN variantes v ON p.id_producto = v.id_producto
 JOIN colores co ON v.id_color = co.id_color
 WHERE c.nombre = 'Aromas para el hogar' AND p.id_producto = 3;
 
+-- Información completa de un producto por id
+SELECT p.id_producto, p.nombre, p.descripcion, vtp.precio AS precio
+FROM productos p
+JOIN variantes_tipo_precio vtp ON p.id_producto = vtp.id_producto
+WHERE p.id_producto = 1 AND vtp.id_tipo_precio = 1;
+
 
 -- todas las images de un producto 
 SELECT i.*
 FROM imagenes i
 JOIN productos p ON i.id_producto = p.id_producto
 WHERE p.id_producto = 1;
+
+
 
 -- Select all data from categorias
 SELECT * FROM categorias;
