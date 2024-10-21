@@ -2,10 +2,11 @@
 include 'header.php';
 include 'admin/config/sbd.php';
 
-$sql_catalogo = $con->prepare("SELECT p.id_producto, p.nombre, p.descripcion, c.nombre AS categoria, vtp.precio AS precio_minorista
+$sql_catalogo = $con->prepare("SELECT p.id_producto, p.nombre, p.descripcion, c.nombre AS categoria, vtp.precio AS precio_minorista, i.ruta AS imagen_principal
 FROM productos p
-JOIN variante_tipo_precio vtp ON p.id_producto = vtp.id_producto
+JOIN variantes_tipo_precio vtp ON p.id_producto = vtp.id_producto
 JOIN categorias c ON p.id_categoria = c.id_categoria
+LEFT JOIN imagenes i ON p.id_producto = i.id_producto AND i.principal = 1
 WHERE vtp.id_tipo_precio = 1;");
 $sql_catalogo->execute();
 $productos = $sql_catalogo->fetchAll(PDO::FETCH_ASSOC);
@@ -123,7 +124,7 @@ $productos = $sql_catalogo->fetchAll(PDO::FETCH_ASSOC);
                             <div class="col">
                                 <div class="card h-100 product-card">
                                     <a href="producto.php?id_producto=<?php echo $producto["id_producto"] ?>" class="text-decoration-none text-dark">
-                                        <img src="/placeholder.svg?height=200&width=300" class="card-img-top" alt="<?php echo $producto["id_producto"] ?>">
+                                        <img src="1.webp" class="card-img-top" alt="<?php echo $producto["id_producto"] ?>">
                                         <div class="card-body">
                                             <h5 class="card-title"><?php echo $producto["nombre"] ?></h5>
                                             <p class="card-text"><small class="text-muted">Categoría: <?php echo $producto["categoria"] ?></small></p>
@@ -181,7 +182,7 @@ $productos = $sql_catalogo->fetchAll(PDO::FETCH_ASSOC);
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <img src="/placeholder.svg?height=300&width=300" class="img-fluid" alt="Producto" id="quickViewImage">
+                            <img src="1.webp" class="img-fluid" alt="Producto" id="quickViewImage">
                         </div>
                         <div class="col-md-6">
                             <h2 id="quickViewTitle"></h2>
