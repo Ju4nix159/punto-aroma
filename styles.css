@@ -497,3 +497,30 @@ td {
 }
 
 
+
+.card {
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+.card:hover {
+    transform: translateY(-5px);
+}
+.card-img-overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.card:hover .card-img-overlay {
+    opacity: 1;
+}
+.card-index-title, .card-index-text {
+    transform: translateY(20px);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+}
+.card:hover .card-index-title,
+.card:hover .card-index-text,
+.card:hover {
+    transform: translateY(0);
+    opacity: 1;
+}
