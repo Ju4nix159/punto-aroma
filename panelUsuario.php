@@ -180,10 +180,8 @@ include 'header.php';
         </div>
     </div>
 
-    <footer class="py-3 bg-primary-light mt-5">
-        <div class="container">
-            <p class="text-center text-muted mb-0">&copy; 2024 Punto Aroma. Todos los derechos reservados.</p>
-        </div>
+    <footer class="">
+        <?php include 'footer.php'; ?>
     </footer>
 
 </body>

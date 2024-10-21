@@ -104,7 +104,9 @@
         <!-- Secciones posteriores sin cambios -->
     </main>
 
-    <!-- Footer sin cambios -->
+    <footer class="">
+        <?php include 'footer.php'; ?>
+    </footer>
 
 </body>
 </html>
