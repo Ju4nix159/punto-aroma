@@ -65,4 +65,7 @@ document.getElementById("cart").addEventListener("click", function (event) {
   event.stopPropagation();
 });
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
