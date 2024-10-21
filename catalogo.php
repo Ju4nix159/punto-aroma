@@ -12,6 +12,10 @@ $sql_catalogo->execute();
 $productos = $sql_catalogo->fetchAll(PDO::FETCH_ASSOC);
 
 
+
+
+
+
 ?>
 <!DOCTYPE html>
 
@@ -119,12 +123,40 @@ $productos = $sql_catalogo->fetchAll(PDO::FETCH_ASSOC);
                 <!-- Catálogo de productos -->
                 <div class="col-md-9">
                     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
-                        <!-- Producto 1 -->
-                        <?php foreach ($productos as $producto) { ?>
+                        <?php foreach ($productos as $producto) {
+                            // Si la categoría es "Perfumes", selecciona fragancias; si es "Aromas para el hogar", selecciona colores
+                            if ($producto['categoria'] == 'Perfumes') {
+                                $query_variantes = "SELECT DISTINCT a.nombre AS aroma_nombre
+                        FROM variantes v
+                        JOIN aromas a ON v.id_aroma = a.id_aroma
+                        WHERE v.id_producto = :id_producto";
+                            } elseif ($producto['categoria'] == 'Aromas para el hogar') {
+                                $query_variantes = "SELECT DISTINCT c.nombre AS color_nombre
+                        FROM variantes v
+                        JOIN colores c ON v.id_color = c.id_color
+                        WHERE v.id_producto = :id_producto";
+                            } else {
+                                $query_variantes = null;
+                            }
+
+                            if ($query_variantes) {
+                                $variantes = $con->prepare($query_variantes);
+                                $variantes->bindParam(':id_producto', $producto['id_producto'], PDO::PARAM_INT);
+                                $variantes->execute();
+                                $variantes_result = $variantes->fetchAll(PDO::FETCH_ASSOC);
+                            }
+
+                            // Crear un array de variantes para pasarlo como JSON al modal
+                            $variantes_array = array_map(function ($variante) {
+                                return isset($variante['aroma_nombre']) ? $variante['aroma_nombre'] : $variante['color_nombre'];
+                            }, $variantes_result);
+                            $variantes_json = json_encode($variantes_array);
+
+                        ?>
                             <div class="col">
                                 <div class="card h-100 product-card">
                                     <a href="producto.php?id_producto=<?php echo $producto["id_producto"] ?>" class="text-decoration-none text-dark">
-                                        <img src="1.webp" class="card-img-top" alt="<?php echo $producto["id_producto"] ?>">
+                                        <img src="../pa/assets/productos<?php echo $producto["imagen_principal"]; ?>" class="card-img-top" alt="<?php echo $producto["id_producto"] ?>">
                                         <div class="card-body">
                                             <h5 class="card-title"><?php echo $producto["nombre"] ?></h5>
                                             <p class="card-text"><small class="text-muted">Categoría: <?php echo $producto["categoria"] ?></small></p>
@@ -141,10 +173,11 @@ $productos = $sql_catalogo->fetchAll(PDO::FETCH_ASSOC);
                                         data-product-id="<?php echo $producto['id_producto']; ?>"
                                         data-product-name="<?php echo $producto['nombre']; ?>"
                                         data-product-description="<?php echo $producto['descripcion']; ?>"
-                                        data-product-price="<?php echo $producto['precio_minorista']; ?>">
+                                        data-product-price="<?php echo $producto['precio_minorista']; ?>"
+                                        data-product-imagen="<?php echo $producto['imagen_principal']; ?>"
+                                        data-product-variants='<?php echo $variantes_json; ?>'>
                                         <i class="bi bi-eye"></i>
                                     </button>
-
                                 </div>
                             </div>
                         <?php } ?>
@@ -182,7 +215,7 @@ $productos = $sql_catalogo->fetchAll(PDO::FETCH_ASSOC);
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <img src="1.webp" class="img-fluid" alt="Producto" id="quickViewImage">
+                            <img src="" class="img-fluid" alt="Producto" id="quickViewImage">
                         </div>
                         <div class="col-md-6">
                             <h2 id="quickViewTitle"></h2>
@@ -190,10 +223,11 @@ $productos = $sql_catalogo->fetchAll(PDO::FETCH_ASSOC);
                             <h4>Fragancias disponibles:</h4>
                             <ul id="quickViewFragrances"></ul>
                             <p><strong>Precio: </strong><span id="quickViewPrice"></span></p>
-                            <a href=""><button class="btn btn-primary-custom">Mas informacion</button></a>
+                            <a href=""><button class="btn btn-primary-custom">Más información</button></a>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
