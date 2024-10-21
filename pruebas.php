@@ -55,7 +55,7 @@
         <div class="row row-cols-1 row-cols-md-2 g-4">
             <div class="col">
                 <div class="card text-white">
-                    <img src="/placeholder.svg?height=400&width=600" class="card-img" alt="Sahumerios Vishnu Masala">
+                    <img src="i1.jpg" class="card-img" alt="Sahumerios Vishnu Masala">
                     <div class="card-img-overlay d-flex flex-column justify-content-end">
                         <h5 class="card-title">Sahumerios Vishnu Masala</h5>
                         <p class="card-text">Perfumes, flores y fibras vegetales de alta calidad. Aromas: Antiestrés, Energía, Relajación, Sensual, Meditación, Frescura El aroma perdura por más tiempo en el ambiente.</p>
@@ -65,7 +65,7 @@
             </div>
             <div class="col">
                 <div class="card text-white">
-                    <img src="/placeholder.svg?height=400&width=600" class="card-img" alt="Sahumerios Holi India">
+                    <img src="i2.jpg" class="card-img" alt="Sahumerios Holi India">
                     <div class="card-img-overlay d-flex flex-column justify-content-end">
                         <h5 class="card-title">Sahumerios Holi India</h5>
                         <p class="card-text">Renovamos la línea de sahumerios Holi India Pack con más color y los excelentes aromas premium de siempre. Presentación aromas surtido x 100 unidades.</p>
@@ -75,7 +75,7 @@
             </div>
             <div class="col">
                 <div class="card text-white">
-                    <img src="/placeholder.svg?height=400&width=600" class="card-img" alt="Aromatizantes textiles">
+                    <img src="i3.jpg" class="card-img" alt="Aromatizantes textiles">
                     <div class="card-img-overlay d-flex flex-column justify-content-end">
                         <h5 class="card-title">Aromatizantes textiles</h5>
                         <p class="card-text">Perfume para aromatizar ropa y ambientes. Sentirás bien fresco un aroma especial.</p>
@@ -85,7 +85,7 @@
             </div>
             <div class="col">
                 <div class="card text-white">
-                    <img src="/placeholder.svg?height=400&width=600" class="card-img" alt="Aceites para hornito">
+                    <img src="i4.png" class="card-img" alt="Aceites para hornito">
                     <div class="card-img-overlay d-flex flex-column justify-content-end">
                         <h5 class="card-title">Aceites para hornito</h5>
                         <p class="card-text">Nuevos aromas y nueva presentación x 5 unidades. Más variedad por el mismo precio.</p>
