@@ -1,25 +1,35 @@
-// Función para actualizar el modal de vista rápida
-function updateQuickViewModal(button) {
-  const productName = button.getAttribute("data-product-name");
-  const productDescription = button.getAttribute("data-product-description");
-  const productPrice = button.getAttribute("data-product-price");
+document.addEventListener('DOMContentLoaded', function() {
+  // Selecciona todos los botones de vista rápida
+  const quickViewButtons = document.querySelectorAll('.quick-view-btn');
 
-  // Actualizar el contenido del modal
-  document.getElementById("quickViewTitle").textContent = productName;
-  document.getElementById("quickViewDescription").textContent =
-    productDescription;
-  document.getElementById("quickViewPrice").textContent = productPrice;
+  quickViewButtons.forEach(button => {
+      button.addEventListener('click', function() {
+          // Obtener los datos del producto desde los atributos data-*
+          const productName = this.getAttribute('data-product-name');
+          const productDescription = this.getAttribute('data-product-description');
+          const productPrice = this.getAttribute('data-product-price');
+          const productImage = this.getAttribute('data-product-imagen');
+          const productVariants = JSON.parse(this.getAttribute('data-product-variants'));
 
-  /* document.getElementById("quickViewImage").src = productImage; */
+          // Insertar los datos en el modal
+          document.getElementById('quickViewTitle').innerText = productName;
+          document.getElementById('quickViewDescription').innerText = productDescription;
+          document.getElementById('quickViewPrice').innerText = `$${productPrice}`;
+          document.getElementById('quickViewImage').src = `../pa/assets/productos${productImage}`;
 
-  /* const fragrancesList = document.getElementById("quickViewFragrances");
-  fragrancesList.innerHTML = ""; // Limpiar la lista anterior
-  productFragrances.forEach((fragrance) => {
-    const li = document.createElement("li");
-    li.textContent = fragrance;
-    fragrancesList.appendChild(li);
-  }); */
-}
+          // Limpiar el contenido previo de las fragancias/colores
+          const variantsList = document.getElementById('quickViewFragrances');
+          variantsList.innerHTML = ''; // Limpiar la lista antes de agregar nuevos elementos
+
+          // Añadir las variantes (fragancias o colores) a la lista
+          productVariants.forEach(variant => {
+              const listItem = document.createElement('li');
+              listItem.innerText = variant;
+              variantsList.appendChild(listItem);
+          });
+      });
+  });
+});
 
 // Event listener para los botones de vista rápida
 document.querySelectorAll(".quick-view-btn").forEach((button) => {
@@ -36,7 +46,6 @@ document
       event.stopPropagation(); // Evita que el clic se propague al enlace
     });
   });
-
 
 function toggleCart(event) {
   event.stopPropagation();
@@ -63,29 +72,3 @@ document.addEventListener("click", function (event) {
 document.getElementById("cart").addEventListener("click", function (event) {
   event.stopPropagation();
 });
-
-function updateCart() {
-    const cartContent = document.getElementById("cart-content");
-
-    if (cartItems.length === 0) {
-        cartContent.innerHTML = `
-            <div class="empty-cart">
-                <p>Tu carrito está vacío.</p>
-            </div>`;
-    }
-}
-
-function añadirCarrito(producto, nombre, precio) {
-    let cartItems = JSON.parse(sessionStorage.getItem('cartItems')) || [];
-    let itemIndex = cartItems.findIndex(item => item.producto === producto);
-
-    if (itemIndex !== -1) {
-        cartItems[itemIndex].cantidad += 1;
-    } else {
-        cartItems.push({ producto, nombre, precio, cantidad: 1 });
-    }
-
-    sessionStorage.setItem('cartItems', JSON.stringify(cartItems));
-    updateCart();
-}
-
