@@ -66,57 +66,57 @@ include 'header.php';
         </section>
 
         <div class="container py-5">
-        <div class="row row-cols-1 row-cols-md-2 g-4">
-            <div class="col">
-                <div class="card text-white">
-                    <img src="i1.jpg" class="card-img" alt="Sahumerios Vishnu Masala">
-                    <div class="card-img-overlay d-flex flex-column justify-content-end">
-                        <h5 class="card-index-title">Sahumerios Vishnu Masala</h5>
-                        <p class="card-index-text">Perfumes, flores y fibras vegetales de alta calidad. Aromas: Antiestrés, Energía, Relajación, Sensual, Meditación, Frescura El aroma perdura por más tiempo en el ambiente.</p>
-                        <a href="#" class="btn btn-primary-custom">CONOCELOS</a>
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+                <div class="col">
+                    <div class="card text-white">
+                        <img src="i1.jpg" class="card-img" alt="Sahumerios Vishnu Masala">
+                        <div class="card-img-overlay d-flex flex-column justify-content-end">
+                            <h5 class="card-index-title">Sahumerios Vishnu Masala</h5>
+                            <p class="card-index-text">Perfumes, flores y fibras vegetales de alta calidad. Aromas: Antiestrés, Energía, Relajación, Sensual, Meditación, Frescura El aroma perdura por más tiempo en el ambiente.</p>
+                            <a href="#" class="btn btn-primary-custom">CONOCELOS</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col">
-                <div class="card text-white">
-                    <img src="i2.jpg" class="card-img" alt="Sahumerios Holi India">
-                    <div class="card-img-overlay d-flex flex-column justify-content-end">
-                        <h5 class="card-index-title">Sahumerios Holi India</h5>
-                        <p class="card-index-text">Renovamos la línea de sahumerios Holi India Pack con más color y los excelentes aromas premium de siempre. Presentación aromas surtido x 100 unidades.</p>
-                        <a href="#" class="btn btn-primary-custom">CONOCELOS</a>
+                <div class="col">
+                    <div class="card text-white">
+                        <img src="i2.jpg" class="card-img" alt="Sahumerios Holi India">
+                        <div class="card-img-overlay d-flex flex-column justify-content-end">
+                            <h5 class="card-index-title">Sahumerios Holi India</h5>
+                            <p class="card-index-text">Renovamos la línea de sahumerios Holi India Pack con más color y los excelentes aromas premium de siempre. Presentación aromas surtido x 100 unidades.</p>
+                            <a href="#" class="btn btn-primary-custom">CONOCELOS</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col">
-                <div class="card text-white">
-                    <img src="i3.jpg" class="card-img" alt="Aromatizantes textiles">
-                    <div class="card-img-overlay d-flex flex-column justify-content-end">
-                        <h5 class="card-index-title">Aromatizantes textiles</h5>
-                        <p class="card-index-text">Perfume para aromatizar ropa y ambientes. Sentirás bien fresco un aroma especial.</p>
-                        <a href="#" class="btn btn-primary-custom">CONOCELOS</a>
+                <div class="col">
+                    <div class="card text-white">
+                        <img src="i3.jpg" class="card-img" alt="Aromatizantes textiles">
+                        <div class="card-img-overlay d-flex flex-column justify-content-end">
+                            <h5 class="card-index-title">Aromatizantes textiles</h5>
+                            <p class="card-index-text">Perfume para aromatizar ropa y ambientes. Sentirás bien fresco un aroma especial.</p>
+                            <a href="#" class="btn btn-primary-custom">CONOCELOS</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col">
-                <div class="card text-white">
-                    <img src="i4.png" class="card-img" alt="Aceites para hornito">
-                    <div class="card-img-overlay d-flex flex-column justify-content-end">
-                        <h5 class="card-index-title">Aceites para hornito</h5>
-                        <p class="card-index-text">Nuevos aromas y nueva presentación x 5 unidades. Más variedad por el mismo precio.</p>
-                        <a href="#" class="btn btn-primary-custom">CONOCELOS</a>
+                <div class="col">
+                    <div class="card text-white">
+                        <img src="i4.png" class="card-img" alt="Aceites para hornito">
+                        <div class="card-img-overlay d-flex flex-column justify-content-end">
+                            <h5 class="card-index-title">Aceites para hornito</h5>
+                            <p class="card-index-text">Nuevos aromas y nueva presentación x 5 unidades. Más variedad por el mismo precio.</p>
+                            <a href="#" class="btn btn-primary-custom">CONOCELOS</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
         <section id="ofertas" class="py-5 bg-primary-light">
             <div class="container">
                 <h2 class="text-center mb-5 text-primary-custom" data-aos="fade-up">Galería de Productos</h2>
                 <div class="product-gallery">
-                <?php for ($i = 0; $i < 8; $i++) { ?>
-                    <img src="1.webp" alt="Perfume <?php echo $i?>" data-aos="zoom-in">
-                <?php } ?>
+                    <?php for ($i = 0; $i < 8; $i++) { ?>
+                        <img src="1.webp" alt="Perfume <?php echo $i ?>" data-aos="zoom-in">
+                    <?php } ?>
                 </div>
             </div>
         </section>
@@ -192,10 +192,9 @@ include 'header.php';
         </svg>
     </button>
 
-    <footer class="py-3 bg-primary-light mt-5">
-        <div class="container">
-            <p class="text-center text-muted mb-0">&copy; 2024 Punto Aroma. Todos los derechos reservados.</p>
-        </div>
+    <footer class="">
+        <?php include 'footer.php'; ?>
+
     </footer>
 
 
