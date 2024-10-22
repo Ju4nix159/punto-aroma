@@ -545,6 +545,20 @@ FROM imagenes i
 JOIN productos p ON i.id_producto = p.id_producto
 WHERE p.id_producto = 1;
 
+-- Productos destacados
+SELECT p.id_producto, p.nombre, i.ruta AS imagen_principal
+FROM productos p
+JOIN variantes_tipo_precio vtp ON p.id_producto = vtp.id_producto
+JOIN categorias c ON p.id_categoria = c.id_categoria
+LEFT JOIN imagenes i ON p.id_producto = i.id_producto AND i.principal = 1
+WHERE p.destacado = 1 AND vtp.id_tipo_precio = 1;
+
+-- Información completa de un usuario por id
+SELECT iu.nombre AS nombre_usuario, iu.apellido, iu.dni, iu.fecha_nacimiento, iu.telefono, 
+    s.nombre AS sexo
+FROM info_usuarios iu
+JOIN sexos s ON iu.id_sexo = s.id_sexo
+WHERE iu.id_usuario = 1;
 
 
 -- Select all data from categorias
