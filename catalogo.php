@@ -235,7 +235,6 @@ $productos = $sql_catalogo->fetchAll(PDO::FETCH_ASSOC);
     <footer class="">
         <?php include 'footer.php'; ?>
     </footer>
-    <script src="app.js"></script>
 </body>
 
 </html>

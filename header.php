@@ -16,7 +16,7 @@ session_start();
 </head>
 
 <body>
-    <header class="py-3 bg-white border-bottom sticky-top">
+    <header id="header" class="py-3 bg-white border-bottom sticky-top">
         <div class="container d-flex flex-wrap justify-content-center">
             <a href="index.php#hero" class="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto text-dark text-decoration-none">
                 <span class="fs-4 fw-bold text-primary-custom">Punto Aroma</span>
@@ -35,7 +35,7 @@ session_start();
                             <a class="nav-link text-primary-custom" href="catalogo.php">Catálogo</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-primary-custom" href="index.php#ofertas">Ofertas</a>
+                            <a class="nav-link text-primary-custom" href="index.php#destacados">destacados</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-primary-custom" href="index.php#testimonios">Testimonios</a>
