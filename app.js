@@ -1,33 +1,38 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener("DOMContentLoaded", function () {
   // Selecciona todos los botones de vista rápida
-  const quickViewButtons = document.querySelectorAll('.quick-view-btn');
+  const quickViewButtons = document.querySelectorAll(".quick-view-btn");
 
-  quickViewButtons.forEach(button => {
-      button.addEventListener('click', function() {
-          // Obtener los datos del producto desde los atributos data-*
-          const productName = this.getAttribute('data-product-name');
-          const productDescription = this.getAttribute('data-product-description');
-          const productPrice = this.getAttribute('data-product-price');
-          const productImage = this.getAttribute('data-product-imagen');
-          const productVariants = JSON.parse(this.getAttribute('data-product-variants'));
+  quickViewButtons.forEach((button) => {
+    button.addEventListener("click", function () {
+      // Obtener los datos del producto desde los atributos data-*
+      const productName = this.getAttribute("data-product-name");
+      const productDescription = this.getAttribute("data-product-description");
+      const productPrice = this.getAttribute("data-product-price");
+      const productImage = this.getAttribute("data-product-imagen");
+      const productVariants = JSON.parse(
+        this.getAttribute("data-product-variants")
+      );
 
-          // Insertar los datos en el modal
-          document.getElementById('quickViewTitle').innerText = productName;
-          document.getElementById('quickViewDescription').innerText = productDescription;
-          document.getElementById('quickViewPrice').innerText = `$${productPrice}`;
-          document.getElementById('quickViewImage').src = `../pa/assets/productos${productImage}`;
+      // Insertar los datos en el modal
+      document.getElementById("quickViewTitle").innerText = productName;
+      document.getElementById("quickViewDescription").innerText =
+        productDescription;
+      document.getElementById("quickViewPrice").innerText = `$${productPrice}`;
+      document.getElementById(
+        "quickViewImage"
+      ).src = `../pa/assets/productos${productImage}`;
 
-          // Limpiar el contenido previo de las fragancias/colores
-          const variantsList = document.getElementById('quickViewFragrances');
-          variantsList.innerHTML = ''; // Limpiar la lista antes de agregar nuevos elementos
+      // Limpiar el contenido previo de las fragancias/colores
+      const variantsList = document.getElementById("quickViewFragrances");
+      variantsList.innerHTML = ""; // Limpiar la lista antes de agregar nuevos elementos
 
-          // Añadir las variantes (fragancias o colores) a la lista
-          productVariants.forEach(variant => {
-              const listItem = document.createElement('li');
-              listItem.innerText = variant;
-              variantsList.appendChild(listItem);
-          });
+      // Añadir las variantes (fragancias o colores) a la lista
+      productVariants.forEach((variant) => {
+        const listItem = document.createElement("li");
+        listItem.innerText = variant;
+        variantsList.appendChild(listItem);
       });
+    });
   });
 });
 
@@ -72,5 +77,4 @@ document.addEventListener("click", function (event) {
 document.getElementById("cart").addEventListener("click", function (event) {
   event.stopPropagation();
 });
-
 
