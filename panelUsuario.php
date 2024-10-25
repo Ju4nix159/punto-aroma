@@ -3,6 +3,7 @@ include 'header.php';
 
 include 'admin/config/sbd.php';
 
+// Iniciamos la verificación del usuario en sesión
 if (isset($_SESSION["usuario"])) {
     $id_usuario = $_SESSION["usuario"];
     $sql_usuario = $con->prepare("  SELECT iu.nombre AS nombre_usuario, iu.apellido, iu.dni, iu.fecha_nacimiento, iu.telefono, s.nombre AS sexo
@@ -12,38 +13,67 @@ if (isset($_SESSION["usuario"])) {
     $sql_usuario->bindParam(":id_usuario", $id_usuario);
     $sql_usuario->execute();
     $usuario = $sql_usuario->fetch(PDO::FETCH_ASSOC);
-} else {
-    header("Location: /pa/iniciarSesion.php");
-    exit;
+
+    // Bandera para mostrar el div de perfil incompleto
+    $mostrar_alerta_perfil_incompleto = false;
+
+    // Verificamos si no se encontraron datos del usuario
+    if ($usuario === false) {
+        // Si no hay resultados, activamos la bandera de alerta y asignamos "-" a los campos
+        $mostrar_alerta_perfil_incompleto = true;
+        $nombre_usuario = "";
+        $apellido = "";
+        $dni = "";
+        $fecha_nacimiento = "";
+        $telefono = "";
+        $sexo = "";
+    } else {
+        // Si hay resultados, asignamos los valores reales
+        $nombre_usuario = $usuario["nombre_usuario"];
+        $apellido = $usuario["apellido"];
+        $dni = $usuario["dni"];
+        $fecha_nacimiento = $usuario["fecha_nacimiento"];
+        $telefono = $usuario["telefono"];
+        $sexo = $usuario["sexo"];
+    }
+
+    //sexos 
+    $sql_sexos = $con->prepare("SELECT id_sexo, nombre FROM sexos;");
+    $sql_sexos->execute();
+    $sexos = $sql_sexos->fetchAll(PDO::FETCH_ASSOC);
 }
-
-
-
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Usuario - Punto Aroma</title>
     <style>
-        .user-info-card, .order-card, .address-card {
+        .user-info-card,
+        .order-card,
+        .address-card {
             background-color: #f8f9fa;
             border-radius: 10px;
             padding: 20px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
         }
+
         .user-info-item {
             margin-bottom: 15px;
         }
+
         .user-info-label {
             font-weight: bold;
             color: var(--secondary-color);
         }
+
         .user-info-value {
             color: #333;
         }
+
         .incomplete-profile-alert {
             background-color: #fff3cd;
             border: 1px solid #ffeeba;
@@ -51,31 +81,39 @@ if (isset($_SESSION["usuario"])) {
             padding: 20px;
             margin-bottom: 20px;
         }
+
         .order-status {
             font-weight: bold;
             padding: 5px 10px;
             border-radius: 15px;
             color: white;
         }
+
         .status-procesando {
             background-color: #ffc107;
         }
+
         .status-en-camino {
             background-color: #17a2b8;
         }
+
         .status-entregado {
             background-color: #28a745;
         }
+
         .status-cancelado {
             background-color: #dc3545;
         }
+
         .address-type {
             font-weight: bold;
             color: var(--primary-color);
         }
+
         .address-main {
             border: 2px solid var(--primary-color);
         }
+
         #menu-container {
             position: fixed;
             top: 0;
@@ -83,10 +121,11 @@ if (isset($_SESSION["usuario"])) {
             right: 0;
             z-index: 1000;
             background-color: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
+
 <body>
     <main class="py-5">
         <div class="container">
@@ -103,91 +142,97 @@ if (isset($_SESSION["usuario"])) {
                     <div class="tab-content">
                         <div class="tab-pane fade show active" id="perfil">
                             <h2 class="mb-4">Mi Perfil</h2>
-                            
-                            <!-- Alerta para perfil incompleto -->
-                            <div id="incomplete-profile-alert" class="incomplete-profile-alert">
-                                <h4 class="alert-heading"><i class="bi bi-exclamation-triangle-fill me-2"></i>Perfil Incompleto</h4>
-                                <p>Parece que aún no has completado toda tu información personal. Completa tu perfil para aprovechar al máximo tu experiencia en Punto Aroma.</p>
-                                <hr>
-                                <p class="mb-0">
-                                    <button id="btn-completar-perfil" class="btn btn-primary-custom">Completar Perfil</button>
-                                </p>
-                            </div>
+
+                            <?php if ($mostrar_alerta_perfil_incompleto) { ?>
+                                <div id="incomplete-profile-alert" class="incomplete-profile-alert">
+                                    <h4 class="alert-heading"><i class="bi bi-exclamation-triangle-fill me-2"></i>Perfil Incompleto</h4>
+                                    <p>Parece que aún no has completado toda tu información personal. Completa tu perfil para aprovechar al máximo tu experiencia en Punto Aroma.</p>
+                                    <hr>
+                                    <p class="mb-0">
+                                        <button id="btn-completar-perfil" class="btn btn-primary-custom" onclick="InformacionPersonal()">Completar Perfil</button>
+                                    </p>
+                                </div>
+                            <?php } ?>
 
                             <div id="info-usuario" class="user-info-card">
                                 <div class="row">
                                     <div class="col-md-6 user-info-item">
                                         <div class="user-info-label">Nombre:</div>
-                                        <div class="user-info-value" id="nombre-display">-</div>
+                                        <div class="user-info-value" id="nombre-display"><?php echo $nombre_usuario ?></div>
                                     </div>
                                     <div class="col-md-6 user-info-item">
                                         <div class="user-info-label">Apellido:</div>
-                                        <div class="user-info-value" id="apellido-display">-</div>
+                                        <div class="user-info-value" id="apellido-display"><?php echo $apellido ?></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6 user-info-item">
                                         <div class="user-info-label">DNI:</div>
-                                        <div class="user-info-value" id="dni-display">-</div>
+                                        <div class="user-info-value" id="dni-display"><?php echo $dni ?></div>
                                     </div>
                                     <div class="col-md-6 user-info-item">
                                         <div class="user-info-label">Edad:</div>
-                                        <div class="user-info-value"><span id="edad-display">-</span></div>
+                                        <div class="user-info-value"><span id="edad-display"><?php echo $fecha_nacimiento ?></span></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6 user-info-item">
                                         <div class="user-info-label">Teléfono:</div>
-                                        <div class="user-info-value" id="telefono-display">-</div>
+                                        <div class="user-info-value" id="telefono-display"><?php echo $telefono ?></div>
                                     </div>
                                     <div class="col-md-6 user-info-item">
                                         <div class="user-info-label">Sexo:</div>
-                                        <div class="user-info-value" id="sexo-display">-</div>
+                                        <div class="user-info-value" id="sexo-display"><?php echo $sexo ?></div>
                                     </div>
                                 </div>
-                                <div class="text-center mt-4">
-                                    <button id="btn-editar" class="btn btn-primary-custom">Editar Información</button>
-                                </div>
+                                <?php if (!$mostrar_alerta_perfil_incompleto) { ?>
+                                    <div class="text-center mt-4">
+                                        <button id="btn-editar" class="btn btn-primary-custom" onclick="InformacionPersonal()">Editar Información</button>
+                                    </div>
+                                <?php } ?>
                             </div>
-                            <form id="form-editar" style="display: none;">
+                            <form class="hidden" action="./admin/procesarsbd.php" method="POST" id="form-editar">
+                                <input class="hidden" value="<?php echo $id_usuario ?>" type="text" name="id_usuario">
                                 <div class="row mb-3">
                                     <div class="col-md-6">
                                         <label for="nombre" class="form-label">Nombre</label>
-                                        <input type="text" class="form-control" id="nombre" required>
+                                        <input placeholder="Ingrese su nombre" type="text" class="form-control" id="nombre" name="nombre" value="<?php echo $nombre_usuario ?>" required>
                                     </div>
                                     <div class="col-md-6">
                                         <label for="apellido" class="form-label">Apellido</label>
-                                        <input type="text" class="form-control" id="apellido" required>
+                                        <input placeholder="Ingrese su apellido" type="text" class="form-control" id="apellido" name="apellido" value="<?php echo $apellido ?>" required>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
                                     <div class="col-md-6">
                                         <label for="dni" class="form-label">DNI</label>
-                                        <input type="text" class="form-control" id="dni" required>
+                                        <input placeholder="Ingrese su dni" type="text" class="form-control" id="dni" name="dni" value="<?php echo $dni ?>" required>
                                     </div>
                                     <div class="col-md-6">
                                         <label for="fecha-nacimiento" class="form-label">Fecha de Nacimiento</label>
-                                        <input type="date" class="form-control" id="fecha-nacimiento" required>
+                                        <input  type="date" class="form-control" id="fecha-nacimiento" name="fecha_nacimiento" value="<?php echo $fecha_nacimiento ?>" required>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
                                     <div class="col-md-6">
                                         <label for="telefono" class="form-label">Teléfono</label>
-                                        <input type="tel" class="form-control" id="telefono" required>
+                                        <input placeholder="Ingrese su telefono" type="tel" class="form-control" id="telefono" name="telefono" value="<?php echo $telefono ?>" required>
                                     </div>
                                     <div class="col-md-6">
                                         <label for="sexo" class="form-label">Sexo</label>
-                                        <select class="form-select" id="sexo" required>
-                                            <option value="">Seleccionar</option>
-                                            <option value="Masculino">Masculino</option>
-                                            <option value="Femenino">Femenino</option>
-                                            <option value="Otro">Otro</option>
+                                        <select class="form-select" id="sexo" name="sexo" required>
+                                            <option value="" disabled selected>Seleccionar</option>
+                                            <?php foreach ($sexos as $sexo_option) { ?>
+                                                <option value="<?php echo $sexo_option['id_sexo']; ?>" <?php echo ($sexo_option['nombre'] == $sexo) ? 'selected' : ''; ?>>
+                                                    <?php echo $sexo_option['nombre']; ?>
+                                                </option>
+                                            <?php } ?>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="text-center mt-4">
-                                    <button type="submit" class="btn btn-primary-custom">Guardar Cambios</button>
-                                    <button type="button" id="btn-cancelar" class="btn btn-secondary ms-2">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary-custom" name="actualizarInfo">Guardar Cambios</button>
+                                    <button type="button" id="btn-cancelar" class="btn btn-secondary ms-2" onclick="btnCancelar()">Cancelar</button>
                                 </div>
                             </form>
                         </div>
@@ -235,8 +280,8 @@ if (isset($_SESSION["usuario"])) {
                                                     </select>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="domicilio-calle" 
-                                                    class="form-label">Calle y Número</label>
+                                                    <label for="domicilio-calle"
+                                                        class="form-label">Calle y Número</label>
                                                     <input type="text" class="form-control" id="domicilio-calle" required>
                                                 </div>
                                                 <div class="mb-3">
@@ -280,87 +325,14 @@ if (isset($_SESSION["usuario"])) {
             </div>
         </div>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const btnEditar = document.getElementById('btn-editar');
-            const btnCancelar = document.getElementById('btn-cancelar');
-            const btnCompletarPerfil = document.getElementById('btn-completar-perfil');
-            const infoUsuario = document.getElementById('info-usuario');
-            const formEditar = document.getElementById('form-editar');
-            const incompleteProfileAlert = document.getElementById('incomplete-profile-alert');
-
-            function mostrarFormulario() {
-                infoUsuario.style.display = 'none';
-                formEditar.style.display = 'block';
-                incompleteProfileAlert.style.display = 'none';
-            }
-
-            function mostrarInformacion() {
-                infoUsuario.style.display = 'block';
-                formEditar.style.display = 'none';
-                verificarPerfilCompleto();
-            }
-
-            function verificarPerfilCompleto() {
-                const camposInfo = document.querySelectorAll('.user-info-value');
-                const perfilIncompleto = Array.from(camposInfo).some(campo => 
-                    campo.textContent.trim() === '-' || campo.textContent.trim() === ''
-                );
-                incompleteProfileAlert.style.display = perfilIncompleto ? 'block' : 'none';
-            }
-
-            btnEditar.addEventListener('click', mostrarFormulario);
-            btnCompletarPerfil.addEventListener('click', mostrarFormulario);
-            btnCancelar.addEventListener('click', mostrarInformacion);
-
-            formEditar.addEventListener('submit', function(e) {
-                e.preventDefault();
-                // Actualizar la información mostrada
-                document.getElementById('nombre-display').textContent = document.getElementById('nombre').value || '-';
-                document.getElementById('apellido-display').textContent = document.getElementById('apellido').value || '-';
-                document.getElementById('dni-display').textContent = document.getElementById('dni').value || '-';
-                document.getElementById('telefono-display').textContent = document.getElementById('telefono').value || '-';
-                document.getElementById('sexo-display').textContent = document.getElementById('sexo').value || '-';
-
-                // Calcular y actualizar la edad
-                const fechaNacimiento = new Date(document.getElementById('fecha-nacimiento').value);
-                if (!isNaN(fechaNacimiento.getTime())) {
-                    const hoy = new Date();
-                    let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
-                    const m = hoy.getMonth() - fechaNacimiento.getMonth();
-                    if (m < 0 || (m === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
-                        edad--;
-                    }
-                    document.getElementById('edad-display').textContent = edad + ' años';
-                } else {
-                    document.getElementById('edad-display').textContent = '-';
-                }
-
-                mostrarInformacion();
-            });
-
-            // Verificar perfil completo al cargar la página
-            verificarPerfilCompleto();
-
-            // Funcionalidad para manejar domicilios
-            const domiciliosContainer = document.getElementById('domicilios-container');
-            const btnAgregarDomicilio = document.getElementById('btn-agregar-domicilio');
-            const domicilioModal = new bootstrap.Modal(document.getElementById('domicilioModal'));
-            const formDomicilio = document.getElementById('form-domicilio');
-            const btnGuardarDomicilio = document.getElementById('btn-guardar-domicilio');
-
-            let domicilios = [
-                { id: 1, tipo: 'Casa', calle: 'Calle Principal 123', ciudad: 'Ciudad A', codigoPostal: '12345', principal: true },
-                { id: 2, tipo: 'Trabajo', calle: 'Avenida Comercial 456', ciudad: 'Ciudad B', codigoPostal: '67890', principal: false }
-            ];
-
-            function renderizarDomicilios() {
-                domiciliosContainer.innerHTML = '';
-                domicilios.forEach(domicilio => {
-                    const domicilioCard = document.createElement('div');
-                    domicilioCard.className = `address-card ${domicilio.principal ? 'address-main' : ''}`;
-                    domicilioCard.innerHTML = `
+    <script src="app.js"></script>
+    <!-- <script>
+        function renderizarDomicilios() {
+            domiciliosContainer.innerHTML = '';
+            domicilios.forEach(domicilio => {
+                const domicilioCard = document.createElement('div');
+                domicilioCard.className = `address-card ${domicilio.principal ? 'address-main' : ''}`;
+                domicilioCard.innerHTML = `
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <span class="address-type">${domicilio.tipo}</span>
                             ${domicilio.principal ? '<span class="badge bg-primary">Principal</span>' : ''}
@@ -373,120 +345,9 @@ if (isset($_SESSION["usuario"])) {
                             ${!domicilio.principal ? `<button class="btn btn-sm btn-outline-danger btn-eliminar-domicilio" data-id="${domicilio.id}">Eliminar</button>` : ''}
                         </div>
                     `;
-                    domiciliosContainer.appendChild(domicilioCard);
-                });
-            }
-
-            btnAgregarDomicilio.addEventListener('click', () => {
-                formDomicilio.reset();
-                document.getElementById('domicilio-id').value = '';
-                document.getElementById('domicilioModalLabel').textContent = 'Agregar Nuevo Domicilio';
-                domicilioModal.show();
+                domiciliosContainer.appendChild(domicilioCard);
             });
 
-            btnGuardarDomicilio.addEventListener('click', () => {
-                const id = document.getElementById('domicilio-id').value;
-                const tipo = document.getElementById('domicilio-tipo').value;
-                const calle = document.getElementById('domicilio-calle').value;
-                const ciudad = document.getElementById('domicilio-ciudad').value;
-                const codigoPostal = document.getElementById('domicilio-codigo-postal').value;
-
-                if (id) {
-                    // Editar domicilio existente
-                    const index = domicilios.findIndex(d => d.id == id);
-                    if (index !== -1) {
-                        domicilios[index] = { ...domicilios[index], tipo, calle, ciudad, codigoPostal };
-                    }
-                } else {
-                    // Agregar nuevo domicilio
-                    const newId = Math.max(...domicilios.map(d => d.id)) + 1;
-                    domicilios.push({ id: newId, tipo, calle, ciudad, codigoPostal, principal: false });
-                }
-
-                renderizarDomicilios();
-                domicilioModal.hide();
-            });
-
-            domiciliosContainer.addEventListener('click', (e) => {
-                if (e.target.classList.contains('btn-editar-domicilio')) {
-                    const id = e.target.dataset.id;
-                    const domicilio = domicilios.find(d => d.id == id);
-                    if (domicilio) {
-                        document.getElementById('domicilio-id').value = domicilio.id;
-                        document.getElementById('domicilio-tipo').value = domicilio.tipo;
-                        document.getElementById('domicilio-calle').value = domicilio.calle;
-                        document.getElementById('domicilio-ciudad').value = domicilio.ciudad;
-                        document.getElementById('domicilio-codigo-postal').value = domicilio.codigoPostal;
-                        document.getElementById('domicilioModalLabel').textContent = 'Editar Domicilio';
-                        domicilioModal.show();
-                    }
-                } else if (e.target.classList.contains('btn-principal-domicilio')) {
-                    const id = e.target.dataset.id;
-                    domicilios.forEach(d => d.principal = d.id == id);
-                    renderizarDomicilios();
-                } else if (e.target.classList.contains('btn-eliminar-domicilio')) {
-                    const id = e.target.dataset.id;
-                    if (confirm('¿Estás seguro de que deseas eliminar este domicilio?')) {
-                        domicilios = domicilios.filter(d => d.id != id);
-                        renderizarDomicilios();
-                    }
-                }
-            });
-
-            // Renderizar domicilios iniciales
-            renderizarDomicilios();
-
-            // Funcionalidad para manejar pedidos
-            const pedidosContainer = document.getElementById('pedidos-container');
-            const pedidoDetalleModal = new bootstrap.Modal(document.getElementById('pedidoDetalleModal'));
-            const pedidoDetalleModalBody = document.getElementById('pedidoDetalleModalBody');
-            const ordenarPedidosSelect = document.getElementById('ordenar-pedidos');
-
-            let pedidos = [
-                { 
-                    id: 1234, 
-                    fecha: '15/05/2024', 
-                    total: 150.00, 
-                    estado: 'Procesando',
-                    productos: [
-                        { nombre: 'Perfume Floral', cantidad: 1, precio: 80.00 },
-                        { nombre: 'Vela Aromática', cantidad: 2, precio: 35.00 }
-                    ],
-                    direccionEnvio: 'Calle Principal 123, Ciudad A, 12345'
-                },
-                { 
-                    id: 1235, 
-                    fecha: '10/05/2024', 
-                    total: 85.50, 
-                    estado: 'En Camino',
-                    productos: [
-                        { nombre: 'Difusor de Aceites', cantidad: 1, precio: 55.50 },
-                        { nombre: 'Aceite Esencial de Lavanda', cantidad: 1, precio: 30.00 }
-                    ],
-                    direccionEnvio: 'Avenida Comercial 456, Ciudad B, 67890'
-                },
-                { 
-                    id: 1236, 
-                    fecha: '05/05/2024', 
-                    total: 200.00, 
-                    estado: 'Entregado',
-                    productos: [
-                        { nombre: 'Set de Aromaterapia', cantidad: 1, precio: 150.00 },
-                        { nombre: 'Spray Ambiental', cantidad: 2, precio: 25.00 }
-                    ],
-                    direccionEnvio: 'Calle Principal 123, Ciudad A, 12345'
-                },
-                { 
-                    id: 1237, 
-                    fecha: '01/05/2024', 
-                    total: 75.00, 
-                    estado: 'Cancelado',
-                    productos: [
-                        { nombre: 'Jabón Artesanal', cantidad: 3, precio: 25.00 }
-                    ],
-                    direccionEnvio: 'Avenida Comercial 456, Ciudad B, 67890'
-                }
-            ];
 
             function renderizarPedidos(filtro = 'todos') {
                 pedidosContainer.innerHTML = '';
@@ -504,7 +365,6 @@ if (isset($_SESSION["usuario"])) {
                         <button class="btn btn-primary-custom btn-sm me-2 btn-ver-detalle" data-id="${pedido.id}">Ver Detalle</button>
                         ${pedido.estado === 'Procesando' ? `<button class="btn btn-danger btn-sm btn-cancelar-pedido" data-id="${pedido.id}">Cancelar Pedido</button>` : ''}
                     `;
-                    pedidosContainer.appendChild(pedidoCard);
                 });
             }
 
@@ -544,7 +404,6 @@ if (isset($_SESSION["usuario"])) {
                             </tfoot>
                         </table>
                     `;
-                    pedidoDetalleModal.show();
                 }
             }
 
@@ -563,14 +422,7 @@ if (isset($_SESSION["usuario"])) {
                     }
                 }
             });
-
-            ordenarPedidosSelect.addEventListener('change', (e) => {
-                renderizarPedidos(e.target.value);
-            });
-
-            // Renderizar pedidos iniciales
-            renderizarPedidos();
-        });
-    </script>
+    </script> -->
 </body>
+
 </html>
