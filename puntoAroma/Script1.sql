@@ -560,6 +560,10 @@ FROM info_usuarios iu
 JOIN sexos s ON iu.id_sexo = s.id_sexo
 WHERE iu.id_usuario = 1;
 
+-- Select id and name from sexos
+SELECT id_sexo, nombre FROM sexos;
+
+SELECT*from info_usuarios;
 
 -- Select all data from categorias
 SELECT * FROM categorias;

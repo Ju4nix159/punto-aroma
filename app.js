@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
   // Selecciona todos los botones de vista rápida
+
   const quickViewButtons = document.querySelectorAll(".quick-view-btn");
 
   quickViewButtons.forEach((button) => {
@@ -65,16 +66,25 @@ function toggleCart(event) {
   updateCart();
 }
 
-// Cierra el carrito si se hace clic fuera
-document.addEventListener("click", function (event) {
-  const cart = document.getElementById("cart");
-  const cartIcon = document.getElementById("cart-icon");
-  if (!cart.contains(event.target) && !cartIcon.contains(event.target)) {
-    cart.classList.add("hidden");
-  }
-});
-
 document.getElementById("cart").addEventListener("click", function (event) {
   event.stopPropagation();
 });
 
+function InformacionPersonal() {
+  const infoUsuario = document.getElementById("info-usuario");
+  const formUsuario = document.getElementById("form-editar");
+
+  infoUsuario.classList.add("hidden");
+  formUsuario.classList.remove("hidden");
+}
+
+function btnCancelar() {
+  const infoUsuario = document.getElementById("info-usuario");
+  const formUsuario = document.getElementById("form-editar");
+
+  // Reiniciar los formularios a los datos que tenía antes
+  formUsuario.reset();
+
+  infoUsuario.classList.remove("hidden");
+  formUsuario.classList.add("hidden");
+}
