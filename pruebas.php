@@ -3,98 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Punto Aroma - Productos</title>
+    <title>Ofertas Especiales - Punto Aroma</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         :root {
             --primary-color: #83AF37;
             --secondary-color: #6B2D5C;
         }
-        .card {
-            overflow: hidden;
-            transition: transform 0.3s ease;
+        .bg-primary-light {
+            background-color: rgba(131, 175, 55, 0.1);
         }
-        .card:hover {
-            transform: translateY(-5px);
+        .text-primary-custom {
+            color: var(--primary-color);
         }
-        .card-img-overlay {
-            background-color: rgba(0, 0, 0, 0.5);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        .card:hover .card-img-overlay {
-            opacity: 1;
-        }
-        .card-title, .card-text, .btn-primary-custom {
-            transform: translateY(20px);
-            transition: transform 0.3s ease, opacity 0.3s ease;
-            opacity: 0;
-        }
-        .card:hover .card-title,
-        .card:hover .card-text,
-        .card:hover .btn-primary-custom {
-            transform: translateY(0);
-            opacity: 1;
+        .text-secondary-custom {
+            color: var(--secondary-color);
         }
         .btn-primary-custom {
-            background-color: var(--secondary-color);
-            border-color: var(--secondary-color);
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
             color: white;
-            transition: transform 0.3s ease, opacity 0.3s ease;
         }
         .btn-primary-custom:hover {
-            background-color: var(--secondary-color);
-            border-color: var(--secondary-color);
+            background-color: #6f9430;
+            border-color: #6f9430;
             color: white;
-            transform: scale(1.05);
+        }
+        .carousel-item {
+            position: relative;
+        }
+        .carousel-caption {
+            background: rgba(0, 0, 0, 0.5);
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 20px;
+        }
+        .carousel-control-prev,
+        .carousel-control-next {
+            width: 5%;
+        }
+        #ofertasCarousel {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .carousel-inner img {
+            width: 100%;
+            height: auto;
         }
     </style>
 </head>
 <body>
-    <div class="container py-5">
-        <div class="row row-cols-1 row-cols-md-2 g-4">
-            <div class="col">
-                <div class="card text-white">
-                    <img src="/placeholder.svg?height=400&width=600" class="card-img" alt="Sahumerios Vishnu Masala">
-                    <div class="card-img-overlay d-flex flex-column justify-content-end">
-                        <h5 class="card-title">Sahumerios Vishnu Masala</h5>
-                        <p class="card-text">Perfumes, flores y fibras vegetales de alta calidad. Aromas: Antiestrés, Energía, Relajación, Sensual, Meditación, Frescura El aroma perdura por más tiempo en el ambiente.</p>
-                        <a href="#" class="btn btn-primary-custom">CONOCELOS</a>
+    <section class="py-5 bg-primary-light">
+        <div class="container">
+            <h2 class="text-center mb-4 text-secondary-custom">Ofertas Especiales</h2>
+            <div id="ofertasCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="./assets/banner1.jpg" class="d-block w-100" alt="Vela aromática de lavanda">
+                        <div class="carousel-caption d-none d-md-block">
+                            <h3>Vela aromática de lavanda</h3>
+                            <p>Relájate con el suave aroma de la lavanda. 20% de descuento por tiempo limitado.</p>
+                            <a href="#" class="btn btn-primary-custom">Ver oferta</a>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="./assets/banner2.jpg" class="d-block w-100" alt="Difusor de aceites esenciales">
+                        <div class="carousel-caption d-none d-md-block">
+                            <h3>Difusor de aceites esenciales</h3>
+                            <p>Transforma tu hogar con fragancias naturales. Ahorra 15% en nuestros difusores premium.</p>
+                            <a href="#" class="btn btn-primary-custom">Ver oferta</a>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="./assets/banner3.jpg" class="d-block w-100" alt="Set de jabones artesanales">
+                        <div class="carousel-caption d-none d-md-block">
+                            <h3>Set de jabones artesanales</h3>
+                            <p>Cuida tu piel con nuestros jabones naturales. Llévate un 25% de descuento en sets seleccionados.</p>
+                            <a href="#" class="btn btn-primary-custom">Ver oferta</a>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="./assets/banner4.jpg" class="d-block w-100" alt="Spray ambiental de vainilla">
+                        <div class="carousel-caption d-none d-md-block">
+                            <h3>Spray ambiental de vainilla</h3>
+                            <p>Crea un ambiente acogedor con nuestro spray de vainilla. 10% de descuento en la segunda unidad.</p>
+                            <a href="#" class="btn btn-primary-custom">Ver oferta</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col">
-                <div class="card text-white">
-                    <img src="/placeholder.svg?height=400&width=600" class="card-img" alt="Sahumerios Holi India">
-                    <div class="card-img-overlay d-flex flex-column justify-content-end">
-                        <h5 class="card-title">Sahumerios Holi India</h5>
-                        <p class="card-text">Renovamos la línea de sahumerios Holi India Pack con más color y los excelentes aromas premium de siempre. Presentación aromas surtido x 100 unidades.</p>
-                        <a href="#" class="btn btn-primary-custom">CONOCELOS</a>
-                    </div>
-                </div>
-            </div>
-                <div class="card text-white">
-                    <img src="/placeholder.svg?height=400&width=600" class="card-img" alt="Aromatizantes textiles">
-                    <div class="card-img-overlay d-flex flex-column justify-content-end">
-                        <h5 class="card-title">Aromatizantes textiles</h5>
-                        <p class="card-text">Perfume para aromatizar ropa y ambientes. Sentirás bien fresco un aroma especial.</p>
-                        <a href="#" class="btn btn-primary-custom">CONOCELOS</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card text-white">
-                    <img src="/placeholder.svg?height=400&width=600" class="card-img" alt="Aceites para hornito">
-                    <div class="card-img-overlay d-flex flex-column justify-content-end">
-                        <h5 class="card-title">Aceites para hornito</h5>
-                        <p class="card-text">Nuevos aromas y nueva presentación x 5 unidades. Más variedad por el mismo precio.</p>
-                        <a href="#" class="btn btn-primary-custom">CONOCELOS</a>
-                    </div>
-                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#ofertasCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#ofertasCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Siguiente</span>
+                </button>
             </div>
         </div>
-    </div>
+    </section>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var carousel = new bootstrap.Carousel(document.getElementById('ofertasCarousel'), {
+                interval: 5000,
+                wrap: true
+            });
+        });
+    </script>
 </body>
 </html>
