@@ -475,3 +475,27 @@ section[id] {
 .user-info-value {
     color: #333;
 }
+
+
+.carousel-item {
+    position: relative;
+}
+.carousel-caption {
+    background: rgba(0, 0, 0, 0.5);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 20px;
+}
+.carousel-control-prev,
+.carousel-control-next {
+    width: 5%;
+}
+#ofertasCarousel {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.carousel-inner img {
+    width: 100%;
+    height: auto;
+}

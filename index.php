@@ -27,6 +27,57 @@ $destacados = $sql_destacados->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </section>
 
+    <section id="banner" class="container py-5">
+        <div class="container">
+            <h2 class="text-center mb-4 text-secondary-custom">Ofertas Especiales</h2>
+            <div id="ofertasCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="./assets/banner1.jpg" class="d-block w-100" alt="Vela aromática de lavanda">
+                        <div class="carousel-caption d-none d-md-block">
+                            <h3>Vela aromática de lavanda</h3>
+                            <p>Relájate con el suave aroma de la lavanda. 20% de descuento por tiempo limitado.</p>
+                            <a href="#" class="btn btn-primary-custom">Ver oferta</a>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="./assets/banner2.jpg" class="d-block w-100" alt="Difusor de aceites esenciales">
+                        <div class="carousel-caption d-none d-md-block">
+                            <h3>Difusor de aceites esenciales</h3>
+                            <p>Transforma tu hogar con fragancias naturales. Ahorra 15% en nuestros difusores premium.</p>
+                            <a href="#" class="btn btn-primary-custom">Ver oferta</a>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="./assets/banner3.jpg" class="d-block w-100" alt="Set de jabones artesanales">
+                        <div class="carousel-caption d-none d-md-block">
+                            <h3>Set de jabones artesanales</h3>
+                            <p>Cuida tu piel con nuestros jabones naturales. Llévate un 25% de descuento en sets seleccionados.</p>
+                            <a href="#" class="btn btn-primary-custom">Ver oferta</a>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="./assets/banner4.jpg" class="d-block w-100" alt="Spray ambiental de vainilla">
+                        <div class="carousel-caption d-none d-md-block">
+                            <h3>Spray ambiental de vainilla</h3>
+                            <p>Crea un ambiente acogedor con nuestro spray de vainilla. 10% de descuento en la segunda unidad.</p>
+                            <a href="#" class="btn btn-primary-custom">Ver oferta</a>
+                        </div>
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#ofertasCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#ofertasCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Siguiente</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+
     <section id="categorias" class="py-5">
         <div class="container">
             <h2 class="text-center mb-5 text-primary-custom" data-aos="fade-up">Nuestras Categorias Destacadas</h2>
