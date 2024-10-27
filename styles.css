@@ -4,9 +4,11 @@
 }
 
 section[id] {
-    scroll-margin-top: 100px; /* Ajusta el valor según la altura del header */
+    scroll-margin-top: 100px;
+    /* Ajusta el valor según la altura del header */
 }
-#hero{
+
+#hero {
     padding-top: 70px;
 }
 
@@ -397,22 +399,28 @@ section[id] {
     overflow: hidden;
     transition: transform 0.3s ease;
 }
+
 .card:hover {
     transform: translateY(-5px);
 }
+
 .card-img-overlay {
     background-color: rgba(0, 0, 0, 0.5);
     opacity: 0;
     transition: opacity 0.3s ease;
 }
+
 .card:hover .card-img-overlay {
     opacity: 1;
 }
-.card-index-title, .card-index-text {
+
+.card-index-title,
+.card-index-text {
     transform: translateY(20px);
     transition: transform 0.3s ease, opacity 0.3s ease;
     opacity: 0;
 }
+
 .card:hover .card-index-title,
 .card:hover .card-index-text,
 .card:hover {
@@ -428,15 +436,19 @@ section[id] {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
 }
+
 .product-card-destacado:hover {
     transform: translateY(-5px);
 }
+
 .product-card-destacado img {
     transition: transform 0.3s ease;
 }
+
 .product-card-destacado:hover img {
     transform: scale(1.1);
 }
+
 .product-overlay {
     position: absolute;
     top: 0;
@@ -450,28 +462,34 @@ section[id] {
     opacity: 0;
     transition: opacity 0.3s ease;
 }
+
 .product-card-destacado:hover .product-overlay {
     opacity: 1;
 }
+
 .product-name {
     color: white;
     font-size: 1.2rem;
     text-align: center;
     padding: 10px;
 }
+
 .user-info-card {
     background-color: #f8f9fa;
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+
 .user-info-item {
     margin-bottom: 15px;
 }
+
 .user-info-label {
     font-weight: bold;
     color: var(--secondary-color);
 }
+
 .user-info-value {
     color: #333;
 }
@@ -480,6 +498,7 @@ section[id] {
 .carousel-item {
     position: relative;
 }
+
 .carousel-caption {
     background: rgba(0, 0, 0, 0.5);
     left: 0;
@@ -487,15 +506,144 @@ section[id] {
     bottom: 0;
     padding: 20px;
 }
+
 .carousel-control-prev,
 .carousel-control-next {
     width: 5%;
 }
+
 #ofertasCarousel {
     max-width: 1200px;
     margin: 0 auto;
 }
+
 .carousel-inner img {
     width: 100%;
     height: auto;
+}
+
+
+
+
+.modal-confirm .modal-content {
+    padding: 20px;
+    border-radius: 5px;
+    border: none;
+}
+
+.modal-confirm .modal-header {
+    border-bottom: none;
+    position: relative;
+}
+
+.modal-confirm h4 {
+    text-align: center;
+    font-size: 26px;
+    margin: 30px 0 -15px;
+}
+
+.modal-confirm .form-control,
+.modal-confirm .btn {
+    min-height: 40px;
+    border-radius: 3px;
+}
+
+.modal-confirm .close {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+}
+
+.modal-confirm .modal-footer {
+    border: none;
+    text-align: center;
+    border-radius: 5px;
+    font-size: 13px;
+}
+
+.modal-confirm .icon-box {
+    color: #fff;
+    position: absolute;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    top: -70px;
+    width: 95px;
+    height: 95px;
+    border-radius: 50%;
+    z-index: 9;
+    background: var(--secondary-color);
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.1);
+}
+
+.modal-confirm .icon-box i {
+    font-size: 58px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.modal-confirm.modal-dialog {
+    margin-top: 80px;
+}
+
+.modal-confirm .btn {
+    color: #fff;
+    border-radius: 4px;
+    background: var(--secondary-color);
+    text-decoration: none;
+    transition: all 0.4s;
+    line-height: normal;
+    border: none;
+}
+
+.modal-confirm .btn:hover {
+    background: var(--secondary-color);
+    opacity: 0.8;
+}
+
+.modal-confirm .btn-cancel:hover {
+    background: #dc3545 !important;
+}
+
+.modal-confirm .btn-confirm:hover {
+    background: #28a745 !important;
+}
+
+.trigger-btn {
+    display: inline-block;
+    margin: 100px auto;
+}
+
+.card-catalogo {
+    height: 100%;
+    /* Para que todas las tarjetas ocupen el mismo espacio vertical */
+    display: flex;
+    flex-direction: column;
+}
+
+.img-container {
+    width: 100%;
+    height: 200px;
+    /* Ajusta la altura deseada */
+    overflow: hidden;
+}
+
+.card-body {
+    flex-grow: 1;
+    /* Permite que el cuerpo crezca y tome el espacio necesario */
+}
+
+.card-title {
+    font-size: 1rem;
+    /* Ajusta el tamaño de fuente si es necesario */
+    min-height: 40px;
+    /* Asegura que el título ocupe espacio fijo */
+}
+
+.card-footer {
+    background-color: #f8f9fa;
 }
