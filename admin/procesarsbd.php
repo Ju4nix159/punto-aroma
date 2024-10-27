@@ -46,3 +46,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizarInfo'])) {
     header("Location: /pa/panelUsuario.php");
     exit();
 }
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancelarPedido'])) {
+    $id_pedido = $_POST['id_pedido'];
+
+    // Asumiendo que $con es tu conexión a la base de datos PDO
+    $updateQuery = "UPDATE pedidos SET id_estado_pedido = 6 WHERE id_pedido = :id_pedido";
+    $updateStmt = $con->prepare($updateQuery);
+    $updateStmt->bindParam(":id_pedido", $id_pedido, PDO::PARAM_INT);
+
+    if ($updateStmt->execute()) {
+        // Enviar respuesta en formato JSON
+        echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['success' => false]);
+    }
+} else {
+    echo json_encode(['success' => false, 'message' => 'Solicitud inválida.']);
+}
