@@ -42,6 +42,7 @@ if (isset($_SESSION["usuario"])) {
     $sql_sexos->execute();
     $sexos = $sql_sexos->fetchAll(PDO::FETCH_ASSOC);
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -249,7 +250,31 @@ if (isset($_SESSION["usuario"])) {
                                 </select>
                             </div>
                             <div id="pedidos-container">
+<<<<<<< Updated upstream
                                 <!-- Los pedidos se cargarán aquí dinámicamente -->
+=======
+                                <?php foreach ($pedidos as $pedido) { ?>
+                                    <div class="order-card">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <h5 class="mb-0">Pedido: #<?php echo $pedido["id_pedido"] ?> </h5>
+                                            <span class="order-status status-<?php echo $pedido["estado_pedido"] ?>"><?php echo $pedido["estado_pedido"] ?></span>
+                                        </div>
+                                        <p>Fecha: <?php echo $pedido["fecha"] ?></p>
+                                        <p>Total: <?php echo $pedido["total"] ?></p>
+                                        <button class="btn btn-primary-custom btn-sm me-2 btn-ver-detalle"
+                                            data-id="<?php echo $pedido['id_pedido']; ?>">
+                                            Ver Detalle
+                                        </button>
+                                        <?php if (in_array($pedido["estado_pedido"], ["pendiente", "procesado", "cambiado"])) { ?>
+                                            <button class="btn btn-danger btn-sm btn-cancelar-pedido"
+                                                data-id="<?php echo $pedido['id_pedido']; ?>"
+                                                onclick="cancelarPedido(<?php echo $pedido['id_pedido']; ?>)">
+                                                Cancelar Pedido
+                                            </button>
+                                        <?php } ?>
+                                    </div>
+                                <?php } ?>
+>>>>>>> Stashed changes
                             </div>
                         </div>
                         <div class="tab-pane fade" id="domicilios">
@@ -309,25 +334,117 @@ if (isset($_SESSION["usuario"])) {
     </main>
 
     <!-- Modal para detalles del pedido -->
-    <div class="modal fade" id="pedidoDetalleModal" tabindex="-1" aria-labelledby="pedidoDetalleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="pedidoDetalleModalLabel">Detalle del Pedido</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" id="pedidoDetalleModalBody">
-                    <!-- El detalle del pedido se cargará aquí dinámicamente -->
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
+
     <script src="app.js"></script>
+<<<<<<< Updated upstream
     <!-- <script>
         function renderizarDomicilios() {
+=======
+    <script>
+        function cancelarPedido(id_pedido) {
+            fetch('./admin/procesarsbd.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    // Cambiamos el body para enviar correctamente los datos
+                    body: new URLSearchParams({
+                        cancelarPedido: 'true',
+                        id_pedido: id_pedido
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Pedido cancelado exitosamente.');
+                        // Actualizar el estado en la interfaz
+                        const card = document.querySelector(`.btn-cancelar-pedido[data-id="${id_pedido}"]`).closest('.order-card');
+                        const statusElement = card.querySelector('.order-status');
+                        statusElement.classList.replace('status-pendiente', 'status-cancelado');
+                        statusElement.textContent = 'Cancelado';
+                        card.querySelector(`.btn-cancelar-pedido[data-id="${id_pedido}"]`).remove();
+                    } else {
+                        alert('Hubo un error al cancelar el pedido. Inténtalo nuevamente. 1');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Hubo un error al cancelar el pedido. Inténtalo nuevamente.2');
+                });
+        }
+        document.querySelectorAll('.btn-ver-detalle').forEach(button => {
+            button.addEventListener('click', function() {
+                const id_pedido = this.getAttribute('data-id');
+                obtenerDetallePedido(id_pedido);
+            });
+        });
+
+        function obtenerDetallePedido(id_pedido) {
+            fetch('./admin/procesarsbd.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams({
+                        action: 'obtenerDetalle',
+                        id_pedido: id_pedido
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Llenar el modal con los datos del pedido
+                        document.getElementById('pedidoDetalleModalLabel').textContent = `Detalle del Pedido #${data.pedido.id_pedido}`;
+                        document.getElementById('pedidoDetalleModalBody').innerHTML = `
+                <p><strong>Fecha:</strong> ${data.pedido.fecha}</p>
+                <p><strong>Estado:</strong> ${data.pedido.estado}</p>
+                <p><strong>Dirección de Envío:</strong> ${data.pedido.direccionEnvio}</p>
+                <h6 class="mt-4">Productos:</h6>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Precio Unitario</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.pedido.productos.map(producto => `
+                            <tr>
+                                <td>${producto.nombre}</td>
+                                <td>${producto.cantidad}</td>
+                                <td>$${producto.precio_unitario}</td>
+                                <td>$${producto.subtotal}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="3" class="text-end">Total:</th>
+                            <th>$${data.pedido.total}</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            `;
+                        // Mostrar el modal
+                        const pedidoDetalleModal = new bootstrap.Modal(document.getElementById('pedidoDetalleModal'));
+                        pedidoDetalleModal.show();
+                    } else {
+                        alert('No se pudo obtener el detalle del pedido.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Hubo un error al obtener el detalle del pedido.');
+                });
+        }
+
+
+
+
+        /* function renderizarDomicilios() {
+>>>>>>> Stashed changes
             domiciliosContainer.innerHTML = '';
             domicilios.forEach(domicilio => {
                 const domicilioCard = document.createElement('div');
@@ -349,24 +466,6 @@ if (isset($_SESSION["usuario"])) {
             });
 
 
-            function renderizarPedidos(filtro = 'todos') {
-                pedidosContainer.innerHTML = '';
-                const pedidosFiltrados = filtro === 'todos' ? pedidos : pedidos.filter(p => p.estado.toLowerCase() === filtro);
-                pedidosFiltrados.forEach(pedido => {
-                    const pedidoCard = document.createElement('div');
-                    pedidoCard.className = 'order-card';
-                    pedidoCard.innerHTML = `
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h5 class="mb-0">Pedido #${pedido.id}</h5>
-                            <span class="order-status status-${pedido.estado.toLowerCase().replace(' ', '-')}">${pedido.estado}</span>
-                        </div>
-                        <p>Fecha: ${pedido.fecha}</p>
-                        <p>Total: $${pedido.total.toFixed(2)}</p>
-                        <button class="btn btn-primary-custom btn-sm me-2 btn-ver-detalle" data-id="${pedido.id}">Ver Detalle</button>
-                        ${pedido.estado === 'Procesando' ? `<button class="btn btn-danger btn-sm btn-cancelar-pedido" data-id="${pedido.id}">Cancelar Pedido</button>` : ''}
-                    `;
-                });
-            }
 
             function mostrarDetallePedido(id) {
                 const pedido = pedidos.find(p => p.id == id);
@@ -405,6 +504,7 @@ if (isset($_SESSION["usuario"])) {
                         </table>
                     `;
                 }
+<<<<<<< Updated upstream
             }
 
             pedidosContainer.addEventListener('click', (e) => {
@@ -423,6 +523,10 @@ if (isset($_SESSION["usuario"])) {
                 }
             });
     </script> -->
+=======
+            } */
+    </script>
+>>>>>>> Stashed changes
 </body>
 
 </html>
