@@ -4,24 +4,25 @@
 -- Drop tables if they exist
 DROP TABLE IF EXISTS productos_pedido;
 DROP TABLE IF EXISTS pedidos;
-DROP TABLE IF EXISTS variante_tipo_precio;
-DROP TABLE IF EXISTS tipo_precio;
+DROP TABLE IF EXISTS variantes_tipo_precio;
+DROP TABLE IF EXISTS tipos_precios;
 DROP TABLE IF EXISTS variantes;
 DROP TABLE IF EXISTS imagenes;
 DROP TABLE IF EXISTS productos;
-DROP TABLE IF EXISTS tamaño;
-DROP TABLE IF EXISTS color;
+DROP TABLE IF EXISTS colores;
 DROP TABLE IF EXISTS aromas;
 DROP TABLE IF EXISTS categorias;
-DROP TABLE IF EXISTS info_usuario;
-DROP TABLE IF EXISTS usuario_domicilio;
-DROP TABLE IF EXISTS domicilio;
-DROP TABLE IF EXISTS usuario;
-DROP TABLE IF EXISTS estado_usuario;
+DROP TABLE IF EXISTS usuario_domicilios;
+DROP TABLE IF EXISTS domicilios;
+DROP TABLE IF EXISTS info_usuarios;
+DROP TABLE IF EXISTS usuarios;
+DROP TABLE IF EXISTS estados_usuarios;
 DROP TABLE IF EXISTS permisos;
-DROP TABLE IF EXISTS sexo;
-DROP TABLE IF EXISTS estado_producto;
+DROP TABLE IF EXISTS sexos;
+DROP TABLE IF EXISTS estados_productos;
+DROP TABLE IF EXISTS estados_pedidos;
 
+-- 1. Tablas sin dependencias
 
 -- Tabla de categorías
 CREATE TABLE categorias (
@@ -42,29 +43,6 @@ CREATE TABLE colores (
     nombre VARCHAR(100)
 );
 
-
-
-
--- Tabla de productos
-CREATE TABLE productos (
-    id_producto INT PRIMARY KEY,
-    nombre VARCHAR(100),
-    descripcion TEXT,
-    id_categoria INT,
-    destacado TINYINT DEFAULT 0,
-    CONSTRAINT FK_productos_id_categoria_END FOREIGN KEY (id_categoria) REFERENCES categorias(id_categoria)
-);
-
--- Tabla de imágenes de los productos
-CREATE TABLE imagenes (
-    id_imagen INT PRIMARY KEY,
-    id_producto INT,
-    ruta TEXT,
-    principal TINYINT DEFAULT 0,
-    CONSTRAINT FK_imagenes_id_producto_END FOREIGN KEY (id_producto) REFERENCES productos(id_producto)
-
-);
-
 -- Tabla de estado de productos
 CREATE TABLE estados_productos (
     id_estado_producto INT PRIMARY KEY,
@@ -72,40 +50,11 @@ CREATE TABLE estados_productos (
     descripcion TEXT
 );
 
--- Tabla de variante (variante del producto)
-CREATE TABLE variantes (
-    sku VARCHAR(100) ,
-
-    id_producto INT ,
-    id_estado_producto INT,
-    id_aroma INT,
-    id_color INT,
-    stock INT,
-    CONSTRAINT PK_variante_sku_END PRIMARY KEY (sku),
-    CONSTRAINT FK_variante_id_producto_END          FOREIGN KEY (id_producto)           REFERENCES productos(id_producto),
-    CONSTRAINT FK_variante_id_estado_producto_END   FOREIGN KEY (id_estado_producto)    REFERENCES estados_productos(id_estado_producto),
-    CONSTRAINT FK_variante_id_aroma                 FOREIGN KEY (id_aroma)              REFERENCES aromas(id_aroma),
-    CONSTRAINT FK_variante_id_color                 FOREIGN KEY (id_color)              REFERENCES colores(id_color)
-);
-
--- Tabla de pedidos
-CREATE TABLE pedidos (
-    id_pedido INT PRIMARY KEY,
-    id_usuario INT,
-    total DECIMAL(10, 2),
-    fecha DATE
-);
-
--- Tabla de productos pedidos (relación entre pedidos y productos)
-CREATE TABLE productos_pedido (
-    id_compra INT PRIMARY KEY,
-    id_pedido INT,
-    id_producto INT,
-    sku VARCHAR(100),
-    cantidad INT,
-    precio DECIMAL(10, 2),
-    CONSTRAINT FK_productos_pedido_id_pedido_END FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido),
-    CONSTRAINT FK_productos_pedido_sku_END FOREIGN KEY (sku) REFERENCES variantes(sku)
+-- Tabla de estados de pedidos
+CREATE TABLE estados_pedidos (
+    id_estado_pedido INT PRIMARY KEY,
+    nombre VARCHAR(100),
+    descripcion TEXT
 );
 
 -- Tabla de permisos
@@ -122,22 +71,65 @@ CREATE TABLE estados_usuarios (
     descripcion TEXT
 );
 
--- Tabla de usuario
+-- Tabla de sexo
+CREATE TABLE sexos (
+    id_sexo INT PRIMARY KEY,
+    nombre VARCHAR(100),
+    descripcion TEXT
+);
+
+-- Tabla de domicilio
+CREATE TABLE domicilios (
+    id_domicilio INT PRIMARY KEY,
+    codigo_postal VARCHAR(10),
+    provincia VARCHAR(100),
+    localidad VARCHAR(100),
+    barrio VARCHAR(100),
+    calle VARCHAR(100),
+    numero VARCHAR(10)
+);
+
+-- Tabla de tipos de precios
+CREATE TABLE tipos_precios (
+    id_tipo_precio INT PRIMARY KEY,
+    nombre VARCHAR(100),
+    descripcion TEXT
+);
+
+
+-- 2. Tablas con dependencias de tablas previas
+
+-- Tabla de productos
+CREATE TABLE productos (
+    id_producto INT PRIMARY KEY,
+    nombre VARCHAR(100),
+    descripcion TEXT,
+    id_categoria INT,
+    destacado TINYINT DEFAULT 0,
+    CONSTRAINT FK_productos_id_categoria_END FOREIGN KEY (id_categoria) REFERENCES categorias(id_categoria)
+);
+
+-- Tabla de usuarios
 CREATE TABLE usuarios (
     id_usuario INT PRIMARY KEY,
-    id_permiso INT,
-    id_estado_usuario INT,
+    id_permiso INT DEFAULT 2,
+    id_estado_usuario INT DEFAULT 1,
     email VARCHAR(100),
     clave VARCHAR(100),
     CONSTRAINT FK_usuario_id_permiso_END FOREIGN KEY (id_permiso) REFERENCES permisos(id_permiso),
     CONSTRAINT FK_usuario_id_estado_usuario_END FOREIGN KEY (id_estado_usuario) REFERENCES estados_usuarios(id_estado_usuario)
 );
 
--- Tabla de sexo
-CREATE TABLE sexos (
-    id_sexo INT PRIMARY KEY,
-    nombre VARCHAR(100),
-    descripcion TEXT
+
+-- 3. Tablas dependientes de productos y usuarios
+
+-- Tabla de imágenes de productos
+CREATE TABLE imagenes (
+    id_imagen INT PRIMARY KEY,
+    id_producto INT,
+    ruta TEXT,
+    principal TINYINT DEFAULT 0,
+    CONSTRAINT FK_imagenes_id_producto_END FOREIGN KEY (id_producto) REFERENCES productos(id_producto)
 );
 
 -- Tabla de información del usuario
@@ -154,18 +146,9 @@ CREATE TABLE info_usuarios (
     CONSTRAINT FK_info_usuario_id_sexo_END FOREIGN KEY (id_sexo) REFERENCES sexos(id_sexo)
 );
 
--- Tabla de domicilio
-CREATE TABLE domicilios (
-    id_domicilio INT PRIMARY KEY,
-    codigo_postal VARCHAR(10),
-    provincia VARCHAR(100),
-    localidad VARCHAR(100),
-    barrio VARCHAR(100),
-    calle VARCHAR(100),
-    numero VARCHAR(10)
-);
 
--- Relación entre info_usuario y domicilio
+-- 4. Relación entre info_usuario y domicilio
+
 CREATE TABLE usuario_domicilios (
     id_info_usuario INT,
     id_domicilio INT,
@@ -175,14 +158,53 @@ CREATE TABLE usuario_domicilios (
     CONSTRAINT FK_usuario_domicilio_id_domicilio_END FOREIGN KEY (id_domicilio) REFERENCES domicilios(id_domicilio)
 );
 
--- Crear tabla tipo_precio
-CREATE TABLE tipos_precios (
-    id_tipo_precio INT PRIMARY KEY,
-    nombre VARCHAR(100),
-    descripcion TEXT
+
+-- 5. Tabla de pedidos dependiente de estados_pedidos y usuarios
+
+-- Tabla de pedidos
+CREATE TABLE pedidos (
+    id_pedido INT PRIMARY KEY,
+    id_usuario INT,
+    id_estado_pedido INT,
+    total DECIMAL(10, 2),
+    fecha DATE,
+    CONSTRAINT FK_pedidos_id_usuario_END FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
+    CONSTRAINT FK_pedidos_id_estado_pedido_END FOREIGN KEY (id_estado_pedido) REFERENCES estados_pedidos(id_estado_pedido)
 );
 
--- Crear tabla variante_tipo_precio
+
+-- 6. Tablas con dependencias complejas y múltiples claves foráneas
+
+-- Tabla de variantes (variante del producto)
+CREATE TABLE variantes (
+    sku VARCHAR(100),
+    id_producto INT,
+    id_estado_producto INT,
+    id_aroma INT,
+    id_color INT,
+    stock INT,
+    CONSTRAINT PK_variante_sku_END PRIMARY KEY (sku),
+    CONSTRAINT FK_variante_id_producto_END          FOREIGN KEY (id_producto)           REFERENCES productos(id_producto),
+    CONSTRAINT FK_variante_id_estado_producto_END   FOREIGN KEY (id_estado_producto)    REFERENCES estados_productos(id_estado_producto),
+    CONSTRAINT FK_variante_id_aroma                 FOREIGN KEY (id_aroma)              REFERENCES aromas(id_aroma),
+    CONSTRAINT FK_variante_id_color                 FOREIGN KEY (id_color)              REFERENCES colores(id_color)
+);
+
+-- Tabla de productos pedidos (relación entre pedidos y productos)
+CREATE TABLE productos_pedido (
+    id_pedido INT,
+    id_producto INT,
+    sku VARCHAR(100),
+    cantidad INT,
+    precio DECIMAL(10, 2),
+    CONSTRAINT FK_productos_pedido_id_pedido_END FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido),
+    CONSTRAINT FK_productos_pedido_sku_END FOREIGN KEY (sku) REFERENCES variantes(sku)
+);
+
+
+-- 7. Tabla final con dependencias de múltiples claves
+
+-- Tabla de variantes_tipo_precio
 CREATE TABLE variantes_tipo_precio (
     id_producto INT,
     id_tipo_precio INT,
@@ -191,8 +213,8 @@ CREATE TABLE variantes_tipo_precio (
     PRIMARY KEY (id_tipo_precio, id_producto),
     CONSTRAINT FK_variante_tipo_precio_id_tipo_precio    FOREIGN KEY (id_tipo_precio)    REFERENCES tipos_precios(id_tipo_precio),
     CONSTRAINT FK_variante_tipo_precio_sku               FOREIGN KEY (id_producto)       REFERENCES productos(id_producto)
-
 );
+
 
 
 
@@ -302,7 +324,6 @@ INSERT INTO colores (id_color, nombre) VALUES
 (10, 'Gris');
 
 
-
 INSERT INTO variantes (sku, id_producto, id_estado_producto, id_aroma, id_color, stock) VALUES 
 ('SKU001', 1, 1, 1, 1, 50),
 ('SKU002', 1, 1, 2, 2, 30),
@@ -372,78 +393,88 @@ INSERT INTO imagenes (id_imagen, id_producto, ruta, principal) VALUES
 (31, 4, '/imagen/31.jpg', 0),
 (32, 4, '/imagen/32.jpg', 0);
 
+-- Insertar datos en estados_pedidos
+INSERT INTO estados_pedidos (id_estado_pedido, nombre, descripcion) VALUES 
+(1, 'Pendiente', 'Pedido pendiente , para ser procesado y aprobado por la empresa'),
+(2, 'Procesado', 'Pedido procesado, se aprobo el envio del pedido'),
+(3, 'cambiado' , 'Pedido cambiado por falta de stock'),
+(4, 'En camino', 'Pedido enviado al cliente'),
+(5, 'Entregado', 'Pedido entregado al cliente'),
+(6, 'Cancelado', 'Pedido cancelado por el cliente');
+
+
 -- Insertar datos en pedidos (muchos pedidos)
-INSERT INTO pedidos (id_pedido, id_usuario, total, fecha) VALUES 
-(1, 2, 1200.50, '2024-01-01'),
-(2, 3, 750.00, '2024-01-05'),
-(3, 2, 350.75, '2024-01-10'),
-(4, 1, 1500.00, '2024-01-11'),
-(5, 2, 300.00, '2024-01-12'),
-(6, 3, 850.00, '2024-01-13'),
-(7, 1, 500.00, '2024-01-14'),
-(8, 2, 1200.00, '2024-01-15'),
-(9, 3, 600.00, '2024-01-16'),
-(10, 1, 750.00, '2024-01-17'),
-(11, 2, 400.00, '2024-01-18'),
-(12, 3, 950.00, '2024-01-19'),
-(13, 1, 1250.00, '2024-01-20'),
-(14, 2, 800.00, '2024-01-21'),
-(15, 3, 900.00, '2024-01-22'),
-(16, 1, 700.00, '2024-01-23'),
-(17, 2, 300.00, '2024-01-24'),
-(18, 3, 450.00, '2024-01-25'),
-(19, 1, 600.00, '2024-01-26'),
-(20, 2, 350.00, '2024-01-27'),
-(21, 3, 500.00, '2024-01-28'),
-(22, 1, 1000.00, '2024-01-29'),
-(23, 2, 200.00, '2024-01-30');
+INSERT INTO pedidos (id_pedido, id_usuario, id_estado_pedido, total, fecha) VALUES 
+(1, 2, 1, 1200.50, '2024-01-01'),
+(2, 3, 2, 750.00, '2024-01-05'),
+(3, 2, 3, 350.75, '2024-01-10'),
+(4, 1, 4, 1500.00, '2024-01-11'),
+(5, 2, 5, 300.00, '2024-01-12'),
+(6, 3, 6, 850.00, '2024-01-13'),
+(7, 1, 1, 500.00, '2024-01-14'),
+(8, 2, 2, 1200.00, '2024-01-15'),
+(9, 3, 3, 600.00, '2024-01-16'),
+(10, 1, 4, 750.00, '2024-01-17'),
+(11, 2, 5, 400.00, '2024-01-18'),
+(12, 3, 6, 950.00, '2024-01-19'),
+(13, 1, 1, 1250.00, '2024-01-20'),
+(14, 2, 2, 800.00, '2024-01-21'),
+(15, 3, 3, 900.00, '2024-01-22'),
+(16, 1, 4, 700.00, '2024-01-23'),
+(17, 2, 5, 300.00, '2024-01-24'),
+(18, 3, 6, 450.00, '2024-01-25'),
+(19, 1, 1, 600.00, '2024-01-26'),
+(20, 2, 2, 350.00, '2024-01-27'),
+(21, 3, 3, 500.00, '2024-01-28'),
+(22, 1, 4, 1000.00, '2024-01-29'),
+(23, 2, 5, 200.00, '2024-01-30');
 
 
 
 -- Insertar datos en productos_pedido (muchos productos por pedido)
-INSERT INTO productos_pedido (id_compra, id_pedido, id_producto, sku, cantidad, precio) VALUES 
-(1, 1, 1, 'SKU001', 2, 600.25), 
-(2, 1, 1, 'SKU002', 1, 300.00), 
-(3, 1, 2, 'SKU003', 1, 750.00), 
-(4, 1, 2, 'SKU004', 3, 116.92),
-(5, 2, 3, 'SKU005', 2, 900.00), 
-(6, 2, 3, 'SKU006', 1, 600.00), 
-(7, 3, 4, 'SKU007', 1, 300.00), 
-(8, 3, 4, 'SKU008', 2, 400.00), 
-(9, 4, 5, 'SKU009', 1, 500.00), 
-(10, 4, 5, 'SKU010', 3, 1200.00), 
-(11, 5, 6, 'SKU011', 1, 600.00), 
-(12, 5, 6, 'SKU012', 2, 150.00), 
-(13, 6, 7, 'SKU013', 1, 700.00), 
-(14, 6, 8, 'SKU014', 1, 900.00), 
-(15, 7, 9, 'SKU015', 2, 140.00), 
-(16, 7, 9, 'SKU016', 3, 600.00), 
-(17, 8, 10, 'SKU017', 1, 800.00), 
-(18, 8, 11, 'SKU018', 2, 500.00), 
-(19, 9, 12, 'SKU019', 1, 200.00), 
-(20, 9, 13, 'SKU020', 3, 900.00), 
-(21, 10, 14, 'SKU021', 1, 400.00), 
-(22, 10, 15, 'SKU022', 2, 500.00), 
-(23, 11, 16, 'SKU023', 1, 600.00), 
-(24, 11, 17, 'SKU024', 3, 500.00), 
-(25, 12, 18, 'SKU025', 2, 300.00),
-(26, 12, 19, 'SKU026', 1, 150.00),
-(27, 13, 20, 'SKU027', 2, 450.00),
-(28, 13, 21, 'SKU028', 1, 500.00),
-(29, 14, 22, 'SKU029', 3, 600.00),
-(30, 14, 23, 'SKU030', 2, 700.00),
-(31, 15, 24, 'SKU031', 1, 800.00),
-(32, 15, 1, 'SKU001', 2, 900.00),
-(33, 16, 2, 'SKU002', 1, 1000.00),
-(34, 16, 3, 'SKU003', 3, 1100.00),
-(35, 17, 4, 'SKU004', 2, 1200.00),
-(36, 17, 5, 'SKU005', 1, 1300.00),
-(37, 18, 6, 'SKU006', 3, 1400.00),
-(38, 18, 7, 'SKU007', 2, 1500.00),
-(39, 19, 8, 'SKU008', 1, 1600.00),
-(40, 19, 9, 'SKU009', 3, 1700.00),
-(41, 20, 10, 'SKU010', 2, 1800.00),
-(42, 20, 11, 'SKU011', 1, 1900.00);
+INSERT INTO productos_pedido (id_pedido, id_producto, sku, cantidad, precio) VALUES 
+(1, 1, 'SKU001', 2, 600.25), 
+(1, 1, 'SKU002', 1, 300.00), 
+(1, 2, 'SKU003', 1, 750.00), 
+(1, 2, 'SKU004', 3, 116.92),
+(2, 3, 'SKU005', 2, 900.00), 
+(2, 3, 'SKU006', 1, 600.00), 
+(3, 4, 'SKU007', 1, 300.00), 
+(3, 4, 'SKU008', 2, 400.00), 
+(4, 5, 'SKU009', 1, 500.00), 
+(4, 5, 'SKU010', 3, 1200.00), 
+(5, 6, 'SKU011', 1, 600.00), 
+(5, 6, 'SKU012', 2, 150.00), 
+(6, 7, 'SKU013', 1, 700.00), 
+(6, 8, 'SKU014', 1, 900.00), 
+(7, 9, 'SKU015', 2, 140.00), 
+(7, 9, 'SKU016', 3, 600.00), 
+(8, 10, 'SKU017', 1, 800.00), 
+(8, 11, 'SKU018', 2, 500.00), 
+(9, 12, 'SKU019', 1, 200.00), 
+(9, 13, 'SKU020', 3, 900.00), 
+(10, 14, 'SKU021', 1, 400.00), 
+(10, 15, 'SKU022', 2, 500.00), 
+(11, 16, 'SKU023', 1, 600.00), 
+(11, 17, 'SKU024', 3, 500.00), 
+(12, 18, 'SKU025', 2, 300.00),
+(12, 19, 'SKU026', 1, 150.00),
+(13, 20, 'SKU027', 2, 450.00),
+(13, 21, 'SKU028', 1, 500.00),
+(14, 22, 'SKU029', 3, 600.00),
+(14, 23, 'SKU030', 2, 700.00),
+(15, 24, 'SKU031', 1, 800.00),
+(15, 1, 'SKU001', 2, 900.00),
+(16, 2, 'SKU002', 1, 1000.00),
+(16, 3, 'SKU003', 3, 1100.00),
+(17, 4, 'SKU004', 2, 1200.00),
+(17, 5, 'SKU005', 1, 1300.00),
+(18, 6, 'SKU006', 3, 1400.00),
+(18, 7, 'SKU007', 2, 1500.00),
+(19, 8, 'SKU008', 1, 1600.00),
+(19, 9, 'SKU009', 3, 1700.00),
+(20, 10, 'SKU010', 2, 1800.00),
+(20, 11, 'SKU011', 1, 1900.00);
 
 
 INSERT INTO tipos_precios (id_tipo_precio, nombre, descripcion) VALUES 
@@ -559,6 +590,21 @@ SELECT iu.nombre AS nombre_usuario, iu.apellido, iu.dni, iu.fecha_nacimiento, iu
 FROM info_usuarios iu
 JOIN sexos s ON iu.id_sexo = s.id_sexo
 WHERE iu.id_usuario = 1;
+
+
+-- Todos los pedidos hechos por un usuario con su estado actual
+SELECT p.id_pedido, p.total, p.fecha, ep.nombre AS estado_pedido
+FROM pedidos p
+JOIN usuarios u ON p.id_usuario = u.id_usuario
+JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido
+WHERE u.id_usuario = 1;
+
+
+-- Detalle de un pedido por id_pedido
+SELECT pp.id_pedido, pp.id_producto, p.nombre AS producto_nombre, pp.sku, pp.cantidad, pp.precio
+FROM productos_pedido pp
+JOIN productos p ON pp.id_producto = p.id_producto
+WHERE pp.id_pedido = 4;
 
 -- Select id and name from sexos
 SELECT id_sexo, nombre FROM sexos;
