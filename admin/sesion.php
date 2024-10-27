@@ -13,19 +13,27 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["inicar_sesion"])) {
 
     if ($usuario) {
         //verificar si la contraseña es correcta
-        if (password_verify($password, $usuario["clave"])) {
-            //iniciar sesión
+        /* if (password_verify($password, $usuario["clave"])) { */
+        if ($password == $usuario["clave"]) {
+        //iniciar sesión
             $_SESSION["usuario"] = $usuario["id_usuario"];
             $_SESSION["email"] = $usuario["email"];
             $_SESSION["permiso"] = $usuario["id_permiso"];
             header("Location: /pa/admin/admin.php");
             exit;
         } else {
-            echo
-            "<script>
-                alert('La contraseña ingresada es incorrecta');
-                window.location.href = '/pa/iniciarSesion.php'; // Redirigir al login o a la página actual
-            </script>";
+            if ($usuario["id_permiso"] == 1) {
+                header("Location: /pa/admin/admin.php");
+            } elseif ($usuario["id_permiso"] == 2) {
+                header("Location: /pa/usuario/panel.php");
+            } else {
+                echo
+                "<script>
+                    alert('Permiso no reconocido');
+                    window.location.href = '/pa/iniciarSesion.php'; // Redirigir al login o a la página actual
+                </script>";
+            }
+            exit;
         }
     }
 }
