@@ -41,6 +41,20 @@ if (isset($_SESSION["usuario"])) {
     $sql_sexos = $con->prepare("SELECT id_sexo, nombre FROM sexos;");
     $sql_sexos->execute();
     $sexos = $sql_sexos->fetchAll(PDO::FETCH_ASSOC);
+
+
+    $sql_pedido = $con->prepare("   SELECT p.id_pedido, p.total, p.fecha, ep.nombre AS estado_pedido
+                                    FROM pedidos p
+                                    JOIN usuarios u ON p.id_usuario = u.id_usuario
+                                    JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido
+                                    WHERE u.id_usuario = :id_usuario;");
+    $sql_pedido->bindParam(":id_usuario", $id_usuario);
+    $sql_pedido->execute();
+    $pedidos = $sql_pedido->fetchAll(PDO::FETCH_ASSOC);
+
+    $sql_estados = $con->prepare("SELECT id_estado_pedido, nombre FROM estados_pedidos;");
+    $sql_estados->execute();
+    $estados = $sql_estados->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>
 <!DOCTYPE html>
@@ -89,8 +103,16 @@ if (isset($_SESSION["usuario"])) {
             color: white;
         }
 
-        .status-procesando {
+        .status-procesado {
             background-color: #ffc107;
+        }
+
+        .status-pendiente {
+            background-color: #ffc107;
+        }
+
+        .status-cambiado {
+            background-color: #f57c00;
         }
 
         .status-en-camino {
@@ -210,7 +232,7 @@ if (isset($_SESSION["usuario"])) {
                                     </div>
                                     <div class="col-md-6">
                                         <label for="fecha-nacimiento" class="form-label">Fecha de Nacimiento</label>
-                                        <input  type="date" class="form-control" id="fecha-nacimiento" name="fecha_nacimiento" value="<?php echo $fecha_nacimiento ?>" required>
+                                        <input type="date" class="form-control" id="fecha-nacimiento" name="fecha_nacimiento" value="<?php echo $fecha_nacimiento ?>" required>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -231,8 +253,27 @@ if (isset($_SESSION["usuario"])) {
                                     </div>
                                 </div>
                                 <div class="text-center mt-4">
-                                    <button type="submit" class="btn btn-primary-custom" name="actualizarInfo">Guardar Cambios</button>
+                                    <button type="button" class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#confirmUpdateInfoModal">Guardar cambios</button>
                                     <button type="button" id="btn-cancelar" class="btn btn-secondary ms-2" onclick="btnCancelar()">Cancelar</button>
+                                </div>
+                                <div id="confirmUpdateInfoModal" class="modal fade">
+                                    <div class="modal-dialog modal-confirm">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <div class="icon-box">
+                                                    <i class="bi bi-person-check"></i>
+                                                </div>
+                                                <h4 class="modal-title">Actualizar Información</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p class="text-center">¿Estás seguro de que deseas actualizar tu información personal?</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">Cancelar</button>
+                                                <button type="submit" name="actualizarInfo" class="btn btn-confirm" id="updateInfoConfirm">Sí, actualizar información</button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </form>
                         </div>
@@ -242,14 +283,30 @@ if (isset($_SESSION["usuario"])) {
                                 <label for="ordenar-pedidos" class="form-label">Ordenar por estado:</label>
                                 <select id="ordenar-pedidos" class="form-select">
                                     <option value="todos">Todos</option>
-                                    <option value="procesando">Procesando</option>
-                                    <option value="en-camino">En Camino</option>
-                                    <option value="entregado">Entregado</option>
-                                    <option value="cancelado">Cancelado</option>
+                                    <?php foreach ($estados as $estado) { ?>
+                                        <option value="<?php echo $estado["id_estado_pedido"] ?>"><?php echo $estado["nombre"] ?></option>
+                                    <?php } ?>
                                 </select>
                             </div>
                             <div id="pedidos-container">
-                                <!-- Los pedidos se cargarán aquí dinámicamente -->
+                                <?php foreach ($pedidos as $pedido) { ?>
+                                    <div class="order-card">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <h5 class="mb-0">Pedido: #<?php echo $pedido["id_pedido"] ?> </h5>
+                                            <span class="order-status status-<?php echo $pedido["estado_pedido"] ?>"><?php echo $pedido["estado_pedido"] ?></span>
+                                        </div>
+                                        <p>Fecha: <?php echo $pedido["fecha"] ?></p>
+                                        <p>Total: <?php echo $pedido["total"] ?></p>
+                                        <button class="btn btn-primary-custom btn-sm me-2 btn-ver-detalle">Ver Detalle</button>
+                                        <?php if (in_array($pedido["estado_pedido"], ["pendiente", "procesado", "cambiado"])) { ?>
+                                            <button class="btn btn-danger btn-sm btn-cancelar-pedido"
+                                                data-id="<?php echo $pedido['id_pedido']; ?>"
+                                                onclick="cancelarPedido(<?php echo $pedido['id_pedido']; ?>)">
+                                                Cancelar Pedido
+                                            </button>
+                                        <?php } ?>
+                                    </div>
+                                <?php } ?>
                             </div>
                         </div>
                         <div class="tab-pane fade" id="domicilios">
@@ -326,8 +383,42 @@ if (isset($_SESSION["usuario"])) {
         </div>
     </div>
     <script src="app.js"></script>
-    <!-- <script>
-        function renderizarDomicilios() {
+    <script>
+        function cancelarPedido(id_pedido) {
+            fetch('./admin/procesarsbd.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    // Cambiamos el body para enviar correctamente los datos
+                    body: new URLSearchParams({
+                        cancelarPedido: 'true',
+                        id_pedido: id_pedido
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Pedido cancelado exitosamente.');
+                        // Actualizar el estado en la interfaz
+                        const card = document.querySelector(`.btn-cancelar-pedido[data-id="${id_pedido}"]`).closest('.order-card');
+                        const statusElement = card.querySelector('.order-status');
+                        statusElement.classList.replace('status-pendiente', 'status-cancelado');
+                        statusElement.textContent = 'Cancelado';
+                        card.querySelector(`.btn-cancelar-pedido[data-id="${id_pedido}"]`).remove();
+                    } else {
+                        alert('Hubo un error al cancelar el pedido. Inténtalo nuevamente. 1');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Hubo un error al cancelar el pedido. Inténtalo nuevamente.2');
+                });
+        }
+
+
+
+        /* function renderizarDomicilios() {
             domiciliosContainer.innerHTML = '';
             domicilios.forEach(domicilio => {
                 const domicilioCard = document.createElement('div');
@@ -405,24 +496,24 @@ if (isset($_SESSION["usuario"])) {
                         </table>
                     `;
                 }
-            }
+            } */
 
-            pedidosContainer.addEventListener('click', (e) => {
-                if (e.target.classList.contains('btn-ver-detalle')) {
-                    const id = e.target.dataset.id;
-                    mostrarDetallePedido(id);
-                } else if (e.target.classList.contains('btn-cancelar-pedido')) {
-                    const id = e.target.dataset.id;
-                    if (confirm('¿Estás seguro de que deseas cancelar este pedido?')) {
-                        const index = pedidos.findIndex(p => p.id == id);
-                        if (index !== -1) {
-                            pedidos[index].estado = 'Cancelado';
-                            renderizarPedidos(ordenarPedidosSelect.value);
-                        }
+        pedidosContainer.addEventListener('click', (e) => {
+            if (e.target.classList.contains('btn-ver-detalle')) {
+                const id = e.target.dataset.id;
+                mostrarDetallePedido(id);
+            } else if (e.target.classList.contains('btn-cancelar-pedido')) {
+                const id = e.target.dataset.id;
+                if (confirm('¿Estás seguro de que deseas cancelar este pedido?')) {
+                    const index = pedidos.findIndex(p => p.id == id);
+                    if (index !== -1) {
+                        pedidos[index].estado = 'Cancelado';
+                        renderizarPedidos(ordenarPedidosSelect.value);
                     }
                 }
-            });
-    </script> -->
+            }
+        });
+    </script>
 </body>
 
 </html>
