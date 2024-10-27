@@ -156,17 +156,24 @@ $productos = $sql_catalogo->fetchAll(PDO::FETCH_ASSOC);
                             <div class="col">
                                 <div class="card h-100 product-card">
                                     <a href="producto.php?id_producto=<?php echo $producto["id_producto"] ?>" class="text-decoration-none text-dark">
-                                        <img src="../pa/assets/productos<?php echo $producto["imagen_principal"]; ?>" class="card-img-top" alt="<?php echo $producto["id_producto"] ?>">
-                                        <div class="card-body">
-                                            <h5 class="card-title"><?php echo $producto["nombre"] ?></h5>
-                                            <p class="card-text"><small class="text-muted">Categoría: <?php echo $producto["categoria"] ?></small></p>
-                                            <p class="card-text"><strong><?php echo $producto["precio_minorista"] ?></strong></p>
+                                        <div class="card-catalogo h-100 d-flex flex-column">
+                                            <div class="img-container">
+                                                <img src="../pa/assets/productos/<?php echo $producto["imagen_principal"]; ?>" class="card-img-top w-100 h-100 object-fit-cover" alt="<?php echo $producto["id_producto"] ?>">
+                                            </div>
+
+                                            <div class="card-body flex-grow-1">
+                                                <h5 class="card-title"><?php echo $producto["nombre"] ?></h5>
+                                                <p class="card-text"><small class="text-muted">Categoría: <?php echo $producto["categoria"] ?></small></p>
+                                                <p class="card-text"><strong><?php echo $producto["precio_minorista"] ?></strong></p>
+                                            </div>
                                         </div>
                                     </a>
+
                                     <div class="card-footer">
                                         <button class="btn btn-primary-custom w-100 add-to-cart-btn" onclick="añadirCarrito(<?php echo $producto['id_producto'] ?>, '<?php echo addslashes($producto['nombre']) ?>', <?php echo $producto['precio_minorista'] ?>)">Añadir</button>
-
                                     </div>
+
+
                                     <button class="btn btn-sm btn-secondary-custom quick-view-btn"
                                         data-bs-toggle="modal"
                                         data-bs-target="#quickViewModal"
