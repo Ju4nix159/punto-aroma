@@ -88,3 +88,60 @@ function btnCancelar() {
   infoUsuario.classList.remove("hidden");
   formUsuario.classList.add("hidden");
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+  // Función para manejar la confirmación de eliminar
+  document
+    .getElementById("deleteConfirm")
+    .addEventListener("click", function () {
+      // Aquí iría la lógica para eliminar el elemento
+      alert("Elemento eliminado");
+      bootstrap.Modal.getInstance(
+        document.getElementById("confirmDeleteModal")
+      ).hide();
+    });
+
+  // Función para manejar la confirmación de cerrar sesión
+  document
+    .getElementById("logoutConfirm")
+    .addEventListener("click", function () {
+      // Aquí iría la lógica para cerrar sesión
+      alert("Sesión cerrada");
+      bootstrap.Modal.getInstance(
+        document.getElementById("confirmLogoutModal")
+      ).hide();
+    });
+
+  // Función para manejar la confirmación de compra
+  document
+    .getElementById("purchaseConfirm")
+    .addEventListener("click", function () {
+      // Aquí iría la lógica para procesar la compra
+      alert("Compra realizada");
+      bootstrap.Modal.getInstance(
+        document.getElementById("confirmPurchaseModal")
+      ).hide();
+    });
+
+  // Función para manejar la confirmación de cancelar pedido
+  document
+    .getElementById("cancelOrderConfirm")
+    .addEventListener("click", function () {
+      // Aquí iría la lógica para cancelar el pedido
+      alert("Pedido cancelado");
+      bootstrap.Modal.getInstance(
+        document.getElementById("confirmCancelOrderModal")
+      ).hide();
+    });
+
+  // Función para manejar la confirmación de actualizar información personal
+  document
+    .getElementById("updateInfoConfirm")
+    .addEventListener("click", function () {
+      // Aquí iría la lógica para actualizar la información personal
+      alert("Información personal actualizada");
+      bootstrap.Modal.getInstance(
+        document.getElementById("confirmUpdateInfoModal")
+      ).hide();
+    });
+});
