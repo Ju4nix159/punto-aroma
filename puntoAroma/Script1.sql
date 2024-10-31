@@ -395,12 +395,12 @@ INSERT INTO imagenes (id_imagen, id_producto, ruta, principal) VALUES
 
 -- Insertar datos en estados_pedidos
 INSERT INTO estados_pedidos (id_estado_pedido, nombre, descripcion) VALUES 
-(1, 'Pendiente', 'Pedido pendiente , para ser procesado y aprobado por la empresa'),
-(2, 'Procesado', 'Pedido procesado, se aprobo el envio del pedido'),
+(1, 'pendiente', 'Pedido pendiente , para ser procesado y aprobado por la empresa'),
+(2, 'procesado', 'Pedido procesado, se aprobo el envio del pedido'),
 (3, 'cambiado' , 'Pedido cambiado por falta de stock'),
-(4, 'En camino', 'Pedido enviado al cliente'),
-(5, 'Entregado', 'Pedido entregado al cliente'),
-(6, 'Cancelado', 'Pedido cancelado por el cliente');
+(4, 'en-camino', 'Pedido enviado al cliente'),
+(5, 'entregado', 'Pedido entregado al cliente'),
+(6, 'cancelado', 'Pedido cancelado por el cliente');
 
 
 -- Insertar datos en pedidos (muchos pedidos)
