@@ -250,9 +250,6 @@ if (isset($_SESSION["usuario"])) {
                                 </select>
                             </div>
                             <div id="pedidos-container">
-<<<<<<< Updated upstream
-                                <!-- Los pedidos se cargarán aquí dinámicamente -->
-=======
                                 <?php foreach ($pedidos as $pedido) { ?>
                                     <div class="order-card">
                                         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -274,7 +271,6 @@ if (isset($_SESSION["usuario"])) {
                                         <?php } ?>
                                     </div>
                                 <?php } ?>
->>>>>>> Stashed changes
                             </div>
                         </div>
                         <div class="tab-pane fade" id="domicilios">
@@ -336,10 +332,6 @@ if (isset($_SESSION["usuario"])) {
     <!-- Modal para detalles del pedido -->
 
     <script src="app.js"></script>
-<<<<<<< Updated upstream
-    <!-- <script>
-        function renderizarDomicilios() {
-=======
     <script>
         function cancelarPedido(id_pedido) {
             fetch('./admin/procesarsbd.php', {
@@ -444,7 +436,6 @@ if (isset($_SESSION["usuario"])) {
 
 
         /* function renderizarDomicilios() {
->>>>>>> Stashed changes
             domiciliosContainer.innerHTML = '';
             domicilios.forEach(domicilio => {
                 const domicilioCard = document.createElement('div');
@@ -504,29 +495,8 @@ if (isset($_SESSION["usuario"])) {
                         </table>
                     `;
                 }
-<<<<<<< Updated upstream
-            }
-
-            pedidosContainer.addEventListener('click', (e) => {
-                if (e.target.classList.contains('btn-ver-detalle')) {
-                    const id = e.target.dataset.id;
-                    mostrarDetallePedido(id);
-                } else if (e.target.classList.contains('btn-cancelar-pedido')) {
-                    const id = e.target.dataset.id;
-                    if (confirm('¿Estás seguro de que deseas cancelar este pedido?')) {
-                        const index = pedidos.findIndex(p => p.id == id);
-                        if (index !== -1) {
-                            pedidos[index].estado = 'Cancelado';
-                            renderizarPedidos(ordenarPedidosSelect.value);
-                        }
-                    }
-                }
-            });
-    </script> -->
-=======
             } */
     </script>
->>>>>>> Stashed changes
 </body>
 
 </html>
