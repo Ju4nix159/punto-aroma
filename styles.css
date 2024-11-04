@@ -647,3 +647,24 @@ section[id] {
 .card-footer {
     background-color: #f8f9fa;
 }
+.auth-container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    max-width: 400px;
+    width: 100%;
+}
+.icon-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+.icon-circle i {
+    font-size: 2.5rem;
+    color: white;
+}
