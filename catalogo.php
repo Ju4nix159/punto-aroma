@@ -170,7 +170,7 @@ $productos = $sql_catalogo->fetchAll(PDO::FETCH_ASSOC);
                                     </a>
 
                                     <div class="card-footer">
-                                        <button class="btn btn-primary-custom w-100 add-to-cart-btn" onclick="añadirCarrito(<?php echo $producto['id_producto'] ?>, '<?php echo addslashes($producto['nombre']) ?>', <?php echo $producto['precio_minorista'] ?>)">Añadir</button>
+                                        <a href="producto.php?id_producto=<?php echo $producto["id_producto"] ?>" class="btn btn-primary-custom w-100">ver producto</a>
                                     </div>
 
 

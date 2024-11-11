@@ -53,23 +53,6 @@ document
     });
   });
 
-function toggleCart(event) {
-  event.stopPropagation();
-  const cart = document.getElementById("cart");
-  const dropdownMenu = document.querySelector(".dropdown-menu.show");
-  if (dropdownMenu) {
-    dropdownMenu.classList.remove("show");
-    const dropdownToggle = document.querySelector(".dropdown-toggle");
-    dropdownToggle.setAttribute("aria-expanded", "false");
-  }
-  cart.classList.toggle("hidden");
-  updateCart();
-}
-
-document.getElementById("cart").addEventListener("click", function (event) {
-  event.stopPropagation();
-});
-
 function InformacionPersonal() {
   const infoUsuario = document.getElementById("info-usuario");
   const formUsuario = document.getElementById("form-editar");
@@ -98,39 +81,6 @@ document.addEventListener("DOMContentLoaded", function () {
       alert("Elemento eliminado");
       bootstrap.Modal.getInstance(
         document.getElementById("confirmDeleteModal")
-      ).hide();
-    });
-
-  // Función para manejar la confirmación de cerrar sesión
-  document
-    .getElementById("logoutConfirm")
-    .addEventListener("click", function () {
-      // Aquí iría la lógica para cerrar sesión
-      alert("Sesión cerrada");
-      bootstrap.Modal.getInstance(
-        document.getElementById("confirmLogoutModal")
-      ).hide();
-    });
-
-  // Función para manejar la confirmación de compra
-  document
-    .getElementById("purchaseConfirm")
-    .addEventListener("click", function () {
-      // Aquí iría la lógica para procesar la compra
-      alert("Compra realizada");
-      bootstrap.Modal.getInstance(
-        document.getElementById("confirmPurchaseModal")
-      ).hide();
-    });
-
-  // Función para manejar la confirmación de cancelar pedido
-  document
-    .getElementById("cancelOrderConfirm")
-    .addEventListener("click", function () {
-      // Aquí iría la lógica para cancelar el pedido
-      alert("Pedido cancelado");
-      bootstrap.Modal.getInstance(
-        document.getElementById("confirmCancelOrderModal")
       ).hide();
     });
 
