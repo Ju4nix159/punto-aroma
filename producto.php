@@ -1,9 +1,7 @@
 <?php
 include 'header.php';
 include 'admin/config/sbd.php';
-if (isset($_SESSION["usuario"])) {
-    $_SESSION['cart_temp'] = [];
-}
+
 if (isset($_GET['id_producto'])) {
     $id_producto = intval($_GET['id_producto']);
     $sql_producto = $con->prepare(' SELECT p.id_producto, p.nombre, p.descripcion, vtp.precio AS precio, i.ruta AS imagen_principal
@@ -79,7 +77,8 @@ WHERE c.nombre = 'Perfumes' AND p.id_producto = :id_producto;");
                                     <div class="product-count">
                                         <div class="d-flex">
                                             <button type="button" class="btn-primary-custom qtyminus" onclick="decrementQuantity('<?php echo $variante['sku'] ?>', '<?php echo $variante['aroma'] ?>')">-</button>
-                                            <input type="number" id="quantity-<?php echo $variante['sku'] ?>" class="cantidad" value="0" min="0" readonly>
+
+                                            <input type="number" id="quantity-<?php echo $variante['sku'] ?>" class="cantidad" value="0" min="0" data-price="<?php echo $info_producto['precio']; ?>">
                                             <button type="button" class="btn-primary-custom qtyplus" onclick="incrementQuantity('<?php echo $variante['sku'] ?>', '<?php echo $variante['aroma'] ?>')">+</button>
                                         </div>
                                     </div>
@@ -123,90 +122,144 @@ WHERE c.nombre = 'Perfumes' AND p.id_producto = :id_producto;");
     </footer>
 </body>
 <script>
-    // Función para actualizar el carrito temporal en sessionStorage y mostrar en la consola
-    function updateTemporaryCart(id_producto, precio, sku, cantidad, nombre_producto) {
-        // Obtener el carrito temporal desde sessionStorage
-        let carritoTemporal = JSON.parse(sessionStorage.getItem('carritoTemporal')) || {};
-
-        // Si el producto aún no existe en el carrito temporal, inicializamos su estructura
-        if (!carritoTemporal[id_producto]) {
-            carritoTemporal[id_producto] = {
-                nombre: nombre_producto,
-                precio: precio,
-                fragancias: {}
-            };
-        }
-
-        // Si la cantidad es mayor a 0, actualizamos la fragancia
-        if (cantidad > 0) {
-            carritoTemporal[id_producto]['fragancias'][sku] = cantidad;
-        } else {
-            // Si la cantidad es 0, eliminamos la fragancia específica
-            delete carritoTemporal[id_producto]['fragancias'][sku];
-
-            // Si no quedan fragancias, eliminamos el producto completo del carrito temporal
-            if (Object.keys(carritoTemporal[id_producto]['fragancias']).length === 0) {
-                delete carritoTemporal[id_producto];
-            }
-        }
-
-        // Guardamos el carrito temporal actualizado en sessionStorage y lo imprimimos en la consola
-        sessionStorage.setItem('carritoTemporal', JSON.stringify(carritoTemporal));
-        console.log('Carrito temporal:', carritoTemporal);
-    }
-
-    // Funciones para incrementar y decrementar la cantidad de una fragancia específica
     function incrementQuantity(sku, aroma) {
-        let input = document.getElementById(`quantity-${sku}`);
-        let cantidad = parseInt(input.value) + 1;
-        input.value = cantidad;
-
-        const id_producto = <?php echo $info_producto["id_producto"]; ?>;
-        const nombre_producto = '<?php echo $info_producto["nombre"]; ?>';
-        const precio = <?php echo $info_producto["precio"]; ?>;
-        updateTemporaryCart(id_producto, precio, sku, cantidad, nombre_producto);
+        var quantityInput = document.getElementById('quantity-' + sku);
+        var currentQuantity = parseInt(quantityInput.value);
+        quantityInput.value = currentQuantity + 1;
+        updateTotalPrice();
     }
 
     function decrementQuantity(sku, aroma) {
-        let input = document.getElementById(`quantity-${sku}`);
-        let cantidad = Math.max(parseInt(input.value) - 1, 0);
-        input.value = cantidad;
-
-        const id_producto = <?php echo $info_producto["id_producto"]; ?>;
-        const nombre_producto = '<?php echo $info_producto["nombre"]; ?>';
-        const precio = <?php echo $info_producto["precio"]; ?>;
-
-        updateTemporaryCart(id_producto, precio, sku, cantidad, nombre_producto);
+        var quantityInput = document.getElementById('quantity-' + sku);
+        var currentQuantity = parseInt(quantityInput.value);
+        if (currentQuantity > 0) {
+            quantityInput.value = currentQuantity - 1;
+            updateTotalPrice();
+        }
     }
 
-    // Función para enviar el carrito temporal al servidor cuando se hace clic en "Agregar al Carrito"
-    function addToCart() {
-        const carritoTemporal = JSON.parse(sessionStorage.getItem('carritoTemporal'));
+    function updateTotalPrice() {
+        var total = 0;
+        var quantities = document.querySelectorAll('.cantidad');
+        quantities.forEach(function(input) {
+            var quantity = parseInt(input.value);
+            var price = parseFloat(input.getAttribute('data-price'));
+            total += quantity * price;
+        });
+        document.getElementById('total-price').innerText = total.toFixed(2);
+    }
 
-        if (!carritoTemporal || Object.keys(carritoTemporal).length === 0) {
-            alert('Tu carrito está vacío.');
+    
+
+
+    function addToCart() {
+        var nombreProducto = "<?php echo $info_producto['nombre']; ?>"; // Nombre del producto
+        var precioProducto = <?php echo $info_producto['precio']; ?>; // Precio del producto, suponiendo que ya está disponible en el backend
+        var fraganciasSeleccionadas = [];
+
+        // Capturar las fragancias y cantidades seleccionadas
+        var cantidades = document.querySelectorAll('.cantidad');
+        cantidades.forEach(function(input) {
+            var quantity = parseInt(input.value);
+            if (quantity > 0) {
+                var sku = input.id.replace('quantity-', '');
+                var aroma = input.closest('.fragrance-item').querySelector('h5').textContent; // Nombre de la fragancia
+
+                fraganciasSeleccionadas.push({
+                    sku: sku,
+                    nombre: aroma,
+                    cantidad: quantity
+                });
+            }
+        });
+
+        // Verificar que haya al menos una fragancia seleccionada
+        if (fraganciasSeleccionadas.length === 0) {
+            alert("Por favor, seleccione al menos una fragancia.");
             return;
         }
 
-        // Enviamos el carrito temporal al servidor para almacenarlo en la sesión
-        fetch('update_cart.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(carritoTemporal)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    console.error('Error del servidor:', data.error);
+        // Crear el objeto de producto con la estructura deseada
+        var productoSeleccionado = {
+            nombre: nombreProducto,
+            precio: precioProducto,
+            fragancias: fraganciasSeleccionadas
+        };
+
+        // Enviar datos al servidor para agregar al carrito
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "agregar_al_carrito.php", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+                if (response.success) {
+                    alert("Producto(s) agregado(s) al carrito exitosamente.");
+                    actualizarCarrito();
                 } else {
-                    console.log('Carrito guardado en la sesión:', data);
-                    sessionStorage.removeItem('carritoTemporal'); // Limpia el carrito temporal después de agregarlo a la sesión
-                    loadCart(); // Actualiza el carrito en el offcanvas
+                    alert("Hubo un problema al agregar el producto al carrito.");
                 }
-            })
-            .catch(error => console.error('Error al agregar al carrito:', error));
+            }
+        };
+
+        xhr.send(JSON.stringify({
+            producto: productoSeleccionado
+        }));
+    }
+
+
+
+    // Función para actualizar el contenido del carrito
+    function actualizarCarrito() {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "mostrar_carrito.php", true);
+
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                document.getElementById("cart-items").innerHTML = xhr.responseText;
+
+                // Mostrar/ocultar mensajes según el estado del carrito
+                var cartItems = document.getElementById("cart-items").children.length;
+                document.getElementById("empty-cart-message").style.display = cartItems === 0 ? "block" : "none";
+                document.getElementById("cart-summary").style.display = cartItems === 0 ? "none" : "block";
+            }
+        };
+
+        xhr.send();
+    }
+
+    function eliminarDelCarrito(sku) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "eliminar_del_carrito.php", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                actualizarCarrito(); // Actualizar el carrito después de eliminar el producto
+            }
+        };
+
+        xhr.send(JSON.stringify({
+            sku: sku
+        }));
+    }
+
+    function actualizarCantidad(sku, cantidadCambio) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "actualizar_cantidad.php", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                actualizarCarrito(); // Actualizar el carrito después de cambiar la cantidad
+            }
+        };
+
+        xhr.send(JSON.stringify({
+            sku: sku,
+            cantidadCambio: cantidadCambio
+        }));
     }
 </script>
 
