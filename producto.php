@@ -2,7 +2,6 @@
 include 'header.php';
 include 'admin/config/sbd.php';
 
-
 if (isset($_GET['id_producto'])) {
     $id_producto = intval($_GET['id_producto']);
     $sql_producto = $con->prepare(' SELECT p.id_producto, p.nombre, p.descripcion, vtp.precio AS precio, i.ruta AS imagen_principal
@@ -13,14 +12,12 @@ if (isset($_GET['id_producto'])) {
     $sql_producto->bindParam(':id_producto', $id_producto, PDO::PARAM_INT);
     $sql_producto->execute();
     $info_producto = $sql_producto->fetch(PDO::FETCH_ASSOC);
-
-
-    $sql_variantes = $con->prepare("SELECT DISTINCT a.nombre AS aroma
-                                    FROM productos p
-                                    JOIN categorias c ON p.id_categoria = c.id_categoria
-                                    JOIN variantes v ON p.id_producto = v.id_producto
-                                    JOIN aromas a ON v.id_aroma = a.id_aroma
-                                    WHERE c.nombre = 'Perfumes' AND p.id_producto = :id_producto;");
+    $sql_variantes = $con->prepare("SELECT DISTINCT a.nombre AS aroma, v.sku
+FROM productos p
+    JOIN categorias c ON p.id_categoria = c.id_categoria
+    JOIN variantes v ON p.id_producto = v.id_producto
+    JOIN aromas a ON v.id_aroma = a.id_aroma
+WHERE c.nombre = 'Perfumes' AND p.id_producto = :id_producto;");
     $sql_variantes->bindParam(':id_producto', $id_producto, PDO::PARAM_INT);
     $sql_variantes->execute();
     $variantes = $sql_variantes->fetchAll(PDO::FETCH_ASSOC);
@@ -33,10 +30,7 @@ if (isset($_GET['id_producto'])) {
     $sql_imagenes->execute();
     $imagenes = $sql_imagenes->fetchAll(PDO::FETCH_ASSOC);
 };
-
-
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 
@@ -76,15 +70,19 @@ if (isset($_GET['id_producto'])) {
                     <p>Elige entre nuestras diferentes fragancias y personaliza tu experiencia aromática.</p>
 
                     <form id="product-form">
+                        <input type="hidden" id="id-producto" value="<?php echo $id_producto ?>">
+                        <input type="hidden" id="precio-producto" value="<?php echo $info_producto['precio'] ?>">
+                        <input type="hidden" id="nombre-producto" value="<?php echo $info_producto['nombre'] ?>">
                         <div id="fragrances-list">
                             <?php foreach ($variantes as $variante) { ?>
-                                <div class="fragrance-item">
+                                <div class="fragrance-item" data-sku="<?php echo $variante['sku']; ?>" data-aroma="<?php echo $variante['aroma']; ?>">
                                     <h5><?php echo $variante["aroma"] ?></h5>
                                     <div class="product-count">
                                         <div class="d-flex">
-                                            <button type="button" class="btn-primary-custom qtyminus" onclick="decrementQuantity('<?php echo $variante['aroma'] ?>')">-</button>
-                                            <input type="number" id="quantity-<?php echo $variante['aroma'] ?>" class="cantidad" value="0" min="0" readonly>
-                                            <button type="button" class="btn-primary-custom qtyplus" onclick="incrementQuantity('<?php echo $variante['aroma'] ?>')">+</button>
+                                            <button type="button" class="btn-primary-custom qtyminus" onclick="decrementQuantity('<?php echo $variante['sku'] ?>', '<?php echo $variante['aroma'] ?>')">-</button>
+
+                                            <input type="number" id="quantity-<?php echo $variante['sku'] ?>" class="cantidad" value="0" min="0">
+                                            <button type="button" class="btn-primary-custom qtyplus" onclick="incrementQuantity('<?php echo $variante['sku'] ?>', '<?php echo $variante['aroma'] ?>')">+</button>
                                         </div>
                                     </div>
                                 </div>
@@ -98,6 +96,7 @@ if (isset($_GET['id_producto'])) {
                         <button type="button" class="btn btn-primary-custom btn-lg mt-3" onclick="addToCart()">
                             Agregar al Carrito
                         </button>
+
                     </form>
 
                     <a href="catalogo.php" class="btn btn-outline-secondary mt-3">Volver al Catálogo</a>
@@ -124,50 +123,7 @@ if (isset($_GET['id_producto'])) {
     <footer class="">
         <?php include 'footer.php'; ?>
     </footer>
-
-    <script>
-
-        let currentImageIndex = 0;
-        const images = document.querySelectorAll('.gall-thumbnail');
-
-        function incrementQuantity(fragrance) {
-            const input = document.getElementById(`quantity-${fragrance}`);
-            input.value = parseInt(input.value) + 1;
-            updateTotalPrice();
-        }
-
-        function decrementQuantity(fragrance) {
-            const input = document.getElementById(`quantity-${fragrance}`);
-            if (parseInt(input.value) > 0) {
-                input.value = parseInt(input.value) - 1;
-                updateTotalPrice();
-            }
-        }
-
-        function updateTotalPrice() {
-            let total = 0;
-            fragrances.forEach(fragrance => {
-                const quantity = parseInt(document.getElementById(`quantity-${fragrance}`).value);
-                total += quantity * pricePerUnit;
-            });
-            document.getElementById('total-price').textContent = total.toFixed(2);
-        }
-
-        function setMainImage(src) {
-            document.getElementById('main-image').src = src;
-            document.querySelectorAll('.gall-thumbnail').forEach(thumb => {
-                thumb.classList.remove('active');
-            });
-            event.target.classList.add('active');
-        }
-
-        function changeImage(direction) {
-            currentImageIndex += direction;
-            if (currentImageIndex < 0) currentImageIndex = images.length - 1;
-            if (currentImageIndex >= images.length) currentImageIndex = 0;
-            setMainImage(images[currentImageIndex].src);
-        }
-    </script>
 </body>
+<script src="carrito.js"></script>
 
 </html>

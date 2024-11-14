@@ -36,11 +36,57 @@ include 'header.php';
                 </form>
             </div>
         </div>
+        <div class="modal fade" id="modalSuccess" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content text-center">
+                    <div class="modal-header border-0">
+                        <h5 class="modal-title text-primary-custom">Registro de usuarios exitoso</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-muted">Bienvenido a Punto Aroma. Iniciar sesion con sus usuario registrado para poder empezar a comprar</p>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <a href="./iniciarSesion.php"><button type="button" class="btn btn-primary-custom" data-bs-dismiss="modal">Iniciar Sesion</button></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de error -->
+        <div class="modal fade" id="modalError" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content auth-container text-center">
+                    <div class="modal-body">
+                        <div class="icon-circle bg-secondary-custom">
+                            <i class="bi bi-x-lg"></i>
+                        </div>
+                        <h2 class="mb-3 text-secondary-custom">Error de inicio de sesión(usuario ya registrado)</h2>
+                        <p class="text-muted mb-4">Usuario ya registado en la base de datos , por favor inicie sesion</p>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-secondary-custom w-100" data-bs-dismiss="modal">Iniciar Sesion</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 
     <footer class="">
         <?php include 'footer.php'; ?>
     </footer>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get('status');
+
+        if (status === 'success') {
+            const successModal = new bootstrap.Modal(document.getElementById('modalSuccess'));
+            successModal.show();
+        } else if (status === 'error') {
+            const errorModal = new bootstrap.Modal(document.getElementById('modalError'));
+            errorModal.show();
+        }
+    </script>
 </body>
 
 </html>
