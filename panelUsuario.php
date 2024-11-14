@@ -297,7 +297,7 @@ if (isset($_SESSION["usuario"])) {
                                         </div>
                                         <p>Fecha: <?php echo $pedido["fecha"] ?></p>
                                         <p>Total: <?php echo $pedido["total"] ?></p>
-                                        <button class="btn btn-primary-custom btn-sm me-2 btn-ver-detalle">Ver Detalle</button>
+                                        <button class="btn btn-primary-custom btn-sm me-2 btn-ver-detalle" data-id-pedido="<?php echo $pedido["id_pedido"] ?>">Ver Detalle</button>
                                         <?php if (in_array($pedido["estado_pedido"], ["pendiente", "procesado", "cambiado"])) { ?>
                                             <button class="btn btn-danger btn-sm btn-cancelar-pedido"
                                                 data-id="<?php echo $pedido['id_pedido']; ?>"
@@ -416,6 +416,50 @@ if (isset($_SESSION["usuario"])) {
                 });
         }
 
+        // Espera a que el DOM esté completamente cargado
+        document.addEventListener('DOMContentLoaded', function() {
+            // Obtén todos los botones de "Ver Pedido"
+            const verPedidoButtons = document.querySelectorAll('.ver-pedido');
+
+            verPedidoButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Obtiene el ID del pedido desde el atributo data-id-pedido
+                    const pedidoId = this.getAttribute('data-id-pedido');
+
+                    // Realiza una solicitud AJAX usando fetch para obtener los detalles del pedido
+                    fetch(`detalle_pedido.php?id_pedido=${pedidoId}`)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Error al obtener los detalles del pedido');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            // Genera el contenido HTML para el detalle del pedido
+                            let pedidoDetalleHtml = '';
+                            data.forEach(item => {
+                                pedidoDetalleHtml += `<p><strong>Producto:</strong> ${item.producto_nombre}</p>`;
+                                pedidoDetalleHtml += `<p><strong>SKU:</strong> ${item.sku}</p>`;
+                                pedidoDetalleHtml += `<p><strong>Cantidad:</strong> ${item.cantidad}</p>`;
+                                pedidoDetalleHtml += `<p><strong>Precio:</strong> $${item.precio.toFixed(2)}</p>`;
+                                pedidoDetalleHtml += `<hr>`;
+                            });
+
+                            // Inserta el contenido generado en el cuerpo del modal
+                            document.getElementById('pedidoDetalleModalBody').innerHTML = pedidoDetalleHtml;
+
+                            // Muestra el modal
+                            const modal = new bootstrap.Modal(document.getElementById('pedidoDetalleModal'));
+                            modal.show();
+                        })
+                        .catch(error => {
+                            console.error('Error al obtener el detalle del pedido:', error);
+                        });
+                });
+            });
+        });
+
+
 
 
         /* function renderizarDomicilios() {
@@ -498,7 +542,7 @@ if (isset($_SESSION["usuario"])) {
                 }
             } */
 
-        pedidosContainer.addEventListener('click', (e) => {
+        /* pedidosContainer.addEventListener('click', (e) => {
             if (e.target.classList.contains('btn-ver-detalle')) {
                 const id = e.target.dataset.id;
                 mostrarDetallePedido(id);
@@ -512,7 +556,7 @@ if (isset($_SESSION["usuario"])) {
                     }
                 }
             }
-        });
+        }); */
     </script>
 </body>
 

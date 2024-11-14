@@ -671,6 +671,13 @@ FROM productos p
     JOIN aromas a ON v.id_aroma = a.id_aroma
 WHERE c.nombre = 'Perfumes' AND p.id_producto = 1;
 
+-- Productos de un pedido específico de un usuario específico
+SELECT pp.id_pedido, pp.id_producto, p.nombre AS producto_nombre, pp.sku, pp.cantidad, pp.precio
+FROM productos_pedido pp
+    JOIN productos p ON pp.id_producto = p.id_producto
+WHERE pp.id_pedido = 1;
+
+
 -- Select id and name from sexos
 SELECT id_sexo, nombre
 FROM sexos;
