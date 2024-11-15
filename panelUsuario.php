@@ -297,7 +297,12 @@ if (isset($_SESSION["usuario"])) {
                                         </div>
                                         <p>Fecha: <?php echo $pedido["fecha"] ?></p>
                                         <p>Total: <?php echo $pedido["total"] ?></p>
-                                        <button class="btn btn-primary-custom btn-sm me-2 btn-ver-detalle" data-id-pedido="<?php echo $pedido["id_pedido"] ?>">Ver Detalle</button>
+                                        <button class="btn btn-primary-custom btn-sm me-2 btn-ver-detalle"
+                                            data-id-pedido="<?php echo $pedido["id_pedido"] ?>"
+                                            onclick="verDetallePedido(<?php echo $pedido['id_pedido']; ?>)">
+                                            Ver Detalle
+                                        </button>
+
                                         <?php if (in_array($pedido["estado_pedido"], ["pendiente", "procesado", "cambiado"])) { ?>
                                             <button class="btn btn-danger btn-sm btn-cancelar-pedido"
                                                 data-id="<?php echo $pedido['id_pedido']; ?>"
@@ -365,7 +370,6 @@ if (isset($_SESSION["usuario"])) {
         </div>
     </main>
 
-    <!-- Modal para detalles del pedido -->
     <div class="modal fade" id="pedidoDetalleModal" tabindex="-1" aria-labelledby="pedidoDetalleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -373,8 +377,8 @@ if (isset($_SESSION["usuario"])) {
                     <h5 class="modal-title" id="pedidoDetalleModalLabel">Detalle del Pedido</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body" id="pedidoDetalleModalBody">
-                    <!-- El detalle del pedido se cargará aquí dinámicamente -->
+                <div class="modal-body" id="detallePedidoBody">
+                    <!-- Aquí se cargará el contenido dinámico -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -382,6 +386,8 @@ if (isset($_SESSION["usuario"])) {
             </div>
         </div>
     </div>
+
+
     <script src="app.js"></script>
     <script>
         function cancelarPedido(id_pedido) {
@@ -416,147 +422,74 @@ if (isset($_SESSION["usuario"])) {
                 });
         }
 
-        // Espera a que el DOM esté completamente cargado
-        document.addEventListener('DOMContentLoaded', function() {
-            // Obtén todos los botones de "Ver Pedido"
-            const verPedidoButtons = document.querySelectorAll('.ver-pedido');
-
-            verPedidoButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    // Obtiene el ID del pedido desde el atributo data-id-pedido
-                    const pedidoId = this.getAttribute('data-id-pedido');
-
-                    // Realiza una solicitud AJAX usando fetch para obtener los detalles del pedido
-                    fetch(`detalle_pedido.php?id_pedido=${pedidoId}`)
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('Error al obtener los detalles del pedido');
-                            }
-                            return response.json();
-                        })
-                        .then(data => {
-                            // Genera el contenido HTML para el detalle del pedido
-                            let pedidoDetalleHtml = '';
-                            data.forEach(item => {
-                                pedidoDetalleHtml += `<p><strong>Producto:</strong> ${item.producto_nombre}</p>`;
-                                pedidoDetalleHtml += `<p><strong>SKU:</strong> ${item.sku}</p>`;
-                                pedidoDetalleHtml += `<p><strong>Cantidad:</strong> ${item.cantidad}</p>`;
-                                pedidoDetalleHtml += `<p><strong>Precio:</strong> $${item.precio.toFixed(2)}</p>`;
-                                pedidoDetalleHtml += `<hr>`;
-                            });
-
-                            // Inserta el contenido generado en el cuerpo del modal
-                            document.getElementById('pedidoDetalleModalBody').innerHTML = pedidoDetalleHtml;
-
-                            // Muestra el modal
-                            const modal = new bootstrap.Modal(document.getElementById('pedidoDetalleModal'));
-                            modal.show();
-                        })
-                        .catch(error => {
-                            console.error('Error al obtener el detalle del pedido:', error);
-                        });
-                });
-            });
-        });
-
-
-
-
-        /* function renderizarDomicilios() {
-            domiciliosContainer.innerHTML = '';
-            domicilios.forEach(domicilio => {
-                const domicilioCard = document.createElement('div');
-                domicilioCard.className = `address-card ${domicilio.principal ? 'address-main' : ''}`;
-                domicilioCard.innerHTML = `
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="address-type">${domicilio.tipo}</span>
-                            ${domicilio.principal ? '<span class="badge bg-primary">Principal</span>' : ''}
-                        </div>
-                        <p>${domicilio.calle}</p>
-                        <p>${domicilio.ciudad}, ${domicilio.codigoPostal}</p>
-                        <div class="mt-3">
-                            <button class="btn btn-sm btn-outline-primary me-2 btn-editar-domicilio" data-id="${domicilio.id}">Editar</button>
-                            ${!domicilio.principal ? `<button class="btn btn-sm btn-outline-success me-2 btn-principal-domicilio" data-id="${domicilio.id}">Hacer Principal</button>` : ''}
-                            ${!domicilio.principal ? `<button class="btn btn-sm btn-outline-danger btn-eliminar-domicilio" data-id="${domicilio.id}">Eliminar</button>` : ''}
-                        </div>
-                    `;
-                domiciliosContainer.appendChild(domicilioCard);
-            });
-
-
-            function renderizarPedidos(filtro = 'todos') {
-                pedidosContainer.innerHTML = '';
-                const pedidosFiltrados = filtro === 'todos' ? pedidos : pedidos.filter(p => p.estado.toLowerCase() === filtro);
-                pedidosFiltrados.forEach(pedido => {
-                    const pedidoCard = document.createElement('div');
-                    pedidoCard.className = 'order-card';
-                    pedidoCard.innerHTML = `
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h5 class="mb-0">Pedido #${pedido.id}</h5>
-                            <span class="order-status status-${pedido.estado.toLowerCase().replace(' ', '-')}">${pedido.estado}</span>
-                        </div>
-                        <p>Fecha: ${pedido.fecha}</p>
-                        <p>Total: $${pedido.total.toFixed(2)}</p>
-                        <button class="btn btn-primary-custom btn-sm me-2 btn-ver-detalle" data-id="${pedido.id}">Ver Detalle</button>
-                        ${pedido.estado === 'Procesando' ? `<button class="btn btn-danger btn-sm btn-cancelar-pedido" data-id="${pedido.id}">Cancelar Pedido</button>` : ''}
-                    `;
-                });
-            }
-
-            function mostrarDetallePedido(id) {
-                const pedido = pedidos.find(p => p.id == id);
-                if (pedido) {
-                    pedidoDetalleModalBody.innerHTML = `
-                        <h6>Pedido #${pedido.id}</h6>
-                        <p><strong>Fecha:</strong> ${pedido.fecha}</p>
-                        <p><strong>Estado:</strong> ${pedido.estado}</p>
-                        <p><strong>Dirección de Envío:</strong> ${pedido.direccionEnvio}</p>
-                        <h6 class="mt-4">Productos:</h6>
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Producto</th>
-                                    <th>Cantidad</th>
-                                    <th>Precio Unitario</th>
-                                    <th>Subtotal</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${pedido.productos.map(producto => `
+        function mostrarDetallePedido(id_pedido) {
+            fetch(`detalle_pedido.php?id_pedido=${id_pedido}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const pedidoDetalleModalBody = document.getElementById('pedidoDetalleModalBody');
+                        pedidoDetalleModalBody.innerHTML = `
+                            <h6>Pedido #${data.pedido.id_pedido}</h6>
+                            <p><strong>Fecha:</strong> ${data.pedido.fecha}</p>
+                            <p><strong>Estado:</strong> ${data.pedido.estado_pedido}</p>
+                            <p><strong>Total:</strong> ${data.pedido.total}</p>
+                            <h6 class="mt-4">Productos:</h6>
+                            <table class="table">
+                                <thead>
                                     <tr>
-                                        <td>${producto.nombre}</td>
-                                        <td>${producto.cantidad}</td>
-                                        <td>$${producto.precio.toFixed(2)}</td>
-                                        <td>$${(producto.cantidad * producto.precio).toFixed(2)}</td>
+                                        <th>Producto</th>
+                                        <th>Cantidad</th>
+                                        <th>Precio Unitario</th>
+                                        <th>Subtotal</th>
                                     </tr>
-                                `).join('')}
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th colspan="3" class="text-end">Total:</th>
-                                    <th>$${pedido.total.toFixed(2)}</th>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    `;
-                }
-            } */
-
-        /* pedidosContainer.addEventListener('click', (e) => {
-            if (e.target.classList.contains('btn-ver-detalle')) {
-                const id = e.target.dataset.id;
-                mostrarDetallePedido(id);
-            } else if (e.target.classList.contains('btn-cancelar-pedido')) {
-                const id = e.target.dataset.id;
-                if (confirm('¿Estás seguro de que deseas cancelar este pedido?')) {
-                    const index = pedidos.findIndex(p => p.id == id);
-                    if (index !== -1) {
-                        pedidos[index].estado = 'Cancelado';
-                        renderizarPedidos(ordenarPedidosSelect.value);
+                                </thead>
+                                <tbody>
+                                    ${data.productos.map(producto => `
+                                        <tr>
+                                            <td>${producto.nombre}</td>
+                                            <td>${producto.cantidad}</td>
+                                            <td>${producto.precio}</td>
+                                            <td>${producto.subtotal}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        `;
+                        const pedidoDetalleModal = new bootstrap.Modal(document.getElementById('pedidoDetalleModal'));
+                        pedidoDetalleModal.show();
+                    } else {
+                        alert('No se pudo obtener el detalle del pedido.');
                     }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Hubo un error al obtener el detalle del pedido.');
+                });
+        }
+
+        function verDetallePedido(idPedido) {
+            // Crear la solicitud AJAX
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "ver_detalle.php", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+            // Manejador para la respuesta
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Insertar la respuesta en el modal
+                    document.getElementById("detallePedidoBody").innerHTML = xhr.responseText;
+
+                    // Mostrar el modal
+                    const modal = new bootstrap.Modal(document.getElementById("pedidoDetalleModal"));
+                    modal.show();
+                } else {
+                    alert("Error al obtener los detalles del pedido.");
                 }
-            }
-        }); */
+            };
+
+            // Enviar los datos al servidor
+            xhr.send(`id_pedido=${idPedido}`);
+        }
     </script>
 </body>
 
