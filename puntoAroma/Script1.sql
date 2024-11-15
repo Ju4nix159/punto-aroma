@@ -165,11 +165,12 @@ CREATE TABLE info_usuarios
 
 CREATE TABLE usuario_domicilios
 (
-    id_info_usuario INT,
     id_domicilio INT,
+    id_usuario INT,
     tipo_domicilio VARCHAR(100),
-    PRIMARY KEY (id_info_usuario, id_domicilio),
-    CONSTRAINT FK_usuario_domicilio_id_info_usuario_END FOREIGN KEY (id_info_usuario) REFERENCES info_usuarios(id_info_usuario),
+    principal TINYINT DEFAULT 0,
+    PRIMARY KEY (id_usuario, id_domicilio),
+    CONSTRAINT FK_usuario_domicilio_id_info_usuario_END FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
     CONSTRAINT FK_usuario_domicilio_id_domicilio_END FOREIGN KEY (id_domicilio) REFERENCES domicilios(id_domicilio)
 );
 
@@ -184,8 +185,11 @@ CREATE TABLE pedidos
     id_estado_pedido INT,
     total DECIMAL(10, 2),
     fecha DATE,
+    id_domicilio INT,
+
     CONSTRAINT FK_pedidos_id_usuario_END FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
-    CONSTRAINT FK_pedidos_id_estado_pedido_END FOREIGN KEY (id_estado_pedido) REFERENCES estados_pedidos(id_estado_pedido)
+    CONSTRAINT FK_pedidos_id_estado_pedido_END FOREIGN KEY (id_estado_pedido) REFERENCES estados_pedidos(id_estado_pedido),
+    CONSTRAINT FK_pedidos_id_domicilio_END FOREIGN KEY (id_domicilio) REFERENCES domicilios(id_domicilio)
 );
 
 
@@ -286,7 +290,7 @@ VALUES
 
 -- Insertar relación entre info_usuario y domicilio
 INSERT INTO usuario_domicilios
-    (id_info_usuario, id_domicilio, tipo_domicilio)
+    (id_usuario, id_domicilio, tipo_domicilio)
 VALUES
     (1, 1, 'Residencial'),
     (2, 2, 'Residencial');
@@ -454,31 +458,31 @@ VALUES
 
 -- Insertar datos en pedidos (muchos pedidos)
 INSERT INTO pedidos
-    (id_pedido, id_usuario, id_estado_pedido, total, fecha)
+    (id_pedido, id_usuario, id_estado_pedido, total, fecha, id_domicilio)
 VALUES
-    (1, 2, 1, 1200.50, '2024-01-01'),
-    (2, 3, 2, 750.00, '2024-01-05'),
-    (3, 2, 3, 350.75, '2024-01-10'),
-    (4, 1, 4, 1500.00, '2024-01-11'),
-    (5, 2, 5, 300.00, '2024-01-12'),
-    (6, 3, 6, 850.00, '2024-01-13'),
-    (7, 1, 1, 500.00, '2024-01-14'),
-    (8, 2, 2, 1200.00, '2024-01-15'),
-    (9, 3, 3, 600.00, '2024-01-16'),
-    (10, 1, 4, 750.00, '2024-01-17'),
-    (11, 2, 5, 400.00, '2024-01-18'),
-    (12, 3, 6, 950.00, '2024-01-19'),
-    (13, 1, 1, 1250.00, '2024-01-20'),
-    (14, 2, 2, 800.00, '2024-01-21'),
-    (15, 3, 3, 900.00, '2024-01-22'),
-    (16, 1, 4, 700.00, '2024-01-23'),
-    (17, 2, 5, 300.00, '2024-01-24'),
-    (18, 3, 6, 450.00, '2024-01-25'),
-    (19, 1, 1, 600.00, '2024-01-26'),
-    (20, 2, 2, 350.00, '2024-01-27'),
-    (21, 3, 3, 500.00, '2024-01-28'),
-    (22, 1, 4, 1000.00, '2024-01-29'),
-    (23, 2, 5, 200.00, '2024-01-30');
+    (1, 2, 1, 1200.50, '2024-01-01', 1),
+    (2, 3, 2, 750.00, '2024-01-05', 1),
+    (3, 2, 3, 350.75, '2024-01-10', 1),
+    (4, 1, 4, 1500.00, '2024-01-11', 1),
+    (5, 2, 5, 300.00, '2024-01-12', 1),
+    (6, 3, 6, 850.00, '2024-01-13', 1),
+    (7, 1, 1, 500.00, '2024-01-14', 1),
+    (8, 2, 2, 1200.00, '2024-01-15', 1),
+    (9, 3, 3, 600.00, '2024-01-16', 1),
+    (10, 1, 4, 750.00, '2024-01-17', 1),
+    (11, 2, 5, 400.00, '2024-01-18', 1),
+    (12, 3, 6, 950.00, '2024-01-19', 1),
+    (13, 1, 1, 1250.00, '2024-01-20', 1),
+    (14, 2, 2, 800.00, '2024-01-21', 1),
+    (15, 3, 3, 900.00, '2024-01-22', 1),
+    (16, 1, 4, 700.00, '2024-01-23', 1),
+    (17, 2, 5, 300.00, '2024-01-24', 1),
+    (18, 3, 6, 450.00, '2024-01-25', 1),
+    (19, 1, 1, 600.00, '2024-01-26', 1),
+    (20, 2, 2, 350.00, '2024-01-27', 1),
+    (21, 3, 3, 500.00, '2024-01-28', 1),
+    (22, 1, 4, 1000.00, '2024-01-29', 1),
+    (23, 2, 5, 200.00, '2024-01-30', 1);
 
 
 
@@ -677,6 +681,10 @@ FROM productos_pedido pp
     JOIN productos p ON pp.id_producto = p.id_producto
 WHERE pp.id_pedido = 1;
 
+
+-- Todos los domicilios de un usuario específico
+
+SELECT * from domicilios
 
 -- Select id and name from sexos
 SELECT id_sexo, nombre
