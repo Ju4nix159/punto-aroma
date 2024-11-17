@@ -372,7 +372,7 @@ WHERE u.id_usuario = :id_usuario;");
                                         <div class="mt-3">
                                             <button class="btn btn-sm btn-outline-primary me-2 btn-editar-domicilio" onclick="editarDomicilio(<?php echo $id_domicilio ?>)">Editar</button>
                                             <?php if ($domicilio["principal"] != 1) { ?>
-                                                <button class="btn btn-sm btn-outline-success me-2 btn-principal-domicilio" onclick="hacerPrincipal(<?php echo $id_domicilio_principal?>,<?php echo $id_domicilio ?>)">Hacer Principal</button>
+                                                <button class="btn btn-sm btn-outline-success me-2 btn-principal-domicilio" onclick="hacerPrincipal(<?php echo $id_domicilio_principal ?>,<?php echo $id_domicilio ?>)">Hacer Principal</button>
                                             <?php } ?>
                                             <button class="btn btn-sm btn-outline-danger btn-eliminar-domicilio" onclick="eliminarDomicilio(<?php echo $id_domicilio ?>)">Eliminar</button> <!-- Solo se muestra si domicilio.principal es false -->
                                         </div>
@@ -746,6 +746,29 @@ WHERE u.id_usuario = :id_usuario;");
                     alert('Hubo un error al procesar la solicitud. Verifique su conexión o contacte al administrador.');
                 });
         }
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuItems = document.querySelectorAll('.list-group-item[data-bs-toggle="list"]'); // Selecciona los tabs del menú
+
+            // Restaurar el tab activo al cargar la página
+            const activeTabId = localStorage.getItem('activeTabId');
+            if (activeTabId) {
+                const activeTabElement = document.querySelector(`a[href="${activeTabId}"]`);
+                if (activeTabElement) {
+                    const tabInstance = new bootstrap.Tab(activeTabElement);
+                    tabInstance.show();
+                }
+            }
+
+            // Guardar el tab activo en localStorage al cambiar de tab
+            menuItems.forEach(item => {
+                item.addEventListener('shown.bs.tab', function(event) {
+                    const targetId = event.target.getAttribute('href');
+                    if (targetId) {
+                        localStorage.setItem('activeTabId', targetId);
+                    }
+                });
+            });
+        });
     </script>
 </body>
 
