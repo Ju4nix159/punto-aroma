@@ -1,6 +1,3 @@
-
-
-
 -- Drop tables if they exist
 DROP TABLE IF EXISTS productos_pedido;
 DROP TABLE IF EXISTS pedidos;
@@ -23,7 +20,6 @@ DROP TABLE IF EXISTS estados_productos;
 DROP TABLE IF EXISTS estados_pedidos;
 
 -- 1. Tablas sin dependencias
-
 -- Tabla de categorías
 CREATE TABLE categorias
 (
@@ -681,10 +677,18 @@ FROM productos_pedido pp
     JOIN productos p ON pp.id_producto = p.id_producto
 WHERE pp.id_pedido = 1;
 
+SELECT d.*, ud.tipo_domicilio, ud.principal
+FROM domicilios d
+    JOIN usuario_domicilios ud ON d.id_domicilio = ud.id_domicilio
+    JOIN usuarios i ON ud.id_usuario = i.id_usuario
+WHERE i.id_usuario = 1
 
--- Todos los domicilios de un usuario específico
 
-SELECT * from domicilios
+-- Query to get all types of addresses for a user
+SELECT ud.tipo_domicilio
+FROM usuario_domicilios ud
+JOIN usuarios u ON ud.id_usuario = u.id_usuario
+WHERE u.id_usuario = 1;
 
 -- Select id and name from sexos
 SELECT id_sexo, nombre
