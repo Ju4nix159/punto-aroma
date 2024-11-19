@@ -163,6 +163,7 @@ $pedido = $sql_informacion_pedido->fetch(PDO::FETCH_ASSOC);
                                 </div>
                                 <!-- /.card-body -->
                                 <div class="card-footer">
+                                    <a href="./pedidos.php" class="btn btn-warning " >Volver</a>
                                     <button type="button" class="btn btn-danger" id="cancelChangesBtn">Cancelar Cambios</button>
                                     <button type="button" class="btn btn-primary float-right ml-2" id="confirmOrderBtn">Confirmar Pedido</button>
                                     <button type="button" class="btn btn-success float-right" id="confirmChangesBtn">Confirmar Cambios</button>
@@ -337,6 +338,7 @@ $pedido = $sql_informacion_pedido->fetch(PDO::FETCH_ASSOC);
                         alert(`El pedido ha sido confirmado con estado: ${nuevoEstado}`);
                         // Opcional: Redirigir o actualizar la página
                         location.reload();
+                        location.href = './pedidos.php';
                     } else {
                         alert(data.error || 'Hubo un error al confirmar el pedido.');
                     }

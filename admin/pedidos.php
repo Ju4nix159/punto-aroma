@@ -52,7 +52,7 @@ $pedidos = $sql_pedidos->fetchAll(PDO::FETCH_ASSOC);
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h3 class="card-title">DataTable with default features</h3>
+                                    <h3 class="card-title">Gestion de los pedidos</h3>
                                 </div>
                                 <!-- /.card-header -->
                                 <div class="card-body">
@@ -81,7 +81,6 @@ $pedidos = $sql_pedidos->fetchAll(PDO::FETCH_ASSOC);
                                                     </td>
                                                     <td>
                                                         <a href="resumen_pedido.php?id_pedido=<?php echo $pedido["id_pedido"]?>" type="button" class="btn bg-blue btn-flat margin"><i class="fas fa-eye"></i></a>
-                                                        <a href="#" type="button" class="btn bg-orange btn-flat margin"> <i class="fas fa-edit"></i></a>
 
                                                     </td>
                                                 </tr>

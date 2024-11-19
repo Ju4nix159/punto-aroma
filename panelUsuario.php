@@ -512,7 +512,7 @@ WHERE u.id_usuario = :id_usuario;");
                 });
         }
 
-        function mostrarDetallePedido(id_pedido) {
+        /* function mostrarDetallePedido(id_pedido) {
             fetch(`detalle_pedido.php?id_pedido=${id_pedido}`)
                 .then(response => response.json())
                 .then(data => {
@@ -556,7 +556,7 @@ WHERE u.id_usuario = :id_usuario;");
                     alert('Hubo un error al obtener el detalle del pedido.');
                 });
         }
-
+ */
         function verDetallePedido(idPedido) {
             // Crear la solicitud AJAX
             const xhr = new XMLHttpRequest();
