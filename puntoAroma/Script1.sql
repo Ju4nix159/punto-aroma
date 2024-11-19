@@ -703,8 +703,14 @@ FROM pedidos p
 JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido
 WHERE p.id_pedido = 1;
 
+-- Query to get all orders with a specific state
+SELECT p.id_pedido, p.total, p.fecha, ep.nombre AS estado_pedido
+FROM pedidos p
+JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido
+WHERE p.id_estado_pedido = 1;
 
--- Select id and name from sexos
+
+
 SELECT id_sexo, nombre
 FROM sexos;
 

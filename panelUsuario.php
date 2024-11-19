@@ -43,7 +43,7 @@ if (isset($_SESSION["usuario"])) {
     $sexos = $sql_sexos->fetchAll(PDO::FETCH_ASSOC);
 
 
-    $sql_pedido = $con->prepare("   SELECT p.id_pedido, p.total, p.fecha, ep.nombre AS estado_pedido
+    $sql_pedido = $con->prepare("   SELECT p.id_pedido, p.total, p.fecha, ep.nombre AS estado_pedido, ep.id_estado_pedido
                                     FROM pedidos p
                                     JOIN usuarios u ON p.id_usuario = u.id_usuario
                                     JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido
@@ -333,7 +333,12 @@ WHERE u.id_usuario = :id_usuario;");
                                     <div class="order-card">
                                         <div class="d-flex justify-content-between align-items-center mb-3">
                                             <h5 class="mb-0">Pedido: #<?php echo $pedido["id_pedido"] ?> </h5>
-                                            <span class="order-status status-<?php echo $pedido["estado_pedido"] ?>"><?php echo $pedido["estado_pedido"] ?></span>
+                                            <span class="order-status status-<?php echo $pedido["estado_pedido"] ?>"
+                                                data-estado-id="<?php echo $pedido["id_estado_pedido"] ?>">
+                                                <?php echo $pedido["estado_pedido"] ?>
+                                            </span>
+
+
                                         </div>
                                         <p>Fecha: <?php echo $pedido["fecha"] ?></p>
                                         <p>Total: <?php echo $pedido["total"] ?></p>
@@ -769,6 +774,74 @@ WHERE u.id_usuario = :id_usuario;");
                     }
                 });
             });
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const selectOrdenarPedidos = document.getElementById("ordenar-pedidos");
+            const pedidosContainer = document.getElementById("pedidos-container");
+
+            selectOrdenarPedidos.addEventListener("change", () => {
+                const estadoSeleccionado = selectOrdenarPedidos.value;
+
+                // Solicitud AJAX
+                fetch("filtro.php", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            estado: estadoSeleccionado
+                        }),
+                    })
+                    .then(response => response.text()) // Obtén la respuesta como texto inicialmente
+                    .then(data => {
+                        console.log("Respuesta recibida:", data);
+                        return JSON.parse(data); // Intenta convertirla a JSON
+                    })
+                    .then(json => {
+                        if (json.success) {
+                            actualizarPedidos(json.pedidos);
+                        } else {
+                            console.error("Error al obtener los pedidos:", json.message);
+                        }
+                    })
+                    .catch(error => console.error("Error en la solicitud:", error));
+
+            });
+
+            function actualizarPedidos(pedidos) {
+                // Limpia el contenedor
+                pedidosContainer.innerHTML = "";
+
+                // Genera dinámicamente las tarjetas de pedidos
+                pedidos.forEach(pedido => {
+                    const pedidoHTML = `
+                <div class="order-card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">Pedido: #${pedido.id_pedido}</h5>
+                        <span class="order-status status-${pedido.estado_pedido}">${pedido.estado_pedido}</span>
+                    </div>
+                    <p>Fecha: ${pedido.fecha}</p>
+                    <p>Total: ${pedido.total}</p>
+                    <button class="btn btn-primary-custom btn-sm me-2 btn-ver-detalle" 
+                        data-id-pedido="${pedido.id_pedido}" 
+                        onclick="verDetallePedido(${pedido.id_pedido})">
+                        Ver Detalle
+                    </button>
+                    ${
+                        ["pendiente", "procesado", "cambiado"].includes(pedido.estado_pedido)
+                            ? `<button class="btn btn-danger btn-sm btn-cancelar-pedido" 
+                                data-id="${pedido.id_pedido}" 
+                                onclick="cancelarPedido(${pedido.id_pedido})">
+                                Cancelar Pedido
+                            </button>`
+                            : ""
+                    }
+                </div>
+            `;
+                    pedidosContainer.insertAdjacentHTML("beforeend", pedidoHTML);
+                });
+            }
         });
     </script>
 </body>
