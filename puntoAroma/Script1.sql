@@ -697,6 +697,12 @@ FROM domicilios d
     JOIN usuario_domicilios ud ON d.id_domicilio = ud.id_domicilio
     JOIN usuarios u ON ud.id_usuario = u.id_usuario
 WHERE u.id_usuario = 1 AND ud.principal = 1;
+-- Query to get total, state name, and state description of a specific order by id_pedido
+SELECT p.total, ep.nombre AS estado_nombre, ep.descripcion AS estado_descripcion
+FROM pedidos p
+JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido
+WHERE p.id_pedido = 1;
+
 
 -- Select id and name from sexos
 SELECT id_sexo, nombre

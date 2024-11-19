@@ -116,53 +116,7 @@ $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
                         </form>
                     </div>
                 </div>
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="mb-0">Método de pago</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <select class="form-select" id="metodoPagoSelect" onchange="toggleFormularioPago()">
-                                <option value="">Seleccionar método de pago</option>
-                                <option value="tarjeta">Tarjeta de crédito/débito</option>
-                                <option value="transferencia">Transferencia bancaria</option>
-                                <option value="paypal">PayPal</option>
-                            </select>
-                        </div>
-                        <form id="tarjetaForm" style="display: none;">
-                            <div class="mb-3">
-                                <label for="nombreTarjeta" class="form-label">Nombre en la tarjeta</label>
-                                <input type="text" class="form-control" id="nombreTarjeta" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="numeroTarjeta" class="form-label">Número de tarjeta</label>
-                                <input type="text" class="form-control" id="numeroTarjeta" required>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="fechaExpiracion" class="form-label">Fecha de expiración</label>
-                                    <input type="text" class="form-control" id="fechaExpiracion" placeholder="MM/AA" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="cvv" class="form-label">CVV</label>
-                                    <input type="text" class="form-control" id="cvv" required>
-                                </div>
-                            </div>
-                        </form>
-                        <form id="transferenciaForm" style="display: none;">
-                            <div class="mb-3">
-                                <p>Por favor, realice la transferencia a la siguiente cuenta bancaria:</p>
-                                <p>Banco: Banco Nacional<br>
-                                    Titular: Punto Aroma S.A.<br>
-                                    Cuenta: 1234-5678-90-1234567890<br>
-                                    CBU: 0000000000000000000000</p>
-                            </div>
-                        </form>
-                        <div id="paypalForm" style="display: none;">
-                            <p>Serás redirigido a PayPal para completar tu pago.</p>
-                        </div>
-                    </div>
-                </div>
+
             </div>
             <div class="col-md-4">
                 <div class="card">
@@ -223,7 +177,7 @@ $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
         </div>
     </div>
 
-
+    <script src="carrito.js"></script>
     <script>
         function mostrarDireccion() {
             const select = document.getElementById('direccionSelect');
@@ -245,29 +199,8 @@ $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
                 }
             }
         }
-
         // Llamamos a la función al cargar para inicializar el estado
         document.addEventListener('DOMContentLoaded', mostrarDireccion);
-
-
-        function toggleFormularioPago() {
-            const select = document.getElementById('metodoPagoSelect');
-            const tarjetaForm = document.getElementById('tarjetaForm');
-            const transferenciaForm = document.getElementById('transferenciaForm');
-            const paypalForm = document.getElementById('paypalForm');
-
-            tarjetaForm.style.display = 'none';
-            transferenciaForm.style.display = 'none';
-            paypalForm.style.display = 'none';
-
-            if (select.value === 'tarjeta') {
-                tarjetaForm.style.display = 'block';
-            } else if (select.value === 'transferencia') {
-                transferenciaForm.style.display = 'block';
-            } else if (select.value === 'paypal') {
-                paypalForm.style.display = 'block';
-            }
-        }
 
         function toggleFragrances(productId) {
             // Usamos el ID único generado con "checkout-"
@@ -295,5 +228,38 @@ $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
                 console.warn('No se encontró el icono <i> asociado.');
             }
         }
+
+        function procesarPago() {
+            const idDomicilio = document.getElementById('direccionSelect').value;
+
+            if (!idDomicilio) {
+                alert('Por favor, selecciona una dirección.');
+                return;
+            }
+
+            fetch('procesar_pedido.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams({
+                        id_domicilio: idDomicilio
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Pedido realizado con éxito. ID del pedido: ' + data.id_pedido);
+                        cargarCarrito();
+                        window.location.href = 'gracias.php?id_pedido='+data.id_pedido; // Redirigir a una página de agradecimiento
+                    } else {
+                        alert('Error: ' + (data.error || 'No se pudo realizar el pedido.'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al procesar el pedido:', error);
+                    alert('Ocurrió un error al realizar el pedido.', error);
+                });
+        };
     </script>
 </body>
