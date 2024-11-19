@@ -356,6 +356,16 @@ WHERE u.id_usuario = :id_usuario;");
                         </div>
                         <div class="tab-pane fade" id="domicilios">
                             <h2 class="mb-4">Domicilios de Entrega</h2>
+                            <?php if (empty($domicilios)) { ?>
+                                <div id="incomplete-profile-alert" class="incomplete-profile-alert">
+                                    <h4 class="alert-heading"><i class="bi bi-exclamation-triangle-fill me-2"></i>Sin domicilios</h4>
+                                    <p>Parece que aún no has ingresado un domicilio. Agrega un domicilio valido y empieza a comprar.</p>
+                                    <hr>
+                                    <p class="mb-0">
+                                        <button id="btn-agregar-domicilio" class="btn btn-primary-custom mt-3">Agregar Nuevo Domicilio</button>
+                                    </p>
+                                </div>
+                            <?php } ?>
                             <?php foreach ($domicilios as $domicilio) {
                                 $id_domicilio = $domicilio["id_domicilio"] ?>
                                 <div id="domicilios-container">
@@ -363,7 +373,7 @@ WHERE u.id_usuario = :id_usuario;");
                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                             <span class="address-type"><?php echo $domicilio["tipo_domicilio"] ?></span> <!-- Aquí se usa el valor de domicilio.tipo -->
                                             <?php if ($domicilio["principal"] == 1) {
-                                                $id_domicilio_principal =  $domicilio["principal"] ?>
+                                                $id_domicilio_principal =  $id_domicilio ?>
                                                 <span class="badge bg-primary">Principal</span>
                                             <?php } ?>
                                         </div>
@@ -379,8 +389,9 @@ WHERE u.id_usuario = :id_usuario;");
                                     </div>
                                 </div>
                             <?php } ?>
-                            <button id="btn-agregar-domicilio" class="btn btn-primary-custom mt-3">Agregar Nuevo Domicilio</button>
-
+                            <?php if (!empty($domicilios)) { ?>
+                                <button id="btn-agregar-domicilio" class="btn btn-primary-custom mt-3">Agregar Nuevo Domicilio</button>
+                            <?php } ?>
                             <!-- Modal para agregar/editar domicilio -->
                             <div class="modal fade" id="domicilioModal" tabindex="-1" aria-labelledby="domicilioModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-lg">
@@ -425,17 +436,7 @@ WHERE u.id_usuario = :id_usuario;");
                                                 <div class="row mb-3">
                                                     <div class="col-md-6">
                                                         <label for="tipo_domicilio" class="form-label">Tipo de Domicilio</label>
-                                                        <select class="form-select" id="tipo_domicilio" name="tipo_domicilio" required>
-                                                            <option value="">Seleccione un tipo</option>
-                                                            <?php foreach ($tipos_domicilio as $tipo) { ?>
-                                                                <option value="<?php echo $tipo['tipo_domicilio']; ?>"><?php echo $tipo['tipo_domicilio']; ?></option>
-                                                            <?php } ?>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-md-6 d-flex align-items-end">
-                                                        <button type="button" class="btn btn-outline-secondary" onclick="agregarTipoDomicilio()">
-                                                            <i class="bi bi-plus-circle"></i> Agregar otro tipo
-                                                        </button>
+                                                        <input type="text" class="form-control" id="tipo_domicilio" name="tipo_domicilio" placeholder="Ingrese el tipo de domicilio" required>
                                                     </div>
                                                 </div>
                                             </form>

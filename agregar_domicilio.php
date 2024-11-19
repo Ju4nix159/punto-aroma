@@ -2,6 +2,7 @@
 include './admin/config/sbd.php';
 
 header('Content-Type: application/json');
+
 // Leer datos del cuerpo de la solicitud
 $input = json_decode(file_get_contents('php://input'), true);
 
@@ -37,6 +38,26 @@ try {
     // Iniciar una transacción
     $con->beginTransaction();
 
+    // Verificar si el usuario ya tiene un domicilio principal
+    $sql_verificar = $con->prepare(
+        "SELECT COUNT(*) as total FROM usuario_domicilios WHERE id_usuario = :id_usuario AND principal = 1"
+    );
+    $sql_verificar->bindParam(':id_usuario', $id_usuario);
+    $sql_verificar->execute();
+    $resultado = $sql_verificar->fetch(PDO::FETCH_ASSOC);
+
+    // Determinar si este domicilio será principal
+    $es_principal = ($resultado['total'] == 0) ? 1 : 0;
+
+    // Si este domicilio es principal, actualizar otros domicilios del usuario para que no lo sean
+    if ($es_principal) {
+        $sql_desactivar_principales = $con->prepare(
+            "UPDATE usuario_domicilios SET principal = 0 WHERE id_usuario = :id_usuario"
+        );
+        $sql_desactivar_principales->bindParam(':id_usuario', $id_usuario);
+        $sql_desactivar_principales->execute();
+    }
+
     // Paso 1: Insertar datos en la tabla 'domicilios'
     $sql_domicilio = $con->prepare(
         "INSERT INTO domicilios (codigo_postal, provincia, localidad, barrio, calle, numero) 
@@ -53,20 +74,21 @@ try {
     // Recuperar el ID del domicilio recién insertado
     $id_domicilio = $con->lastInsertId();
 
-    // Paso 2: Insertar datos en la tabla 'usuario_domicilio'
+    // Paso 2: Insertar datos en la tabla 'usuario_domicilios'
     $sql_usuario_domicilio = $con->prepare(
-        "INSERT INTO usuario_domicilios (id_domicilio, id_usuario, tipo_domicilio) 
-        VALUES (:id_domicilio, :id_usuario, :tipo_domicilio)"
+        "INSERT INTO usuario_domicilios (id_domicilio, id_usuario, tipo_domicilio, principal) 
+        VALUES (:id_domicilio, :id_usuario, :tipo_domicilio, :principal)"
     );
     $sql_usuario_domicilio->bindParam(':id_domicilio', $id_domicilio);
     $sql_usuario_domicilio->bindParam(':id_usuario', $id_usuario);
     $sql_usuario_domicilio->bindParam(':tipo_domicilio', $tipo_domicilio);
+    $sql_usuario_domicilio->bindParam(':principal', $es_principal);
     $sql_usuario_domicilio->execute();
 
     // Confirmar la transacción
     $con->commit();
 
-    echo json_encode(['success' => true]);
+    echo json_encode(['success' => true, 'principal' => $es_principal]);
 } catch (PDOException $e) {
     // Revertir la transacción en caso de error
     $con->rollBack();
