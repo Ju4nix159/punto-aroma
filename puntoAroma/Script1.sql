@@ -690,6 +690,14 @@ FROM usuario_domicilios ud
 JOIN usuarios u ON ud.id_usuario = u.id_usuario
 WHERE u.id_usuario = 1;
 
+
+-- Query to get all information of the main address of a specific user
+SELECT d.*
+FROM domicilios d
+    JOIN usuario_domicilios ud ON d.id_domicilio = ud.id_domicilio
+    JOIN usuarios u ON ud.id_usuario = u.id_usuario
+WHERE u.id_usuario = 1 AND ud.principal = 1;
+
 -- Select id and name from sexos
 SELECT id_sexo, nombre
 FROM sexos;
