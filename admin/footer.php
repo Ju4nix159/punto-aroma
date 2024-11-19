@@ -38,6 +38,13 @@
 <script src="../admin/js/dataTables.buttons.min.js"></script>
 <script src="../admin/js/buttons.bootstrap4.min.js"></script>
 <script src="../admin/js/pdfmake.min.js"></script>
+<script src="../admin/js/jszip.min.js"></script>
+<script src="../admin/js/vfs_fonts.js"></script>
+<script src="../admin/js/buttons.html5.min.js"></script>
+<script src="../admin/js/buttons.print.min.js"></script>
+<script src="../admin/js/buttons.colVis.min.js"></script>
+
+
 
 
 </body>

@@ -656,6 +656,8 @@ FROM pedidos p
     JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido
 WHERE u.id_usuario = 1;
 
+Select * from pedidos
+
 
 -- Detalle de un pedido por id_pedido
 SELECT pp.id_pedido, pp.id_producto, p.nombre AS producto_nombre, pp.sku, pp.cantidad, pp.precio
@@ -709,7 +711,31 @@ FROM pedidos p
 JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido
 WHERE p.id_estado_pedido = 1;
 
+-- Query to get all information of an order by id_pedido, including user information, order state, address, and payment method
+SELECT 
+    p.id_pedido, p.total, p.fecha,
+    u.id_usuario, u.email, iu.nombre AS nombre_usuario, iu.apellido, iu.dni, iu.fecha_nacimiento, iu.telefono,
+    ep.nombre AS estado_pedido, ep.descripcion AS estado_pedido_descripcion,
+    d.codigo_postal, d.provincia, d.localidad, d.barrio, d.calle, d.numero,
+    fp.nombre AS forma_pago
+FROM 
+    pedidos p
+    JOIN usuarios u ON p.id_usuario = u.id_usuario
+    JOIN info_usuarios iu ON u.id_usuario = iu.id_usuario
+    JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido
+    JOIN domicilios d ON p.id_domicilio = d.id_domicilio
+    JOIN formas_pago fp ON p.id_forma_pago = fp.id_forma_pago
+WHERE 
+    p.id_pedido = x;
 
+    -- Información de productos y aromas de un pedido específico
+    SELECT pp.id_pedido, pp.sku, p.nombre AS producto_nombre, a.nombre AS aroma_nombre, pp.cantidad, pp.precio
+    FROM productos_pedido pp
+        JOIN productos p ON pp.id_producto = p.id_producto
+        JOIN variantes v ON pp.sku = v.sku
+        JOIN aromas a ON v.id_aroma = a.id_aroma
+    WHERE pp.id_pedido = 1;
+    
 
 SELECT id_sexo, nombre
 FROM sexos;

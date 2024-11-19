@@ -23,6 +23,7 @@ if (!isset($_SESSION['usuario'])) {
   <link rel="stylesheet" href="../admin/css/adminlte.min.css">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="./css/styles.css">
   <title>Panel administrado</title>
 
   <!-- Google Font: Source Sans Pro -->
@@ -42,11 +43,10 @@ if (!isset($_SESSION['usuario'])) {
   <link rel="stylesheet" href="../admin/css/dataTables.bootstrap4.min.css">
   <link rel="stylesheet" href="../admin/css/responsive.bootstrap4.min.css">
   <link rel="stylesheet" href="../admin/css/buttons.bootstrap4.min.css">
-  <link rel="stylesheet" href="../style.css">
   <!-- Bootstrap 3.3.7 -->
   <!-- <link rel="stylesheet" href="../admin/css/bootstrap.min.css"> -->
 
-  <link rel="icon" type="image/png" href="icono.png">
+  <link rel="icon" type="image/png" href="../assets/Punto-Aroma-original-con-sombra-despegue-sin-fondo.png">
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
@@ -54,7 +54,7 @@ if (!isset($_SESSION['usuario'])) {
 
     <!-- Preloader -->
     <div class="preloader flex-column justify-content-center align-items-center">
-      <img class="animation__wobble" src="../logos/LOGO PNG-04.png" alt="WembleyLogo" height="60" width="60">
+      <img class="animation__wobble" src="../assets/Punto-Aroma-original-con-sombra-despegue-sin-fondo.png" alt="punto aroma logo" height="60" width="60">
     </div>
 
     <!-- Navbar -->
@@ -82,10 +82,10 @@ if (!isset($_SESSION['usuario'])) {
           <ul class="dropdown-menu">
             <!-- User image -->
             <li class="user-header">
-              <img src="../logos/LOGO PNG-04.png" class="img-circle" alt="User Image">
+              <img src="../assets/Punto-Aroma-original-con-sombra-despegue-sin-fondo.png" class="img-circle" alt="usuario imagen">
 
               <p>
-                <?php echo ("nombre del usuario"); ?>
+                <?php echo $_SESSION["email"] ?>
               </p>
             </li>
             <!-- Menu Footer-->
