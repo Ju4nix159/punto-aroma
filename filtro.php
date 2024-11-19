@@ -21,7 +21,9 @@ $estado = $data["estado"] ?? "todos";
 // Construir y ejecutar la consulta
 try {
     if ($estado === "todos") {
-        $sql = "SELECT * FROM pedidos";
+        $sql = "SELECT p.*, ep.nombre AS estado_pedido
+    FROM pedidos p
+    JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido;";
         $stmt = $con->prepare($sql);
         $stmt->execute();
     } else {

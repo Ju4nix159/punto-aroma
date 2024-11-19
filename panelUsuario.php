@@ -337,8 +337,6 @@ WHERE u.id_usuario = :id_usuario;");
                                                 data-estado-id="<?php echo $pedido["id_estado_pedido"] ?>">
                                                 <?php echo $pedido["estado_pedido"] ?>
                                             </span>
-
-
                                         </div>
                                         <p>Fecha: <?php echo $pedido["fecha"] ?></p>
                                         <p>Total: <?php echo $pedido["total"] ?></p>
@@ -355,9 +353,18 @@ WHERE u.id_usuario = :id_usuario;");
                                                 Cancelar Pedido
                                             </button>
                                         <?php } ?>
+
+                                        <!-- Botón Pagar -->
+                                        <?php if (in_array($pedido["estado_pedido"], ["procesado", "cambiado"])) { ?>
+                                            <a href="pagar_pedido.php?id_pedido=<?php echo $pedido['id_pedido']; ?>"
+                                                class="btn btn-success btn-sm btn-pagar">
+                                                Pagar
+                                            </a>
+                                        <?php } ?>
                                     </div>
                                 <?php } ?>
                             </div>
+
                         </div>
                         <div class="tab-pane fade" id="domicilios">
                             <h2 class="mb-4">Domicilios de Entrega</h2>
@@ -511,52 +518,6 @@ WHERE u.id_usuario = :id_usuario;");
                     alert('Hubo un error al cancelar el pedido. Inténtalo nuevamente.2');
                 });
         }
-
-        /* function mostrarDetallePedido(id_pedido) {
-            fetch(`detalle_pedido.php?id_pedido=${id_pedido}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        const pedidoDetalleModalBody = document.getElementById('pedidoDetalleModalBody');
-                        pedidoDetalleModalBody.innerHTML = `
-                            <h6>Pedido #${data.pedido.id_pedido}</h6>
-                            <p><strong>Fecha:</strong> ${data.pedido.fecha}</p>
-                            <p><strong>Estado:</strong> ${data.pedido.estado_pedido}</p>
-                            <p><strong>Total:</strong> ${data.pedido.total}</p>
-                            <h6 class="mt-4">Productos:</h6>
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Producto</th>
-                                        <th>Cantidad</th>
-                                        <th>Precio Unitario</th>
-                                        <th>Subtotal</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${data.productos.map(producto => `
-                                        <tr>
-                                            <td>${producto.nombre}</td>
-                                            <td>${producto.cantidad}</td>
-                                            <td>${producto.precio}</td>
-                                            <td>${producto.subtotal}</td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        `;
-                        const pedidoDetalleModal = new bootstrap.Modal(document.getElementById('pedidoDetalleModal'));
-                        pedidoDetalleModal.show();
-                    } else {
-                        alert('No se pudo obtener el detalle del pedido.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Hubo un error al obtener el detalle del pedido.');
-                });
-        }
- */
         function verDetallePedido(idPedido) {
             // Crear la solicitud AJAX
             const xhr = new XMLHttpRequest();
@@ -835,6 +796,14 @@ WHERE u.id_usuario = :id_usuario;");
                                 onclick="cancelarPedido(${pedido.id_pedido})">
                                 Cancelar Pedido
                             </button>`
+                            : ""
+                    }
+                    ${
+                        ["procesado", "cambiado"].includes(pedido.estado_pedido)
+                            ? `<a href="pagar_pedido.php?id_pedido=${pedido.id_pedido}" 
+                                class="btn btn-success btn-sm btn-pagar">
+                                Pagar
+                            </a>`
                             : ""
                     }
                 </div>
