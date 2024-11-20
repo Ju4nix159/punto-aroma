@@ -758,9 +758,55 @@ WHERE
         p.descripcion, 
         c.nombre;
 
+        -- Query to get all information of a product by id_producto
+        SELECT 
+            p.id_producto, 
+            p.nombre, 
+            p.descripcion, 
+            c.nombre AS categoria, 
+            p.destacado, 
+            i.ruta AS imagen_principal,
+            MIN(CASE WHEN vtp.id_tipo_precio = 1 THEN vtp.precio END) AS precio_minorista,
+            MIN(CASE WHEN vtp.id_tipo_precio = 2 THEN vtp.precio END) AS precio_mayorista
+        FROM 
+            productos p
+            JOIN categorias c ON p.id_categoria = c.id_categoria
+            LEFT JOIN imagenes i ON p.id_producto = i.id_producto AND i.principal = 1
+            LEFT JOIN variantes_tipo_precio vtp ON p.id_producto = vtp.id_producto
+        WHERE 
+            p.id_producto = 1
+        GROUP BY 
+            p.id_producto, 
+            p.nombre, 
+            p.descripcion, 
+            c.nombre, 
+            p.destacado, 
+            i.ruta;
+
+        -- Query to get all fragrances of a product by id_producto
+        SELECT 
+            a.nombre AS aroma
+        FROM 
+            variantes v
+            JOIN aromas a ON v.id_aroma = a.id_aroma
+        WHERE 
+            v.id_producto = 1;
+
+            -- Query to get the main image of a product by id_producto
+            SELECT p.id_producto, i.ruta AS imagen_principal
+            FROM productos p
+            LEFT JOIN imagenes i ON p.id_producto = i.id_producto AND i.principal = 1
+            WHERE p.id_producto = 1;
+
+
+            SELECT ep.nombre AS estado_nombre, v.sku AS id_variante
+            FROM variantes v
+            JOIN estados_productos ep ON v.id_estado_producto = ep.id_estado_producto
+            WHERE v.id_producto = 1;
 
 
 
+            
 SELECT id_sexo, nombre
 FROM sexos;
 
