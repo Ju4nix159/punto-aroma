@@ -33,7 +33,7 @@
 
         <!-- Sidebar Menu -->
         <nav class="mt-2">
-          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false"> 
+          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
             <!-- Usuarios -->
             <li class="nav-item">
               <a href="admin.php" class="nav-link">
@@ -82,6 +82,23 @@
                   <a href="agregar_imagen.php" class="nav-link">
                     <i class="fas fa-solid fa-plus"></i>
                     <p>Añadir imagen</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="fas fa-solid fa-table"></i>
+                <p>
+                  Productos
+                  <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="productos.php" class="nav-link">
+                    <i class="fas fa-solid fa-list"></i>
+                    <p>Mostrar todos</p>
                   </a>
                 </li>
               </ul>

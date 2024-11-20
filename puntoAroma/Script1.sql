@@ -737,6 +737,30 @@ WHERE
     WHERE pp.id_pedido = 1;
     
 
+    
+    -- Query to get all products and their information with the count of fragrances
+    SELECT 
+        p.id_producto, 
+        p.nombre AS producto_nombre, 
+        p.descripcion, 
+        c.nombre AS categoria, 
+        COUNT(DISTINCT v.id_aroma) AS cantidad_fragancias,
+        MIN(CASE WHEN vtp.id_tipo_precio = 1 THEN vtp.precio END) AS precio_minorista,
+        MIN(CASE WHEN vtp.id_tipo_precio = 2 THEN vtp.precio END) AS precio_mayorista
+    FROM 
+        productos p
+        JOIN categorias c ON p.id_categoria = c.id_categoria
+        JOIN variantes v ON p.id_producto = v.id_producto
+        JOIN variantes_tipo_precio vtp ON p.id_producto = vtp.id_producto
+    GROUP BY 
+        p.id_producto, 
+        p.nombre, 
+        p.descripcion, 
+        c.nombre;
+
+
+
+
 SELECT id_sexo, nombre
 FROM sexos;
 
