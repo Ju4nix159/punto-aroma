@@ -1,0 +1,51 @@
+.icon-eye {
+    background-color: blue;
+    color: white; /* Hace el texto o ícono blanco */
+    padding: 5px; /* Opcional: Espaciado interno */
+    border-radius: 5px; /* Opcional: Bordes redondeados */
+    text-decoration: none; /* Quitar subrayado */
+}
+
+.icon-edit {
+    background-color: orange;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+/* Opcional: Cambiar el cursor y agregar un efecto al pasar el mouse */
+.icon-eye:hover, .icon-edit:hover {
+    opacity: 0.8; /* Efecto de transparencia */
+    cursor: pointer;
+}
+
+.order-status {
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 15px;
+    color: white;
+}
+.status-procesado {
+    background-color: #ffc107;
+}
+
+.status-pendiente {
+    background-color: #ffc107;
+}
+
+.status-cambiado {
+    background-color: #f57c00;
+}
+
+.status-en-camino {
+    background-color: #17a2b8;
+}
+
+.status-entregado {
+    background-color: #28a745;
+}
+
+.status-cancelado {
+    background-color: #dc3545;
+}

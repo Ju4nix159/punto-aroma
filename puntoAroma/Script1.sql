@@ -1,6 +1,3 @@
-
-
-
 -- Drop tables if they exist
 DROP TABLE IF EXISTS productos_pedido;
 DROP TABLE IF EXISTS pedidos;
@@ -23,7 +20,6 @@ DROP TABLE IF EXISTS estados_productos;
 DROP TABLE IF EXISTS estados_pedidos;
 
 -- 1. Tablas sin dependencias
-
 -- Tabla de categorías
 CREATE TABLE categorias
 (
@@ -165,11 +161,12 @@ CREATE TABLE info_usuarios
 
 CREATE TABLE usuario_domicilios
 (
-    id_info_usuario INT,
     id_domicilio INT,
+    id_usuario INT,
     tipo_domicilio VARCHAR(100),
-    PRIMARY KEY (id_info_usuario, id_domicilio),
-    CONSTRAINT FK_usuario_domicilio_id_info_usuario_END FOREIGN KEY (id_info_usuario) REFERENCES info_usuarios(id_info_usuario),
+    principal TINYINT DEFAULT 0,
+    PRIMARY KEY (id_usuario, id_domicilio),
+    CONSTRAINT FK_usuario_domicilio_id_info_usuario_END FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
     CONSTRAINT FK_usuario_domicilio_id_domicilio_END FOREIGN KEY (id_domicilio) REFERENCES domicilios(id_domicilio)
 );
 
@@ -184,8 +181,11 @@ CREATE TABLE pedidos
     id_estado_pedido INT,
     total DECIMAL(10, 2),
     fecha DATE,
+    id_domicilio INT,
+
     CONSTRAINT FK_pedidos_id_usuario_END FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
-    CONSTRAINT FK_pedidos_id_estado_pedido_END FOREIGN KEY (id_estado_pedido) REFERENCES estados_pedidos(id_estado_pedido)
+    CONSTRAINT FK_pedidos_id_estado_pedido_END FOREIGN KEY (id_estado_pedido) REFERENCES estados_pedidos(id_estado_pedido),
+    CONSTRAINT FK_pedidos_id_domicilio_END FOREIGN KEY (id_domicilio) REFERENCES domicilios(id_domicilio)
 );
 
 
@@ -286,7 +286,7 @@ VALUES
 
 -- Insertar relación entre info_usuario y domicilio
 INSERT INTO usuario_domicilios
-    (id_info_usuario, id_domicilio, tipo_domicilio)
+    (id_usuario, id_domicilio, tipo_domicilio)
 VALUES
     (1, 1, 'Residencial'),
     (2, 2, 'Residencial');
@@ -454,31 +454,31 @@ VALUES
 
 -- Insertar datos en pedidos (muchos pedidos)
 INSERT INTO pedidos
-    (id_pedido, id_usuario, id_estado_pedido, total, fecha)
+    (id_pedido, id_usuario, id_estado_pedido, total, fecha, id_domicilio)
 VALUES
-    (1, 2, 1, 1200.50, '2024-01-01'),
-    (2, 3, 2, 750.00, '2024-01-05'),
-    (3, 2, 3, 350.75, '2024-01-10'),
-    (4, 1, 4, 1500.00, '2024-01-11'),
-    (5, 2, 5, 300.00, '2024-01-12'),
-    (6, 3, 6, 850.00, '2024-01-13'),
-    (7, 1, 1, 500.00, '2024-01-14'),
-    (8, 2, 2, 1200.00, '2024-01-15'),
-    (9, 3, 3, 600.00, '2024-01-16'),
-    (10, 1, 4, 750.00, '2024-01-17'),
-    (11, 2, 5, 400.00, '2024-01-18'),
-    (12, 3, 6, 950.00, '2024-01-19'),
-    (13, 1, 1, 1250.00, '2024-01-20'),
-    (14, 2, 2, 800.00, '2024-01-21'),
-    (15, 3, 3, 900.00, '2024-01-22'),
-    (16, 1, 4, 700.00, '2024-01-23'),
-    (17, 2, 5, 300.00, '2024-01-24'),
-    (18, 3, 6, 450.00, '2024-01-25'),
-    (19, 1, 1, 600.00, '2024-01-26'),
-    (20, 2, 2, 350.00, '2024-01-27'),
-    (21, 3, 3, 500.00, '2024-01-28'),
-    (22, 1, 4, 1000.00, '2024-01-29'),
-    (23, 2, 5, 200.00, '2024-01-30');
+    (1, 2, 1, 1200.50, '2024-01-01', 1),
+    (2, 3, 2, 750.00, '2024-01-05', 1),
+    (3, 2, 3, 350.75, '2024-01-10', 1),
+    (4, 1, 4, 1500.00, '2024-01-11', 1),
+    (5, 2, 5, 300.00, '2024-01-12', 1),
+    (6, 3, 6, 850.00, '2024-01-13', 1),
+    (7, 1, 1, 500.00, '2024-01-14', 1),
+    (8, 2, 2, 1200.00, '2024-01-15', 1),
+    (9, 3, 3, 600.00, '2024-01-16', 1),
+    (10, 1, 4, 750.00, '2024-01-17', 1),
+    (11, 2, 5, 400.00, '2024-01-18', 1),
+    (12, 3, 6, 950.00, '2024-01-19', 1),
+    (13, 1, 1, 1250.00, '2024-01-20', 1),
+    (14, 2, 2, 800.00, '2024-01-21', 1),
+    (15, 3, 3, 900.00, '2024-01-22', 1),
+    (16, 1, 4, 700.00, '2024-01-23', 1),
+    (17, 2, 5, 300.00, '2024-01-24', 1),
+    (18, 3, 6, 450.00, '2024-01-25', 1),
+    (19, 1, 1, 600.00, '2024-01-26', 1),
+    (20, 2, 2, 350.00, '2024-01-27', 1),
+    (21, 3, 3, 500.00, '2024-01-28', 1),
+    (22, 1, 4, 1000.00, '2024-01-29', 1),
+    (23, 2, 5, 200.00, '2024-01-30', 1);
 
 
 
@@ -656,6 +656,8 @@ FROM pedidos p
     JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido
 WHERE u.id_usuario = 1;
 
+Select * from pedidos
+
 
 -- Detalle de un pedido por id_pedido
 SELECT pp.id_pedido, pp.id_producto, p.nombre AS producto_nombre, pp.sku, pp.cantidad, pp.precio
@@ -671,7 +673,155 @@ FROM productos p
     JOIN aromas a ON v.id_aroma = a.id_aroma
 WHERE c.nombre = 'Perfumes' AND p.id_producto = 1;
 
--- Select id and name from sexos
+-- Productos de un pedido específico de un usuario específico
+SELECT pp.id_pedido, pp.id_producto, p.nombre AS producto_nombre, pp.sku, pp.cantidad, pp.precio
+FROM productos_pedido pp
+    JOIN productos p ON pp.id_producto = p.id_producto
+WHERE pp.id_pedido = 1;
+
+SELECT d.*, ud.tipo_domicilio, ud.principal
+FROM domicilios d
+    JOIN usuario_domicilios ud ON d.id_domicilio = ud.id_domicilio
+    JOIN usuarios i ON ud.id_usuario = i.id_usuario
+WHERE i.id_usuario = 1
+
+
+-- Query to get all types of addresses for a user
+SELECT ud.tipo_domicilio
+FROM usuario_domicilios ud
+JOIN usuarios u ON ud.id_usuario = u.id_usuario
+WHERE u.id_usuario = 1;
+
+
+-- Query to get all information of the main address of a specific user
+SELECT d.*
+FROM domicilios d
+    JOIN usuario_domicilios ud ON d.id_domicilio = ud.id_domicilio
+    JOIN usuarios u ON ud.id_usuario = u.id_usuario
+WHERE u.id_usuario = 1 AND ud.principal = 1;
+-- Query to get total, state name, and state description of a specific order by id_pedido
+SELECT p.total, ep.nombre AS estado_nombre, ep.descripcion AS estado_descripcion
+FROM pedidos p
+JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido
+WHERE p.id_pedido = 1;
+
+-- Query to get all orders with a specific state
+SELECT p.id_pedido, p.total, p.fecha, ep.nombre AS estado_pedido
+FROM pedidos p
+JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido
+WHERE p.id_estado_pedido = 1;
+
+-- Query to get all information of an order by id_pedido, including user information, order state, address, and payment method
+SELECT 
+    p.id_pedido, p.total, p.fecha,
+    u.id_usuario, u.email, iu.nombre AS nombre_usuario, iu.apellido, iu.dni, iu.fecha_nacimiento, iu.telefono,
+    ep.nombre AS estado_pedido, ep.descripcion AS estado_pedido_descripcion,
+    d.codigo_postal, d.provincia, d.localidad, d.barrio, d.calle, d.numero,
+    fp.nombre AS forma_pago
+FROM 
+    pedidos p
+    JOIN usuarios u ON p.id_usuario = u.id_usuario
+    JOIN info_usuarios iu ON u.id_usuario = iu.id_usuario
+    JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido
+    JOIN domicilios d ON p.id_domicilio = d.id_domicilio
+    JOIN formas_pago fp ON p.id_forma_pago = fp.id_forma_pago
+WHERE 
+    p.id_pedido = x;
+
+    -- Información de productos y aromas de un pedido específico
+    SELECT pp.id_pedido, pp.sku, p.nombre AS producto_nombre, a.nombre AS aroma_nombre, pp.cantidad, pp.precio
+    FROM productos_pedido pp
+        JOIN productos p ON pp.id_producto = p.id_producto
+        JOIN variantes v ON pp.sku = v.sku
+        JOIN aromas a ON v.id_aroma = a.id_aroma
+    WHERE pp.id_pedido = 1;
+    
+
+    
+    -- Query to get all products and their information with the count of fragrances
+    SELECT 
+        p.id_producto, 
+        p.nombre AS producto_nombre, 
+        p.descripcion, 
+        c.nombre AS categoria, 
+        COUNT(DISTINCT v.id_aroma) AS cantidad_fragancias,
+        MIN(CASE WHEN vtp.id_tipo_precio = 1 THEN vtp.precio END) AS precio_minorista,
+        MIN(CASE WHEN vtp.id_tipo_precio = 2 THEN vtp.precio END) AS precio_mayorista
+    FROM 
+        productos p
+        JOIN categorias c ON p.id_categoria = c.id_categoria
+        JOIN variantes v ON p.id_producto = v.id_producto
+        JOIN variantes_tipo_precio vtp ON p.id_producto = vtp.id_producto
+    GROUP BY 
+        p.id_producto, 
+        p.nombre, 
+        p.descripcion, 
+        c.nombre;
+
+        -- Query to get all information of a product by id_producto
+        SELECT 
+            p.id_producto, 
+            p.nombre, 
+            p.descripcion, 
+            c.nombre AS categoria, 
+            p.destacado, 
+            i.ruta AS imagen_principal,
+            MIN(CASE WHEN vtp.id_tipo_precio = 1 THEN vtp.precio END) AS precio_minorista,
+            MIN(CASE WHEN vtp.id_tipo_precio = 2 THEN vtp.precio END) AS precio_mayorista
+        FROM 
+            productos p
+            JOIN categorias c ON p.id_categoria = c.id_categoria
+            LEFT JOIN imagenes i ON p.id_producto = i.id_producto AND i.principal = 1
+            LEFT JOIN variantes_tipo_precio vtp ON p.id_producto = vtp.id_producto
+        WHERE 
+            p.id_producto = 1
+        GROUP BY 
+            p.id_producto, 
+            p.nombre, 
+            p.descripcion, 
+            c.nombre, 
+            p.destacado, 
+            i.ruta;
+
+        -- Query to get all fragrances of a product by id_producto
+        SELECT 
+            a.nombre AS aroma
+        FROM 
+            variantes v
+            JOIN aromas a ON v.id_aroma = a.id_aroma
+        WHERE 
+            v.id_producto = 1;
+
+            -- Query to get the main image of a product by id_producto
+            SELECT p.id_producto, i.ruta AS imagen_principal
+            FROM productos p
+            LEFT JOIN imagenes i ON p.id_producto = i.id_producto AND i.principal = 1
+            WHERE p.id_producto = 1;
+
+
+            SELECT ep.nombre AS estado_nombre, v.sku AS id_variante
+            FROM variantes v
+            JOIN estados_productos ep ON v.id_estado_producto = ep.id_estado_producto
+            WHERE v.id_producto = 1;
+
+            -- Query to update all values of a product by id_producto
+            UPDATE productos
+            SET nombre = 'Nuevo Nombre',
+                descripcion = 'Nueva Descripción',
+                id_categoria = 2,
+                destacado = 0,
+                estado = 1
+            WHERE id_producto = 1;
+
+            -- Query to update the retail and wholesale price of a product by id_producto
+            UPDATE variantes_tipo_precio
+            SET precio = CASE 
+                            WHEN id_tipo_precio = 1 THEN 650.00  -- New retail price
+                            WHEN id_tipo_precio = 2 THEN 320.00  -- New wholesale price
+                         END
+            WHERE id_producto = 1;
+
+
 SELECT id_sexo, nombre
 FROM sexos;
 

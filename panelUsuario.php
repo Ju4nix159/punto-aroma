@@ -43,7 +43,7 @@ if (isset($_SESSION["usuario"])) {
     $sexos = $sql_sexos->fetchAll(PDO::FETCH_ASSOC);
 
 
-    $sql_pedido = $con->prepare("   SELECT p.id_pedido, p.total, p.fecha, ep.nombre AS estado_pedido
+    $sql_pedido = $con->prepare("   SELECT p.id_pedido, p.total, p.fecha, ep.nombre AS estado_pedido, ep.id_estado_pedido
                                     FROM pedidos p
                                     JOIN usuarios u ON p.id_usuario = u.id_usuario
                                     JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido
@@ -55,7 +55,28 @@ if (isset($_SESSION["usuario"])) {
     $sql_estados = $con->prepare("SELECT id_estado_pedido, nombre FROM estados_pedidos;");
     $sql_estados->execute();
     $estados = $sql_estados->fetchAll(PDO::FETCH_ASSOC);
+
+
+    $sql_domicilios = $con->prepare("SELECT d.*, ud.tipo_domicilio, ud.principal
+FROM domicilios d
+    JOIN usuario_domicilios ud ON d.id_domicilio = ud.id_domicilio
+    JOIN usuarios i ON ud.id_usuario = i.id_usuario
+WHERE i.id_usuario = :id_usuario");
+    $sql_domicilios->bindParam(":id_usuario", $id_usuario);
+    $sql_domicilios->execute();
+    $domicilios = $sql_domicilios->fetchAll(PDO::FETCH_ASSOC);
+
+
+    $sql_tipos_domicilio = $con->prepare("SELECT ud.tipo_domicilio
+FROM usuario_domicilios ud
+JOIN usuarios u ON ud.id_usuario = u.id_usuario
+WHERE u.id_usuario = :id_usuario;");
+    $sql_tipos_domicilio->bindParam(":id_usuario", $id_usuario);
+    $sql_tipos_domicilio->execute();
+    $tipos_domicilio = $sql_tipos_domicilio->fetchAll(PDO::FETCH_ASSOC);
 }
+
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -144,6 +165,25 @@ if (isset($_SESSION["usuario"])) {
             z-index: 1000;
             background-color: white;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .text-primary-custom {
+            color: var(--primary-color);
+        }
+
+        .text-secondary-custom {
+            color: var(--secondary-color);
+        }
+
+        .modal-header {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(131, 175, 55, 0.25);
         }
     </style>
 </head>
@@ -293,11 +333,19 @@ if (isset($_SESSION["usuario"])) {
                                     <div class="order-card">
                                         <div class="d-flex justify-content-between align-items-center mb-3">
                                             <h5 class="mb-0">Pedido: #<?php echo $pedido["id_pedido"] ?> </h5>
-                                            <span class="order-status status-<?php echo $pedido["estado_pedido"] ?>"><?php echo $pedido["estado_pedido"] ?></span>
+                                            <span class="order-status status-<?php echo $pedido["estado_pedido"] ?>"
+                                                data-estado-id="<?php echo $pedido["id_estado_pedido"] ?>">
+                                                <?php echo $pedido["estado_pedido"] ?>
+                                            </span>
                                         </div>
                                         <p>Fecha: <?php echo $pedido["fecha"] ?></p>
                                         <p>Total: <?php echo $pedido["total"] ?></p>
-                                        <button class="btn btn-primary-custom btn-sm me-2 btn-ver-detalle">Ver Detalle</button>
+                                        <button class="btn btn-primary-custom btn-sm me-2 btn-ver-detalle"
+                                            data-id-pedido="<?php echo $pedido["id_pedido"] ?>"
+                                            onclick="verDetallePedido(<?php echo $pedido['id_pedido']; ?>)">
+                                            Ver Detalle
+                                        </button>
+
                                         <?php if (in_array($pedido["estado_pedido"], ["pendiente", "procesado", "cambiado"])) { ?>
                                             <button class="btn btn-danger btn-sm btn-cancelar-pedido"
                                                 data-id="<?php echo $pedido['id_pedido']; ?>"
@@ -305,55 +353,109 @@ if (isset($_SESSION["usuario"])) {
                                                 Cancelar Pedido
                                             </button>
                                         <?php } ?>
+
+                                        <!-- Botón Pagar -->
+                                        <?php if (in_array($pedido["estado_pedido"], ["procesado", "cambiado"])) { ?>
+                                            <a href="pagar_pedido.php?id_pedido=<?php echo $pedido['id_pedido']; ?>"
+                                                class="btn btn-success btn-sm btn-pagar">
+                                                Pagar
+                                            </a>
+                                        <?php } ?>
                                     </div>
                                 <?php } ?>
                             </div>
+
                         </div>
                         <div class="tab-pane fade" id="domicilios">
                             <h2 class="mb-4">Domicilios de Entrega</h2>
-                            <div id="domicilios-container">
-                                <!-- Los domicilios se cargarán aquí dinámicamente -->
-                            </div>
-                            <button id="btn-agregar-domicilio" class="btn btn-primary-custom mt-3">Agregar Nuevo Domicilio</button>
-
+                            <?php if (empty($domicilios)) { ?>
+                                <div id="incomplete-profile-alert" class="incomplete-profile-alert">
+                                    <h4 class="alert-heading"><i class="bi bi-exclamation-triangle-fill me-2"></i>Sin domicilios</h4>
+                                    <p>Parece que aún no has ingresado un domicilio. Agrega un domicilio valido y empieza a comprar.</p>
+                                    <hr>
+                                    <p class="mb-0">
+                                        <button id="btn-agregar-domicilio" class="btn btn-primary-custom mt-3">Agregar Nuevo Domicilio</button>
+                                    </p>
+                                </div>
+                            <?php } ?>
+                            <?php foreach ($domicilios as $domicilio) {
+                                $id_domicilio = $domicilio["id_domicilio"] ?>
+                                <div id="domicilios-container">
+                                    <div class="address-card address-main">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span class="address-type"><?php echo $domicilio["tipo_domicilio"] ?></span> <!-- Aquí se usa el valor de domicilio.tipo -->
+                                            <?php if ($domicilio["principal"] == 1) {
+                                                $id_domicilio_principal =  $id_domicilio ?>
+                                                <span class="badge bg-primary">Principal</span>
+                                            <?php } ?>
+                                        </div>
+                                        <p><?php echo $domicilio["calle"] . " " . $domicilio["numero"]; ?></p> <!-- Aquí se usa domicilio.calle -->
+                                        <p><?php echo $domicilio["localidad"] . ", " . $domicilio["codigo_postal"]; ?></p> <!-- Aquí se usan domicilio.ciudad y domicilio.codigo_postal -->
+                                        <div class="mt-3">
+                                            <button class="btn btn-sm btn-outline-primary me-2 btn-editar-domicilio" onclick="editarDomicilio(<?php echo $id_domicilio ?>)">Editar</button>
+                                            <?php if ($domicilio["principal"] != 1) { ?>
+                                                <button class="btn btn-sm btn-outline-success me-2 btn-principal-domicilio" onclick="hacerPrincipal(<?php echo $id_domicilio_principal ?>,<?php echo $id_domicilio ?>)">Hacer Principal</button>
+                                            <?php } ?>
+                                            <button class="btn btn-sm btn-outline-danger btn-eliminar-domicilio" onclick="eliminarDomicilio(<?php echo $id_domicilio ?>)">Eliminar</button> <!-- Solo se muestra si domicilio.principal es false -->
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php } ?>
+                            <?php if (!empty($domicilios)) { ?>
+                                <button id="btn-agregar-domicilio" class="btn btn-primary-custom mt-3">Agregar Nuevo Domicilio</button>
+                            <?php } ?>
                             <!-- Modal para agregar/editar domicilio -->
                             <div class="modal fade" id="domicilioModal" tabindex="-1" aria-labelledby="domicilioModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
+                                <div class="modal-dialog modal-lg">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="domicilioModalLabel">Agregar Nuevo Domicilio</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <form id="form-domicilio">
-                                                <input type="hidden" id="domicilio-id">
-                                                <div class="mb-3">
-                                                    <label for="domicilio-tipo" class="form-label">Tipo de Domicilio</label>
-                                                    <select class="form-select" id="domicilio-tipo" required>
-                                                        <option value="">Seleccionar</option>
-                                                        <option value="Casa">Casa</option>
-                                                        <option value="Trabajo">Trabajo</option>
-                                                        <option value="Otro">Otro</option>
-                                                    </select>
+                                            <form id="domicilioForm">
+                                                <input type="hidden" name="id_usuario" value="<?php echo $id_usuario ?>" id="id_usuario">
+                                                <div class="row mb-3">
+                                                    <div class="col-md-6">
+                                                        <label for="codigo_postal" class="form-label">Código Postal</label>
+                                                        <input type="text" class="form-control" id="codigo_postal" name="codigo_postal" placeholder="Ingrese el código postal" required>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="provincia" class="form-label">Provincia</label>
+                                                        <input type="text" class="form-control" id="provincia" name="provincia" placeholder="Ingrese la provincia" required>
+                                                    </div>
                                                 </div>
-                                                <div class="mb-3">
-                                                    <label for="domicilio-calle"
-                                                        class="form-label">Calle y Número</label>
-                                                    <input type="text" class="form-control" id="domicilio-calle" required>
+                                                <div class="row mb-3">
+                                                    <div class="col-md-6">
+                                                        <label for="localidad" class="form-label">Localidad</label>
+                                                        <input type="text" class="form-control" id="localidad" name="localidad" placeholder="Ingrese la localidad" required>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="barrio" class="form-label">Barrio</label>
+                                                        <input type="text" class="form-control" id="barrio" name="barrio" placeholder="Ingrese el barrio" required>
+                                                    </div>
                                                 </div>
-                                                <div class="mb-3">
-                                                    <label for="domicilio-ciudad" class="form-label">Ciudad</label>
-                                                    <input type="text" class="form-control" id="domicilio-ciudad" required>
+                                                <div class="row mb-3">
+                                                    <div class="col-md-8">
+                                                        <label for="calle" class="form-label">Calle</label>
+                                                        <input type="text" class="form-control" id="calle" name="calle" placeholder="Ingrese la calle" required>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="numero" class="form-label">Número</label>
+                                                        <input type="text" class="form-control" id="numero" name="numero" placeholder="Ingrese el número" required>
+                                                    </div>
                                                 </div>
-                                                <div class="mb-3">
-                                                    <label for="domicilio-codigo-postal" class="form-label">Código Postal</label>
-                                                    <input type="text" class="form-control" id="domicilio-codigo-postal" required>
+                                                <div class="row mb-3">
+                                                    <div class="col-md-6">
+                                                        <label for="tipo_domicilio" class="form-label">Tipo de Domicilio</label>
+                                                        <input type="text" class="form-control" id="tipo_domicilio" name="tipo_domicilio" placeholder="Ingrese el tipo de domicilio" required>
+                                                    </div>
                                                 </div>
                                             </form>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                            <button type="button" class="btn btn-primary-custom" id="btn-guardar-domicilio">Guardar</button>
+                                            <button type="button" class="btn btn-primary-custom" onclick="guardarDomicilio()">Guardar Domicilio</button>
                                         </div>
                                     </div>
                                 </div>
@@ -365,7 +467,6 @@ if (isset($_SESSION["usuario"])) {
         </div>
     </main>
 
-    <!-- Modal para detalles del pedido -->
     <div class="modal fade" id="pedidoDetalleModal" tabindex="-1" aria-labelledby="pedidoDetalleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -373,8 +474,8 @@ if (isset($_SESSION["usuario"])) {
                     <h5 class="modal-title" id="pedidoDetalleModalLabel">Detalle del Pedido</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body" id="pedidoDetalleModalBody">
-                    <!-- El detalle del pedido se cargará aquí dinámicamente -->
+                <div class="modal-body" id="detallePedidoBody">
+                    <!-- Aquí se cargará el contenido dinámico -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -382,6 +483,8 @@ if (isset($_SESSION["usuario"])) {
             </div>
         </div>
     </div>
+
+
     <script src="app.js"></script>
     <script>
         function cancelarPedido(id_pedido) {
@@ -415,102 +518,298 @@ if (isset($_SESSION["usuario"])) {
                     alert('Hubo un error al cancelar el pedido. Inténtalo nuevamente.2');
                 });
         }
+        function verDetallePedido(idPedido) {
+            // Crear la solicitud AJAX
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "ver_detalle.php", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
+            // Manejador para la respuesta
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Insertar la respuesta en el modal
+                    document.getElementById("detallePedidoBody").innerHTML = xhr.responseText;
 
+                    // Mostrar el modal
+                    const modal = new bootstrap.Modal(document.getElementById("pedidoDetalleModal"));
+                    modal.show();
+                } else {
+                    alert("Error al obtener los detalles del pedido.");
+                }
+            };
 
-        /* function renderizarDomicilios() {
-            domiciliosContainer.innerHTML = '';
-            domicilios.forEach(domicilio => {
-                const domicilioCard = document.createElement('div');
-                domicilioCard.className = `address-card ${domicilio.principal ? 'address-main' : ''}`;
-                domicilioCard.innerHTML = `
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="address-type">${domicilio.tipo}</span>
-                            ${domicilio.principal ? '<span class="badge bg-primary">Principal</span>' : ''}
-                        </div>
-                        <p>${domicilio.calle}</p>
-                        <p>${domicilio.ciudad}, ${domicilio.codigoPostal}</p>
-                        <div class="mt-3">
-                            <button class="btn btn-sm btn-outline-primary me-2 btn-editar-domicilio" data-id="${domicilio.id}">Editar</button>
-                            ${!domicilio.principal ? `<button class="btn btn-sm btn-outline-success me-2 btn-principal-domicilio" data-id="${domicilio.id}">Hacer Principal</button>` : ''}
-                            ${!domicilio.principal ? `<button class="btn btn-sm btn-outline-danger btn-eliminar-domicilio" data-id="${domicilio.id}">Eliminar</button>` : ''}
-                        </div>
-                    `;
-                domiciliosContainer.appendChild(domicilioCard);
+            // Enviar los datos al servidor
+            xhr.send(`id_pedido=${idPedido}`);
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnAgregarDomicilio = document.getElementById('btn-agregar-domicilio');
+            const domicilioModal = new bootstrap.Modal(document.getElementById('domicilioModal')); // Bootstrap Modal API
+
+            btnAgregarDomicilio.addEventListener('click', function() {
+                domicilioModal.show(); // Muestra el modal
             });
+        });
 
+        // Función para guardar domicilio
+        function guardarDomicilio() {
+            const idUsuario = document.getElementById('id_usuario').value.trim();
+            const codigoPostal = document.getElementById('codigo_postal').value.trim();
+            const provincia = document.getElementById('provincia').value.trim();
+            const localidad = document.getElementById('localidad').value.trim();
+            const barrio = document.getElementById('barrio').value.trim();
+            const calle = document.getElementById('calle').value.trim();
+            const numero = document.getElementById('numero').value.trim();
+            const tipoDomicilio = document.getElementById('tipo_domicilio').value;
 
-            function renderizarPedidos(filtro = 'todos') {
-                pedidosContainer.innerHTML = '';
-                const pedidosFiltrados = filtro === 'todos' ? pedidos : pedidos.filter(p => p.estado.toLowerCase() === filtro);
-                pedidosFiltrados.forEach(pedido => {
-                    const pedidoCard = document.createElement('div');
-                    pedidoCard.className = 'order-card';
-                    pedidoCard.innerHTML = `
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h5 class="mb-0">Pedido #${pedido.id}</h5>
-                            <span class="order-status status-${pedido.estado.toLowerCase().replace(' ', '-')}">${pedido.estado}</span>
-                        </div>
-                        <p>Fecha: ${pedido.fecha}</p>
-                        <p>Total: $${pedido.total.toFixed(2)}</p>
-                        <button class="btn btn-primary-custom btn-sm me-2 btn-ver-detalle" data-id="${pedido.id}">Ver Detalle</button>
-                        ${pedido.estado === 'Procesando' ? `<button class="btn btn-danger btn-sm btn-cancelar-pedido" data-id="${pedido.id}">Cancelar Pedido</button>` : ''}
-                    `;
-                });
+            // Validación de campos
+            if (!idUsuario || !codigoPostal || !provincia || !localidad || !barrio || !calle || !numero) {
+                alert('Por favor, complete todos los campos antes de enviar el formulario.');
+                return;
             }
 
-            function mostrarDetallePedido(id) {
-                const pedido = pedidos.find(p => p.id == id);
-                if (pedido) {
-                    pedidoDetalleModalBody.innerHTML = `
-                        <h6>Pedido #${pedido.id}</h6>
-                        <p><strong>Fecha:</strong> ${pedido.fecha}</p>
-                        <p><strong>Estado:</strong> ${pedido.estado}</p>
-                        <p><strong>Dirección de Envío:</strong> ${pedido.direccionEnvio}</p>
-                        <h6 class="mt-4">Productos:</h6>
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Producto</th>
-                                    <th>Cantidad</th>
-                                    <th>Precio Unitario</th>
-                                    <th>Subtotal</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${pedido.productos.map(producto => `
-                                    <tr>
-                                        <td>${producto.nombre}</td>
-                                        <td>${producto.cantidad}</td>
-                                        <td>$${producto.precio.toFixed(2)}</td>
-                                        <td>$${(producto.cantidad * producto.precio).toFixed(2)}</td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th colspan="3" class="text-end">Total:</th>
-                                    <th>$${pedido.total.toFixed(2)}</th>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    `;
-                }
-            } */
+            if (tipoDomicilio === '') {
+                alert('Por favor, seleccione un tipo de domicilio.');
+                return;
+            }
 
-        pedidosContainer.addEventListener('click', (e) => {
-            if (e.target.classList.contains('btn-ver-detalle')) {
-                const id = e.target.dataset.id;
-                mostrarDetallePedido(id);
-            } else if (e.target.classList.contains('btn-cancelar-pedido')) {
-                const id = e.target.dataset.id;
-                if (confirm('¿Estás seguro de que deseas cancelar este pedido?')) {
-                    const index = pedidos.findIndex(p => p.id == id);
-                    if (index !== -1) {
-                        pedidos[index].estado = 'Cancelado';
-                        renderizarPedidos(ordenarPedidosSelect.value);
+            // Crear un objeto con los datos
+            const datos = {
+                id_usuario: idUsuario,
+                codigo_postal: codigoPostal,
+                provincia: provincia,
+                localidad: localidad,
+                barrio: barrio,
+                calle: calle,
+                numero: numero,
+                tipo_domicilio: tipoDomicilio
+            };
+
+            // Enviar datos con AJAX
+            fetch('agregar_domicilio.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(datos) // Convertir objeto a JSON y enviarlo en el cuerpo
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
                     }
+                    return response.text(); // Intentar leer la respuesta como texto
+                })
+                .then(text => {
+                    try {
+                        const data = JSON.parse(text); // Intentar convertir el texto en JSON
+                        if (data.success) {
+                            alert('Domicilio agregado correctamente.');
+                            location.reload(); // Recarga la página para reflejar cambios
+                        } else {
+                            alert('Error al agregar el domicilio: ' + data.message);
+                        }
+                    } catch (error) {
+                        console.error('Respuesta no válida:', text);
+                        alert('Error: La respuesta del servidor no es válida.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Hubo un error al procesar la solicitud. Verifique su conexión o contacte al administrador.');
+                });
+        }
+
+        function editarDomicilio(id_domicilio) {
+            // Crear la solicitud AJAX
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "editar_domicilio.php", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+            // Manejador para la respuesta
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Insertar la respuesta en el modal
+                    document.getElementById("editarDomicilioBody").innerHTML = xhr.responseText;
+
+                    // Mostrar el modal
+                    const modal = new bootstrap.Modal(document.getElementById("editarDomicilioModal"));
+                    modal.show();
+                } else {
+                    alert("Error al obtener los detalles del domicilio.");
                 }
+            };
+
+            // Enviar los datos al servidor
+            xhr.send(`id_domicilio=${id_domicilio}`);
+        }
+
+        function hacerPrincipal(idDomicilioActual, idDomicilioNuevo) {
+            if (!confirm('¿Está seguro de que desea establecer este domicilio como principal?')) {
+                return; // Salir si el usuario cancela la confirmación
+            }
+
+            // Enviar solicitud para cambiar el domicilio principal
+            fetch('hacer_principal.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id_domicilio_actual: idDomicilioActual,
+                        id_domicilio_nuevo: idDomicilioNuevo
+                    }) // Enviar los IDs de los domicilios
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        alert('Domicilio principal actualizado correctamente.');
+                        location.reload(); // Recargar la página para reflejar cambios
+                    } else {
+                        alert('Error al actualizar el domicilio principal: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Hubo un error al procesar la solicitud. Verifique su conexión o contacte al administrador.');
+                });
+        }
+
+
+        function eliminarDomicilio(idDomicilio) {
+            if (!confirm('¿Está seguro de que desea eliminar este domicilio? Esta acción no se puede deshacer.')) {
+                return; // Salir si el usuario cancela la confirmación
+            }
+
+            // Enviar solicitud para eliminar el domicilio
+            fetch('eliminar_domicilio.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id_domicilio: idDomicilio
+                    }) // Enviar el ID del domicilio a eliminar
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        alert('Domicilio eliminado correctamente.');
+                        location.reload(); // Recargar la página para reflejar cambios
+                    } else {
+                        alert('Error al eliminar el domicilio: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Hubo un error al procesar la solicitud. Verifique su conexión o contacte al administrador.');
+                });
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuItems = document.querySelectorAll('.list-group-item[data-bs-toggle="list"]'); // Selecciona los tabs del menú
+
+            // Restaurar el tab activo al cargar la página
+            const activeTabId = localStorage.getItem('activeTabId');
+            if (activeTabId) {
+                const activeTabElement = document.querySelector(`a[href="${activeTabId}"]`);
+                if (activeTabElement) {
+                    const tabInstance = new bootstrap.Tab(activeTabElement);
+                    tabInstance.show();
+                }
+            }
+
+            // Guardar el tab activo en localStorage al cambiar de tab
+            menuItems.forEach(item => {
+                item.addEventListener('shown.bs.tab', function(event) {
+                    const targetId = event.target.getAttribute('href');
+                    if (targetId) {
+                        localStorage.setItem('activeTabId', targetId);
+                    }
+                });
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const selectOrdenarPedidos = document.getElementById("ordenar-pedidos");
+            const pedidosContainer = document.getElementById("pedidos-container");
+
+            selectOrdenarPedidos.addEventListener("change", () => {
+                const estadoSeleccionado = selectOrdenarPedidos.value;
+
+                // Solicitud AJAX
+                fetch("filtro.php", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            estado: estadoSeleccionado
+                        }),
+                    })
+                    .then(response => response.text()) // Obtén la respuesta como texto inicialmente
+                    .then(data => {
+                        console.log("Respuesta recibida:", data);
+                        return JSON.parse(data); // Intenta convertirla a JSON
+                    })
+                    .then(json => {
+                        if (json.success) {
+                            actualizarPedidos(json.pedidos);
+                        } else {
+                            console.error("Error al obtener los pedidos:", json.message);
+                        }
+                    })
+                    .catch(error => console.error("Error en la solicitud:", error));
+
+            });
+
+            function actualizarPedidos(pedidos) {
+                // Limpia el contenedor
+                pedidosContainer.innerHTML = "";
+
+                // Genera dinámicamente las tarjetas de pedidos
+                pedidos.forEach(pedido => {
+                    const pedidoHTML = `
+                <div class="order-card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">Pedido: #${pedido.id_pedido}</h5>
+                        <span class="order-status status-${pedido.estado_pedido}">${pedido.estado_pedido}</span>
+                    </div>
+                    <p>Fecha: ${pedido.fecha}</p>
+                    <p>Total: ${pedido.total}</p>
+                    <button class="btn btn-primary-custom btn-sm me-2 btn-ver-detalle" 
+                        data-id-pedido="${pedido.id_pedido}" 
+                        onclick="verDetallePedido(${pedido.id_pedido})">
+                        Ver Detalle
+                    </button>
+                    ${
+                        ["pendiente", "procesado", "cambiado"].includes(pedido.estado_pedido)
+                            ? `<button class="btn btn-danger btn-sm btn-cancelar-pedido" 
+                                data-id="${pedido.id_pedido}" 
+                                onclick="cancelarPedido(${pedido.id_pedido})">
+                                Cancelar Pedido
+                            </button>`
+                            : ""
+                    }
+                    ${
+                        ["procesado", "cambiado"].includes(pedido.estado_pedido)
+                            ? `<a href="pagar_pedido.php?id_pedido=${pedido.id_pedido}" 
+                                class="btn btn-success btn-sm btn-pagar">
+                                Pagar
+                            </a>`
+                            : ""
+                    }
+                </div>
+            `;
+                    pedidosContainer.insertAdjacentHTML("beforeend", pedidoHTML);
+                });
             }
         });
     </script>

@@ -121,8 +121,10 @@ CREATE TABLE pedidos (
     id_estado_pedido INT,
     total DECIMAL(10, 2),
     fecha DATE,
+    id_domicilio INT,
     CONSTRAINT FK_pedidos_id_usuario_END FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
-    CONSTRAINT FK_pedidos_id_estado_pedido_END FOREIGN KEY (id_estado_pedido) REFERENCES estados_pedidos(id_estado_pedido)
+    CONSTRAINT FK_pedidos_id_estado_pedido_END FOREIGN KEY (id_estado_pedido) REFERENCES estados_pedidos(id_estado_pedido),
+    CONSTRAINT FK_pedidos_id_domicilio_END FOREIGN KEY (id_domicilio) REFERENCES domicilios(id_domicilio)
 );
 
 -- Tabla de variantes (variante del producto)
@@ -153,11 +155,12 @@ CREATE TABLE productos_pedido (
 
 -- Relación entre info_usuario y domicilio
 CREATE TABLE usuario_domicilios (
-    id_info_usuario INT,
+    id_usuario INT,
     id_domicilio INT,
     tipo_domicilio VARCHAR(100),
-    PRIMARY KEY (id_info_usuario, id_domicilio),
-    CONSTRAINT FK_usuario_domicilio_id_info_usuario_END FOREIGN KEY (id_info_usuario) REFERENCES info_usuarios(id_info_usuario),
+    principal TINYINT DEFAULT 0,
+    PRIMARY KEY (id_usuario, id_domicilio),
+    CONSTRAINT FK_usuario_domicilio_id_usuario_END FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
     CONSTRAINT FK_usuario_domicilio_id_domicilio_END FOREIGN KEY (id_domicilio) REFERENCES domicilios(id_domicilio)
 );
 
@@ -205,7 +208,7 @@ INSERT INTO domicilios (codigo_postal, provincia, localidad, barrio, calle, nume
 ('2000', 'Buenos Aires', 'CABA', 'Belgrano', 'Avenida Siempreviva', '742');
 
 -- Insertar relación entre info_usuario y domicilio
-INSERT INTO usuario_domicilios (id_info_usuario, id_domicilio, tipo_domicilio) VALUES 
+INSERT INTO usuario_domicilios (id_usuario, id_domicilio, tipo_domicilio) VALUES 
 (1, 1, 'Residencial'),
 (2, 2, 'Residencial');
 
@@ -350,30 +353,30 @@ INSERT INTO estados_pedidos (nombre, descripcion) VALUES
 ('entregado', 'Pedido entregado al cliente'),
 ('cancelado', 'Pedido cancelado por el cliente');
 
-INSERT INTO pedidos (id_usuario, id_estado_pedido, total, fecha) VALUES 
-(2, 1, 1200.50, '2024-01-01'),
-(3, 2, 750.00, '2024-01-05'),
-(2, 3, 350.75, '2024-01-10'),
-(1, 4, 1500.00, '2024-01-11'),
-(2, 5, 300.00, '2024-01-12'),
-(3, 6, 850.00, '2024-01-13'),
-(1, 1, 500.00, '2024-01-14'),
-(2, 2, 1200.00, '2024-01-15'),
-(3, 3, 600.00, '2024-01-16'),
-(1, 4, 750.00, '2024-01-17'),
-(2, 5, 400.00, '2024-01-18'),
-(3, 6, 950.00, '2024-01-19'),
-(1, 1, 1250.00, '2024-01-20'),
-(2, 2, 800.00, '2024-01-21'),
-(3, 3, 900.00, '2024-01-22'),
-(1, 4, 700.00, '2024-01-23'),
-(2, 5, 300.00, '2024-01-24'),
-(3, 6, 450.00, '2024-01-25'),
-(1, 1, 600.00, '2024-01-26'),
-(2, 2, 350.00, '2024-01-27'),
-(3, 3, 500.00, '2024-01-28'),
-(1, 4, 1000.00, '2024-01-29'),
-(2, 5, 200.00, '2024-01-30');
+INSERT INTO pedidos (id_usuario, id_estado_pedido, total, fecha, id_domicilio) VALUES 
+(2, 1, 1200.50, '2024-01-01', 1),
+(3, 2, 750.00, '2024-01-05', 1),
+(2, 3, 350.75, '2024-01-10', 1),
+(1, 4, 1500.00, '2024-01-11', 1),
+(2, 5, 300.00, '2024-01-12', 1),
+(3, 6, 850.00, '2024-01-13', 1),
+(1, 1, 500.00, '2024-01-14', 1),
+(2, 2, 1200.00, '2024-01-15', 1),
+(3, 3, 600.00, '2024-01-16', 1),
+(1, 4, 750.00, '2024-01-17', 1),
+(2, 5, 400.00, '2024-01-18', 1),
+(3, 6, 950.00, '2024-01-19', 1),
+(1, 1, 1250.00, '2024-01-20', 1),
+(2, 2, 800.00, '2024-01-21', 1),
+(3, 3, 900.00, '2024-01-22', 1),
+(1, 4, 700.00, '2024-01-23', 1),
+(2, 5, 300.00, '2024-01-24', 1),
+(3, 6, 450.00, '2024-01-25', 1),
+(1, 1, 600.00, '2024-01-26', 1),
+(2, 2, 350.00, '2024-01-27', 1),
+(3, 3, 500.00, '2024-01-28', 1),
+(1, 4, 1000.00, '2024-01-29', 1),
+(2, 5, 200.00, '2024-01-30', 1);
 
 
 -- Insertar datos en productos_pedido

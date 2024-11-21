@@ -126,9 +126,8 @@ $productos = $sql_catalogo->fetchAll(PDO::FETCH_ASSOC);
                         <?php foreach ($productos as $producto) {
                             // Si la categoría es "Perfumes", selecciona fragancias; si es "Aromas para el hogar", selecciona colores
                             if ($producto['categoria'] == 'Perfumes') {
-                                $query_variantes = "SELECT DISTINCT a.nombre AS aroma_nombre
+                                $query_variantes = "SELECT DISTINCT v.aroma
                         FROM variantes v
-                        JOIN aromas a ON v.id_aroma = a.id_aroma
                         WHERE v.id_producto = :id_producto";
                             } elseif ($producto['categoria'] == 'Aromas para el hogar') {
                                 $query_variantes = "SELECT DISTINCT c.nombre AS color_nombre
@@ -148,7 +147,7 @@ $productos = $sql_catalogo->fetchAll(PDO::FETCH_ASSOC);
 
                             // Crear un array de variantes para pasarlo como JSON al modal
                             $variantes_array = array_map(function ($variante) {
-                                return isset($variante['aroma_nombre']) ? $variante['aroma_nombre'] : $variante['color_nombre'];
+                                return isset($variante['aroma']) ? $variante['aroma'] : $variante['color_nombre'];
                             }, $variantes_result);
                             $variantes_json = json_encode($variantes_array);
 
