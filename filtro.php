@@ -16,28 +16,29 @@ try {
 
 // Obtener datos enviados por la solicitud AJAX
 $data = json_decode(file_get_contents("php://input"), true);
+$id_usuario = $data["id_usuario"] ?? null;
 $estado = $data["estado"] ?? "todos";
 
 // Construir y ejecutar la consulta
 try {
     if ($estado === "todos") {
-        $sql = "SELECT p.*, ep.nombre AS estado_pedido
-    FROM pedidos p
-    JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido;";
-        $stmt = $con->prepare($sql);
-        $stmt->execute();
+
+        $sql_filtro = $con->prepare("SELECT p.*, ep.nombre AS estado_pedido FROM pedidos p JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido WHERE p.id_usuario = :id_usuario;");
+        $sql_filtro->bindParam(":id_usuario", $id_usuario, PDO::PARAM_INT);
+        $sql_filtro->execute();
+
     } else {
-        $sql = "SELECT p.id_pedido, p.total, p.fecha, ep.nombre AS estado_pedido
+        $sql_filtro = $con->prepare("SELECT p.id_pedido, p.total, p.fecha, ep.nombre AS estado_pedido
 FROM pedidos p
 JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido
-WHERE p.id_estado_pedido = :estado;";
-        $stmt = $con->prepare($sql);
-        $stmt->bindParam(":estado", $estado, PDO::PARAM_STR);
-        $stmt->execute();
+WHERE p.id_estado_pedido = :estado and p.id_usuario = :id_usuario;");
+        $sql_filtro->bindParam(":estado", $estado, PDO::PARAM_STR);
+        $sql_filtro->bindParam(":id_usuario", $id_usuario, PDO::PARAM_INT);
+        $sql_filtro->execute();
     }
 
     // Obtener resultados
-    $pedidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $pedidos = $sql_filtro->fetchAll(PDO::FETCH_ASSOC);
 
     echo json_encode(["success" => true, "pedidos" => $pedidos]);
 } catch (PDOException $e) {

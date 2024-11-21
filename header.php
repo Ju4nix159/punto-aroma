@@ -116,7 +116,7 @@ include 'carrito.php';
                         </li>
                         <li>
                             <button class="btn btn-outline-secondary" type="button" data-bs-toggle="offcanvas" data-bs-target="#carritoOffcanvas">
-                                <i class="bi bi-cart"></i> Carrito <span class="badge bg-secondary" id="cart-count">2</span>
+                                <i class="bi bi-cart"></i> Carrito <span class="badge bg-secondary" id="cart-count"></span>
                             </button>
                         </li>
 

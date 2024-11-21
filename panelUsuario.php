@@ -61,7 +61,7 @@ if (isset($_SESSION["usuario"])) {
 FROM domicilios d
     JOIN usuario_domicilios ud ON d.id_domicilio = ud.id_domicilio
     JOIN usuarios i ON ud.id_usuario = i.id_usuario
-WHERE i.id_usuario = :id_usuario");
+WHERE i.id_usuario = :id_usuario AND ud.estado = 1 " );
     $sql_domicilios->bindParam(":id_usuario", $id_usuario);
     $sql_domicilios->execute();
     $domicilios = $sql_domicilios->fetchAll(PDO::FETCH_ASSOC);
@@ -146,6 +146,9 @@ WHERE u.id_usuario = :id_usuario;");
 
         .status-cancelado {
             background-color: #dc3545;
+        }
+        .status-pagado{
+            background-color: #28a745;
         }
 
         .address-type {
@@ -743,6 +746,8 @@ WHERE u.id_usuario = :id_usuario;");
 
             selectOrdenarPedidos.addEventListener("change", () => {
                 const estadoSeleccionado = selectOrdenarPedidos.value;
+                const idUsuario = document.getElementById("id_usuario").value;
+
 
                 // Solicitud AJAX
                 fetch("filtro.php", {
@@ -751,7 +756,8 @@ WHERE u.id_usuario = :id_usuario;");
                             "Content-Type": "application/json",
                         },
                         body: JSON.stringify({
-                            estado: estadoSeleccionado
+                            estado: estadoSeleccionado,
+                            id_usuario: idUsuario
                         }),
                     })
                     .then(response => response.text()) // Obtén la respuesta como texto inicialmente

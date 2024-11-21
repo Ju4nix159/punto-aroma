@@ -61,14 +61,9 @@ try {
     }
 
     // Eliminar de usuario_domicilios
-    $stmtUsuarioDomicilio = $con->prepare("DELETE FROM usuario_domicilios WHERE id_domicilio = :id_domicilio");
+    $stmtUsuarioDomicilio = $con->prepare("UPDATE usuario_domicilios SET estado = 0 WHERE id_domicilio = :id_domicilio");
     $stmtUsuarioDomicilio->bindParam(':id_domicilio', $id_domicilio);
     $stmtUsuarioDomicilio->execute();
-
-    // Eliminar de domicilios
-    $stmtDomicilio = $con->prepare("DELETE FROM domicilios WHERE id_domicilio = :id_domicilio");
-    $stmtDomicilio->bindParam(':id_domicilio', $id_domicilio);
-    $stmtDomicilio->execute();
 
     $con->commit();
 
