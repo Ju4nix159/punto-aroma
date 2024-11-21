@@ -42,9 +42,12 @@
     background-color: #17a2b8;
 }
 
-.status-entregado {
+.status-entregado,
+.status-pagado
+{
     background-color: #28a745;
 }
+
 
 .status-cancelado {
     background-color: #dc3545;

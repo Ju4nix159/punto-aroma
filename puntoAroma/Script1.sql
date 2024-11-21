@@ -1,23 +1,35 @@
 -- Drop tables if they exist
 DROP TABLE IF EXISTS productos_pedido;
-DROP TABLE IF EXISTS pedidos;
 DROP TABLE IF EXISTS variantes_tipo_precio;
-DROP TABLE IF EXISTS tipos_precios;
 DROP TABLE IF EXISTS variantes;
-DROP TABLE IF EXISTS imagenes;
-DROP TABLE IF EXISTS productos;
-DROP TABLE IF EXISTS colores;
-DROP TABLE IF EXISTS aromas;
-DROP TABLE IF EXISTS categorias;
+DROP TABLE IF EXISTS pagos;
+DROP TABLE IF EXISTS pedidos;
+DROP TABLE IF EXISTS metodos_pago;
 DROP TABLE IF EXISTS usuario_domicilios;
-DROP TABLE IF EXISTS domicilios;
 DROP TABLE IF EXISTS info_usuarios;
+DROP TABLE IF EXISTS imagenes;
 DROP TABLE IF EXISTS usuarios;
+DROP TABLE IF EXISTS productos;
+DROP TABLE IF EXISTS tipos_precios;
+DROP TABLE IF EXISTS domicilios;
+DROP TABLE IF EXISTS sexos;
 DROP TABLE IF EXISTS estados_usuarios;
 DROP TABLE IF EXISTS permisos;
-DROP TABLE IF EXISTS sexos;
-DROP TABLE IF EXISTS estados_productos;
 DROP TABLE IF EXISTS estados_pedidos;
+DROP TABLE IF EXISTS estados_productos;
+DROP TABLE IF EXISTS colores;
+DROP TABLE IF EXISTS categorias;
+DROP TABLE IF EXISTS info_transferencia;
+
+
+CREATE TABLE info_transferencia
+(
+    id_transferencia INT PRIMARY KEY,
+    banco VARCHAR(100),
+    cuenta VARCHAR(100),
+    cbu VARCHAR(100),
+    alias VARCHAR(100),
+);
 
 -- 1. Tablas sin dependencias
 -- Tabla de categorías
@@ -28,12 +40,7 @@ CREATE TABLE categorias
     descripcion TEXT
 );
 
--- Tabla de aromas
-CREATE TABLE aromas
-(
-    id_aroma INT PRIMARY KEY,
-    nombre VARCHAR(100)
-);
+
 
 -- Tabla de color
 CREATE TABLE colores
@@ -113,6 +120,8 @@ CREATE TABLE productos
     descripcion TEXT,
     id_categoria INT,
     destacado TINYINT DEFAULT 0,
+    estado TINYINT DEFAULT 1,
+    descuento DECIMAL(10, 2) DEFAULT 0,
     CONSTRAINT FK_productos_id_categoria_END FOREIGN KEY (id_categoria) REFERENCES categorias(id_categoria)
 );
 
@@ -165,10 +174,20 @@ CREATE TABLE usuario_domicilios
     id_usuario INT,
     tipo_domicilio VARCHAR(100),
     principal TINYINT DEFAULT 0,
+    estado TINYINT DEFAULT 1,
     PRIMARY KEY (id_usuario, id_domicilio),
     CONSTRAINT FK_usuario_domicilio_id_info_usuario_END FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
     CONSTRAINT FK_usuario_domicilio_id_domicilio_END FOREIGN KEY (id_domicilio) REFERENCES domicilios(id_domicilio)
 );
+
+CREATE TABLE metodos_pago
+(
+    id_metodo_pago INT PRIMARY KEY,
+    tipo VARCHAR(100),
+    id_info_transferencia INT,
+    CONSTRAINT FK_metodos_pago_id_info_transferencia_END FOREIGN KEY (id_info_transferencia) REFERENCES info_transferencia(id_transferencia)
+);
+
 
 
 -- 5. Tabla de pedidos dependiente de estados_pedidos y usuarios
@@ -182,10 +201,22 @@ CREATE TABLE pedidos
     total DECIMAL(10, 2),
     fecha DATE,
     id_domicilio INT,
+    id_metodo_pago INT,
 
     CONSTRAINT FK_pedidos_id_usuario_END FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
     CONSTRAINT FK_pedidos_id_estado_pedido_END FOREIGN KEY (id_estado_pedido) REFERENCES estados_pedidos(id_estado_pedido),
-    CONSTRAINT FK_pedidos_id_domicilio_END FOREIGN KEY (id_domicilio) REFERENCES domicilios(id_domicilio)
+    CONSTRAINT FK_pedidos_id_domicilio_END FOREIGN KEY (id_domicilio) REFERENCES domicilios(id_domicilio),
+    CONSTRAINT FK_pedidos_id_metodo_pago_END FOREIGN KEY (id_metodo_pago) REFERENCES metodos_pago(id_metodo_pago),
+);
+
+CREATE TABLE pagos
+(
+    id_pago INT PRIMARY KEY,
+    id_pedido INT,
+    fecha DATE,
+    comprobante VARCHAR(100),
+    numero_transaccion VARCHAR(100),
+    CONSTRAINT FK_pagos_id_pedido_END FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido)
 );
 
 
@@ -197,13 +228,12 @@ CREATE TABLE variantes
     sku VARCHAR(100),
     id_producto INT,
     id_estado_producto INT,
-    id_aroma INT,
+    aroma VARCHAR(100),
     id_color INT,
     stock INT,
     CONSTRAINT PK_variante_sku_END PRIMARY KEY (sku),
     CONSTRAINT FK_variante_id_producto_END          FOREIGN KEY (id_producto)           REFERENCES productos(id_producto),
     CONSTRAINT FK_variante_id_estado_producto_END   FOREIGN KEY (id_estado_producto)    REFERENCES estados_productos(id_estado_producto),
-    CONSTRAINT FK_variante_id_aroma                 FOREIGN KEY (id_aroma)              REFERENCES aromas(id_aroma),
     CONSTRAINT FK_variante_id_color                 FOREIGN KEY (id_color)              REFERENCES colores(id_color)
 );
 
@@ -215,6 +245,7 @@ CREATE TABLE productos_pedido
     sku VARCHAR(100),
     cantidad INT,
     precio DECIMAL(10, 2),
+    estado TINYINT DEFAULT 1,
     CONSTRAINT FK_productos_pedido_id_pedido_END FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido),
     CONSTRAINT FK_productos_pedido_sku_END FOREIGN KEY (sku) REFERENCES variantes(sku)
 );
@@ -266,7 +297,11 @@ VALUES
     (1, 1, 1, 'admin@empresa.com', 'admin123'),
     (2, 2, 1, 'usuario1@empresa.com', 'user123'),
     (3, 2, 1, 'usuario2@empresa.com', 'user456');
-
+ 
+ INSERT INTO info_transferencia
+    (id_transferencia, banco, cuenta, cbu, alias)
+VALUES
+    (1, 'Banco Santander', '123456789', '123456789', 'Cuenta Corriente');
 
 
 -- Insertar datos en info_usuario
@@ -336,20 +371,6 @@ VALUES
     (23, 'Difusor de Menta', 'Un difusor con aroma a menta', 2, 0),
     (24, 'Vela Aromática Naranja', 'Una vela con aroma a naranja', 2, 0);
 
--- Insertar datos en aromas
-INSERT INTO aromas
-    (id_aroma, nombre)
-VALUES
-    (1, 'Lavanda'),
-    (2, 'Vainilla'),
-    (3, 'Cítrico'),
-    (4, 'Amaderado'),
-    (5, 'Floral'),
-    (6, 'Frutos Rojos'),
-    (7, 'Menta'),
-    (8, 'Canela'),
-    (9, 'Coco'),
-    (10, 'Jazmín');
 
 -- Insertar datos en color
 INSERT INTO colores
@@ -368,39 +389,39 @@ VALUES
 
 
 INSERT INTO variantes
-    (sku, id_producto, id_estado_producto, id_aroma, id_color, stock)
+    (sku, id_producto, id_estado_producto, aroma, id_color, stock)
 VALUES
-    ('SKU001', 1, 1, 1, 1, 50),
-    ('SKU002', 1, 1, 2, 2, 30),
-    ('SKU003', 2, 1, 3, 3, 20),
-    ('SKU004', 2, 2, 4, 4, 0),
-    ('SKU005', 3, 1, 5, 1, 15),
-    ('SKU006', 3, 1, 6, 2, 10),
-    ('SKU007', 4, 1, 7, 3, 40),
-    ('SKU008', 4, 1, 8, 4, 25),
-    ('SKU009', 5, 1, 9, 1, 45),
-    ('SKU010', 5, 1, 10, 2, 30),
-    ('SKU011', 6, 1, 1, 3, 50),
-    ('SKU012', 6, 1, 2, 4, 20),
-    ('SKU013', 7, 1, 3, 1, 10),
-    ('SKU014', 8, 1, 4, 2, 15),
-    ('SKU015', 9, 1, 5, 3, 25),
-    ('SKU016', 9, 1, 6, 4, 20),
-    ('SKU017', 10, 1, 7, 1, 30),
-    ('SKU018', 11, 1, 8, 2, 15),
-    ('SKU019', 12, 1, 9, 3, 18),
-    ('SKU020', 13, 1, 10, 4, 12),
-    ('SKU021', 14, 1, 1, 1, 40),
-    ('SKU022', 15, 1, 2, 2, 30),
-    ('SKU023', 16, 1, 3, 3, 25),
-    ('SKU024', 17, 1, 4, 4, 35),
-    ('SKU025', 18, 1, 5, 1, 28),
-    ('SKU026', 19, 1, 6, 2, 22),
-    ('SKU027', 20, 1, 7, 3, 18),
-    ('SKU028', 21, 1, 8, 4, 50),
-    ('SKU029', 22, 1, 9, 1, 40),
-    ('SKU030', 23, 1, 10, 2, 10),
-    ('SKU031', 24, 1, 1, 3, 15);
+    ('SKU001', 1, 1, 'Floral', 1, 50),
+    ('SKU002', 1, 1, 'Floral', 2, 30),
+    ('SKU003', 2, 1, 'Amaderado', 3, 20),
+    ('SKU004', 2, 2, 'Amaderado', 4, 0),
+    ('SKU005', 3, 1, 'Vainilla', 1, 15),
+    ('SKU006', 3, 1, 'Vainilla', 2, 10),
+    ('SKU007', 4, 1, 'Lavanda', 3, 40),
+    ('SKU008', 4, 1, 'Lavanda', 4, 25),
+    ('SKU009', 5, 1, 'Cítrico', 1, 45),
+    ('SKU010', 5, 1, 'Cítrico', 2, 30),
+    ('SKU011', 6, 1, 'Dulce', 3, 50),
+    ('SKU012', 6, 1, 'Dulce', 4, 20),
+    ('SKU013', 7, 1, 'Eucalipto', 1, 10),
+    ('SKU014', 8, 1, 'Coco', 2, 15),
+    ('SKU015', 9, 1, 'Deportivo', 3, 25),
+    ('SKU016', 9, 1, 'Deportivo', 4, 20),
+    ('SKU017', 10, 1, 'De Noche', 1, 30),
+    ('SKU018', 11, 1, 'Frutos Rojos', 2, 15),
+    ('SKU019', 12, 1, 'Canela', 3, 18),
+    ('SKU020', 13, 1, 'De Viaje', 4, 12),
+    ('SKU021', 14, 1, 'De Verano', 1, 40),
+    ('SKU022', 15, 1, 'Lavanda', 2, 30),
+    ('SKU023', 16, 1, 'Limón', 3, 25),
+    ('SKU024', 17, 1, 'De Otoño', 4, 35),
+    ('SKU025', 18, 1, 'De Invierno', 1, 28),
+    ('SKU026', 19, 1, 'Té Verde', 2, 22),
+    ('SKU027', 20, 1, 'Jazmín', 3, 18),
+    ('SKU028', 21, 1, 'Exótico', 4, 50),
+    ('SKU029', 22, 1, 'Clásico', 1, 40),
+    ('SKU030', 23, 1, 'Menta', 2, 10),
+    ('SKU031', 24, 1, 'Naranja', 3, 15);
 
 
 -- Insertar datos en imágenes (1 imagen por producto)
@@ -451,34 +472,68 @@ VALUES
     (5, 'entregado', 'Pedido entregado al cliente'),
     (6, 'cancelado', 'Pedido cancelado por el cliente');
 
+-- Insertar datos en metodos_pago
+INSERT INTO metodos_pago
+    (id_metodo_pago, tipo, id_info_transferencia)
+VALUES
+    (1, 'Transferencia Bancaria', '1'),
+    (2, 'Mercado Pago', NULL);
 
 -- Insertar datos en pedidos (muchos pedidos)
 INSERT INTO pedidos
-    (id_pedido, id_usuario, id_estado_pedido, total, fecha, id_domicilio)
+    (id_pedido, id_usuario, id_estado_pedido, total, fecha, id_domicilio, id_metodo_pago)
 VALUES
-    (1, 2, 1, 1200.50, '2024-01-01', 1),
-    (2, 3, 2, 750.00, '2024-01-05', 1),
-    (3, 2, 3, 350.75, '2024-01-10', 1),
-    (4, 1, 4, 1500.00, '2024-01-11', 1),
-    (5, 2, 5, 300.00, '2024-01-12', 1),
-    (6, 3, 6, 850.00, '2024-01-13', 1),
-    (7, 1, 1, 500.00, '2024-01-14', 1),
-    (8, 2, 2, 1200.00, '2024-01-15', 1),
-    (9, 3, 3, 600.00, '2024-01-16', 1),
-    (10, 1, 4, 750.00, '2024-01-17', 1),
-    (11, 2, 5, 400.00, '2024-01-18', 1),
-    (12, 3, 6, 950.00, '2024-01-19', 1),
-    (13, 1, 1, 1250.00, '2024-01-20', 1),
-    (14, 2, 2, 800.00, '2024-01-21', 1),
-    (15, 3, 3, 900.00, '2024-01-22', 1),
-    (16, 1, 4, 700.00, '2024-01-23', 1),
-    (17, 2, 5, 300.00, '2024-01-24', 1),
-    (18, 3, 6, 450.00, '2024-01-25', 1),
-    (19, 1, 1, 600.00, '2024-01-26', 1),
-    (20, 2, 2, 350.00, '2024-01-27', 1),
-    (21, 3, 3, 500.00, '2024-01-28', 1),
-    (22, 1, 4, 1000.00, '2024-01-29', 1),
-    (23, 2, 5, 200.00, '2024-01-30', 1);
+    (1, 2, 1, 1200.50, '2024-01-01', 1, 1),
+    (2, 3, 2, 750.00, '2024-01-05', 1, 2),
+    (3, 2, 3, 350.75, '2024-01-10', 1, 1),
+    (4, 1, 4, 1500.00, '2024-01-11', 1, 2),
+    (5, 2, 5, 300.00, '2024-01-12', 1, 1),
+    (6, 3, 6, 850.00, '2024-01-13', 1, 2),
+    (7, 1, 1, 500.00, '2024-01-14', 1, 1),
+    (8, 2, 2, 1200.00, '2024-01-15', 1, 2),
+    (9, 3, 3, 600.00, '2024-01-16', 1, 1),
+    (10, 1, 4, 750.00, '2024-01-17', 1, 2),
+    (11, 2, 5, 400.00, '2024-01-18', 1, 1),
+    (12, 3, 6, 950.00, '2024-01-19', 1, 2),
+    (13, 1, 1, 1250.00, '2024-01-20', 1, 1),
+    (14, 2, 2, 800.00, '2024-01-21', 1, 2),
+    (15, 3, 3, 900.00, '2024-01-22', 1, 1),
+    (16, 1, 4, 700.00, '2024-01-23', 1, 2),
+    (17, 2, 5, 300.00, '2024-01-24', 1, 1),
+    (18, 3, 6, 450.00, '2024-01-25', 1, 2),
+    (19, 1, 1, 600.00, '2024-01-26', 1, 1),
+    (20, 2, 2, 350.00, '2024-01-27', 1, 2),
+    (21, 3, 3, 500.00, '2024-01-28', 1, 1),
+    (22, 1, 4, 1000.00, '2024-01-29', 1, 2),
+    (23, 2, 5, 200.00, '2024-01-30', 1, 1);
+
+-- Insertar datos en pagos (1 pago por pedido)
+INSERT INTO pagos
+    (id_pago, id_pedido, fecha, comprobante, numero_transaccion)
+    VALUES
+        (1, 1, '2024-01-01', 'comprobante1', NULL),
+        (2, 2, '2024-01-05', NULL, 'transaccion2'),
+        (3, 3, '2024-01-10', 'comprobante3', NULL),
+        (4, 4, '2024-01-11', NULL, 'transaccion4'),
+        (5, 5, '2024-01-12', 'comprobante5', NULL),
+        (6, 6, '2024-01-13', NULL, 'transaccion6'),
+        (7, 7, '2024-01-14', 'comprobante7', NULL),
+        (8, 8, '2024-01-15', NULL, 'transaccion8'),
+        (9, 9, '2024-01-16', 'comprobante9', NULL),
+        (10, 10, '2024-01-17', NULL, 'transaccion10'),
+        (11, 11, '2024-01-18', 'comprobante11', NULL),
+        (12, 12, '2024-01-19', NULL, 'transaccion12'),
+        (13, 13, '2024-01-20', 'comprobante13', NULL),
+        (14, 14, '2024-01-21', NULL, 'transaccion14'),
+        (15, 15, '2024-01-22', 'comprobante15', NULL),
+        (16, 16, '2024-01-23', NULL, 'transaccion16'),
+        (17, 17, '2024-01-24', 'comprobante17', NULL),
+        (18, 18, '2024-01-25', NULL, 'transaccion18'),
+        (19, 19, '2024-01-26', 'comprobante19', NULL),
+        (20, 20, '2024-01-27', NULL, 'transaccion20'),
+        (21, 21, '2024-01-28', 'comprobante21', NULL),
+        (22, 22, '2024-01-29', NULL, 'transaccion22'),
+        (23, 23, '2024-01-30', 'comprobante23', NULL);
 
 
 
@@ -572,349 +627,8 @@ VALUES
     (23, 1, 700.00, 1),
     (24, 1, 800.00, 1);
 
-
-
---todos los productos con su precio minorista
-SELECT p.id_producto, p.nombre, p.descripcion, c.nombre AS categoria, vtp.precio AS precio_minorista, i.ruta AS imagen_principal
-FROM productos p
-    JOIN variantes_tipo_precio vtp ON p.id_producto = vtp.id_producto
-    JOIN categorias c ON p.id_categoria = c.id_categoria
-    LEFT JOIN imagenes i ON p.id_producto = i.id_producto AND i.principal = 1
-WHERE vtp.id_tipo_precio = 1;
-
--- todos los productos con su precio mayorista
-SELECT p.id_producto, p.nombre, p.descripcion, c.nombre AS categoria, vtp.precio AS precio_minorista, i.ruta AS imagen_principal
-FROM productos p
-    JOIN variantes_tipo_precio vtp ON p.id_producto = vtp.id_producto
-    JOIN categorias c ON p.id_categoria = c.id_categoria
-    LEFT JOIN imagenes i ON p.id_producto = i.id_producto AND i.principal = 1
-WHERE vtp.id_tipo_precio = 2;
-
-
-
--- todas las variantes de un producto con toda la informacio
-SELECT v.sku, v.stock, p.nombre AS producto_nombre, ep.nombre AS estado_producto_nombre, a.nombre AS aroma_nombre, c.nombre AS color_nombre
-FROM variantes v
-    JOIN productos p ON v.id_producto = p.id_producto
-    JOIN estados_productos ep ON v.id_estado_producto = ep.id_estado_producto
-    JOIN aromas a ON v.id_aroma = a.id_aroma
-    JOIN colores c ON v.id_color = c.id_color
-WHERE v.id_producto = 1;
-
-
-
-
--- Aromas de productos de la categoría "Sahumerio" 
-SELECT DISTINCT a.nombre AS aroma_nombre
-FROM productos p
-    JOIN categorias c ON p.id_categoria = c.id_categoria
-    JOIN variantes v ON p.id_producto = v.id_producto
-    JOIN aromas a ON v.id_aroma = a.id_aroma
-WHERE c.nombre = 'Perfumes' AND p.id_producto = 1;
-
--- Colores de productos de la categoría "Velas"
-SELECT DISTINCT co.nombre AS color_nombre
-FROM productos p
-    JOIN categorias c ON p.id_categoria = c.id_categoria
-    JOIN variantes v ON p.id_producto = v.id_producto
-    JOIN colores co ON v.id_color = co.id_color
-WHERE c.nombre = 'Aromas para el hogar' AND p.id_producto = 3;
-
--- Información completa de un producto por id
-SELECT p.id_producto, p.nombre, p.descripcion, vtp.precio AS precio
-FROM productos p
-    JOIN variantes_tipo_precio vtp ON p.id_producto = vtp.id_producto
-WHERE p.id_producto = 1 AND vtp.id_tipo_precio = 1;
-
-
--- todas las images de un producto 
-SELECT i.*
-FROM imagenes i
-    JOIN productos p ON i.id_producto = p.id_producto
-WHERE p.id_producto = 1;
-
--- Productos destacados
-SELECT p.id_producto, p.nombre, i.ruta AS imagen_principal
-FROM productos p
-    JOIN variantes_tipo_precio vtp ON p.id_producto = vtp.id_producto
-    JOIN categorias c ON p.id_categoria = c.id_categoria
-    LEFT JOIN imagenes i ON p.id_producto = i.id_producto AND i.principal = 1
-WHERE p.destacado = 1 AND vtp.id_tipo_precio = 1;
-
--- Información completa de un usuario por id
-SELECT iu.nombre AS nombre_usuario, iu.apellido, iu.dni, iu.fecha_nacimiento, iu.telefono,
-    s.nombre AS sexo
-FROM info_usuarios iu
-    JOIN sexos s ON iu.id_sexo = s.id_sexo
-WHERE iu.id_usuario = 1;
-
-
--- Todos los pedidos hechos por un usuario con su estado actual
-SELECT p.id_pedido, p.total, p.fecha, ep.nombre AS estado_pedido
-FROM pedidos p
-    JOIN usuarios u ON p.id_usuario = u.id_usuario
-    JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido
-WHERE u.id_usuario = 1;
-
-Select * from pedidos
-
-
--- Detalle de un pedido por id_pedido
-SELECT pp.id_pedido, pp.id_producto, p.nombre AS producto_nombre, pp.sku, pp.cantidad, pp.precio
-FROM productos_pedido pp
-    JOIN productos p ON pp.id_producto = p.id_producto
-WHERE pp.id_pedido = 4;
-
-
-SELECT DISTINCT a.nombre AS aroma, v.sku
-FROM productos p
-    JOIN categorias c ON p.id_categoria = c.id_categoria
-    JOIN variantes v ON p.id_producto = v.id_producto
-    JOIN aromas a ON v.id_aroma = a.id_aroma
-WHERE c.nombre = 'Perfumes' AND p.id_producto = 1;
-
--- Productos de un pedido específico de un usuario específico
-SELECT pp.id_pedido, pp.id_producto, p.nombre AS producto_nombre, pp.sku, pp.cantidad, pp.precio
-FROM productos_pedido pp
-    JOIN productos p ON pp.id_producto = p.id_producto
-WHERE pp.id_pedido = 1;
-
-SELECT d.*, ud.tipo_domicilio, ud.principal
-FROM domicilios d
-    JOIN usuario_domicilios ud ON d.id_domicilio = ud.id_domicilio
-    JOIN usuarios i ON ud.id_usuario = i.id_usuario
-WHERE i.id_usuario = 1
-
-
--- Query to get all types of addresses for a user
-SELECT ud.tipo_domicilio
-FROM usuario_domicilios ud
-JOIN usuarios u ON ud.id_usuario = u.id_usuario
-WHERE u.id_usuario = 1;
-
-
--- Query to get all information of the main address of a specific user
-SELECT d.*
-FROM domicilios d
-    JOIN usuario_domicilios ud ON d.id_domicilio = ud.id_domicilio
-    JOIN usuarios u ON ud.id_usuario = u.id_usuario
-WHERE u.id_usuario = 1 AND ud.principal = 1;
--- Query to get total, state name, and state description of a specific order by id_pedido
-SELECT p.total, ep.nombre AS estado_nombre, ep.descripcion AS estado_descripcion
+-- Drop tables if they exist
+SELECT p.*, ep.nombre AS estado_pedido
 FROM pedidos p
 JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido
-WHERE p.id_pedido = 1;
-
--- Query to get all orders with a specific state
-SELECT p.id_pedido, p.total, p.fecha, ep.nombre AS estado_pedido
-FROM pedidos p
-JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido
-WHERE p.id_estado_pedido = 1;
-
--- Query to get all information of an order by id_pedido, including user information, order state, address, and payment method
-SELECT 
-    p.id_pedido, p.total, p.fecha,
-    u.id_usuario, u.email, iu.nombre AS nombre_usuario, iu.apellido, iu.dni, iu.fecha_nacimiento, iu.telefono,
-    ep.nombre AS estado_pedido, ep.descripcion AS estado_pedido_descripcion,
-    d.codigo_postal, d.provincia, d.localidad, d.barrio, d.calle, d.numero,
-    fp.nombre AS forma_pago
-FROM 
-    pedidos p
-    JOIN usuarios u ON p.id_usuario = u.id_usuario
-    JOIN info_usuarios iu ON u.id_usuario = iu.id_usuario
-    JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido
-    JOIN domicilios d ON p.id_domicilio = d.id_domicilio
-    JOIN formas_pago fp ON p.id_forma_pago = fp.id_forma_pago
-WHERE 
-    p.id_pedido = x;
-
-    -- Información de productos y aromas de un pedido específico
-    SELECT pp.id_pedido, pp.sku, p.nombre AS producto_nombre, a.nombre AS aroma_nombre, pp.cantidad, pp.precio
-    FROM productos_pedido pp
-        JOIN productos p ON pp.id_producto = p.id_producto
-        JOIN variantes v ON pp.sku = v.sku
-        JOIN aromas a ON v.id_aroma = a.id_aroma
-    WHERE pp.id_pedido = 1;
-    
-
-    
-    -- Query to get all products and their information with the count of fragrances
-    SELECT 
-        p.id_producto, 
-        p.nombre AS producto_nombre, 
-        p.descripcion, 
-        c.nombre AS categoria, 
-        COUNT(DISTINCT v.id_aroma) AS cantidad_fragancias,
-        MIN(CASE WHEN vtp.id_tipo_precio = 1 THEN vtp.precio END) AS precio_minorista,
-        MIN(CASE WHEN vtp.id_tipo_precio = 2 THEN vtp.precio END) AS precio_mayorista
-    FROM 
-        productos p
-        JOIN categorias c ON p.id_categoria = c.id_categoria
-        JOIN variantes v ON p.id_producto = v.id_producto
-        JOIN variantes_tipo_precio vtp ON p.id_producto = vtp.id_producto
-    GROUP BY 
-        p.id_producto, 
-        p.nombre, 
-        p.descripcion, 
-        c.nombre;
-
-        -- Query to get all information of a product by id_producto
-        SELECT 
-            p.id_producto, 
-            p.nombre, 
-            p.descripcion, 
-            c.nombre AS categoria, 
-            p.destacado, 
-            i.ruta AS imagen_principal,
-            MIN(CASE WHEN vtp.id_tipo_precio = 1 THEN vtp.precio END) AS precio_minorista,
-            MIN(CASE WHEN vtp.id_tipo_precio = 2 THEN vtp.precio END) AS precio_mayorista
-        FROM 
-            productos p
-            JOIN categorias c ON p.id_categoria = c.id_categoria
-            LEFT JOIN imagenes i ON p.id_producto = i.id_producto AND i.principal = 1
-            LEFT JOIN variantes_tipo_precio vtp ON p.id_producto = vtp.id_producto
-        WHERE 
-            p.id_producto = 1
-        GROUP BY 
-            p.id_producto, 
-            p.nombre, 
-            p.descripcion, 
-            c.nombre, 
-            p.destacado, 
-            i.ruta;
-
-        -- Query to get all fragrances of a product by id_producto
-        SELECT 
-            a.nombre AS aroma
-        FROM 
-            variantes v
-            JOIN aromas a ON v.id_aroma = a.id_aroma
-        WHERE 
-            v.id_producto = 1;
-
-            -- Query to get the main image of a product by id_producto
-            SELECT p.id_producto, i.ruta AS imagen_principal
-            FROM productos p
-            LEFT JOIN imagenes i ON p.id_producto = i.id_producto AND i.principal = 1
-            WHERE p.id_producto = 1;
-
-
-            SELECT ep.nombre AS estado_nombre, v.sku AS id_variante
-            FROM variantes v
-            JOIN estados_productos ep ON v.id_estado_producto = ep.id_estado_producto
-            WHERE v.id_producto = 1;
-
-            -- Query to update all values of a product by id_producto
-            UPDATE productos
-            SET nombre = 'Nuevo Nombre',
-                descripcion = 'Nueva Descripción',
-                id_categoria = 2,
-                destacado = 0,
-                estado = 1
-            WHERE id_producto = 1;
-
-            -- Query to update the retail and wholesale price of a product by id_producto
-            UPDATE variantes_tipo_precio
-            SET precio = CASE 
-                            WHEN id_tipo_precio = 1 THEN 650.00  -- New retail price
-                            WHEN id_tipo_precio = 2 THEN 320.00  -- New wholesale price
-                         END
-            WHERE id_producto = 1;
-
-
-SELECT id_sexo, nombre
-FROM sexos;
-
-SELECT*
-from info_usuarios;
-
--- Select all data from categorias
-SELECT *
-FROM categorias;
-GO
-
--- Select all data from aromas
-SELECT *
-FROM aromas;
-GO
-
--- Select all data from color
-SELECT *
-FROM colores;
-GO
-
-
--- Select all data from productos
-SELECT *
-FROM productos;
-GO
-
--- Select all data from imagenes
-SELECT *
-FROM imagenes;
-GO
-
--- Select all data from estado_producto
-SELECT *
-FROM estados_productos;
-GO
-
--- Select all data from variantes
-SELECT *
-FROM variantes;
-GO
-
--- Select all data from pedidos
-SELECT *
-FROM pedidos;
-GO
-
--- Select all data from productos_pedido
-SELECT *
-FROM productos_pedido;
-GO
-
--- Select all data from permisos
-SELECT *
-FROM permisos;
-GO
-
--- Select all data from estado_usuario
-SELECT *
-FROM estados_usuarios;
-GO
-
--- Select all data from usuario
-SELECT *
-FROM usuarios;
-GO
-
--- Select all data from sexo
-SELECT *
-FROM sexos;
-GO
-
--- Select all data from info_usuario
-SELECT *
-FROM info_usuarios;
-GO
-
--- Select all data from domicilio
-SELECT *
-FROM domicilios;
-GO
-
--- Select all data from usuario_domicilio
-SELECT *
-FROM usuario_domicilios;
-GO
-
--- Select all data from tipo_precio
-SELECT *
-FROM tipos_precios;
-GO
-
--- Select all data from variante_tipo_precio
-SELECT *
-FROM variantes_tipo_precio;
-GO
+WHERE p.id_usuario = 1;

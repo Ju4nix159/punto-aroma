@@ -1,15 +1,9 @@
--- Tabla de categorías
 CREATE TABLE categorias (
     id_categoria INT PRIMARY KEY AUTO_INCREMENT,
     nombre VARCHAR(100),
     descripcion TEXT
 );
 
--- Tabla de aromas
-CREATE TABLE aromas (
-    id_aroma INT PRIMARY KEY AUTO_INCREMENT,
-    nombre VARCHAR(100)
-);
 
 -- Tabla de colores
 CREATE TABLE colores (
@@ -77,6 +71,8 @@ CREATE TABLE productos (
     descripcion TEXT,
     id_categoria INT,
     destacado TINYINT DEFAULT 0,
+    estado TINYINT DEFAULT 1,
+    decuento DECIMAL(10, 2) DEFAULT 0,
     CONSTRAINT FK_productos_id_categoria_END FOREIGN KEY (id_categoria) REFERENCES categorias(id_categoria)
 );
 
@@ -114,6 +110,13 @@ CREATE TABLE info_usuarios (
     CONSTRAINT FK_info_usuario_id_sexo_END FOREIGN KEY (id_sexo) REFERENCES sexos(id_sexo)
 );
 
+
+-- metodos de pago
+CREATE TABLE metodos_pago (
+    id_metodo_pago INT PRIMARY KEY AUTO_INCREMENT,
+    tipo VARCHAR(100)
+);
+
 -- Tabla de pedidos
 CREATE TABLE pedidos (
     id_pedido INT PRIMARY KEY AUTO_INCREMENT,
@@ -122,9 +125,21 @@ CREATE TABLE pedidos (
     total DECIMAL(10, 2),
     fecha DATE,
     id_domicilio INT,
+    id_metodo_pago INT,
     CONSTRAINT FK_pedidos_id_usuario_END FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
     CONSTRAINT FK_pedidos_id_estado_pedido_END FOREIGN KEY (id_estado_pedido) REFERENCES estados_pedidos(id_estado_pedido),
-    CONSTRAINT FK_pedidos_id_domicilio_END FOREIGN KEY (id_domicilio) REFERENCES domicilios(id_domicilio)
+    CONSTRAINT FK_pedidos_id_domicilio_END FOREIGN KEY (id_domicilio) REFERENCES domicilios(id_domicilio),
+    CONSTRAINT FK_pedidos_id_metodo_pago_END FOREIGN KEY (id_metodo_pago) REFERENCES metodos_pago(id_metodo_pago)
+);
+
+-- Tabla de pagos
+CREATE TABLE pagos (
+    id_pago INT PRIMARY KEY AUTO_INCREMENT,
+    id_pedido INT,
+    fecha DATE,
+    comprobante VARCHAR(100),
+    numero_transaccion VARCHAR(100),
+    CONSTRAINT FK_pagos_id_pedido_END FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido)
 );
 
 -- Tabla de variantes (variante del producto)
@@ -132,13 +147,12 @@ CREATE TABLE variantes (
     sku VARCHAR(100),
     id_producto INT,
     id_estado_producto INT,
-    id_aroma INT,
+    aroma VARCHAR(100),
     id_color INT,
     stock INT,
     CONSTRAINT PK_variante_sku_END PRIMARY KEY (sku),
     CONSTRAINT FK_variante_id_producto_END          FOREIGN KEY (id_producto)           REFERENCES productos(id_producto),
     CONSTRAINT FK_variante_id_estado_producto_END   FOREIGN KEY (id_estado_producto)    REFERENCES estados_productos(id_estado_producto),
-    CONSTRAINT FK_variante_id_aroma                 FOREIGN KEY (id_aroma)              REFERENCES aromas(id_aroma),
     CONSTRAINT FK_variante_id_color                 FOREIGN KEY (id_color)              REFERENCES colores(id_color)
 );
 
@@ -149,6 +163,7 @@ CREATE TABLE productos_pedido (
     sku VARCHAR(100),
     cantidad INT,
     precio DECIMAL(10, 2),
+    estado TINYINT DEFAULT 1,
     CONSTRAINT FK_productos_pedido_id_pedido_END FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido),
     CONSTRAINT FK_productos_pedido_sku_END FOREIGN KEY (sku) REFERENCES variantes(sku)
 );
@@ -159,6 +174,7 @@ CREATE TABLE usuario_domicilios (
     id_domicilio INT,
     tipo_domicilio VARCHAR(100),
     principal TINYINT DEFAULT 0,
+    estado TINYINT DEFAULT 1,
     PRIMARY KEY (id_usuario, id_domicilio),
     CONSTRAINT FK_usuario_domicilio_id_usuario_END FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
     CONSTRAINT FK_usuario_domicilio_id_domicilio_END FOREIGN KEY (id_domicilio) REFERENCES domicilios(id_domicilio)
@@ -249,18 +265,7 @@ INSERT INTO productos (nombre, descripcion, id_categoria, destacado) VALUES
 ('Difusor de Menta', 'Un difusor con aroma a menta', 2, 0),
 ('Vela Aromática Naranja', 'Una vela con aroma a naranja', 2, 0);
 
--- Insertar datos en aromas
-INSERT INTO aromas (nombre) VALUES 
-('Lavanda'),
-('Vainilla'),
-('Cítrico'),
-('Amaderado'),
-('Floral'),
-('Frutos Rojos'),
-('Menta'),
-('Canela'),
-('Coco'),
-('Jazmín');
+
 
 -- Insertar datos en colores
 INSERT INTO colores (nombre) VALUES 
@@ -276,38 +281,38 @@ INSERT INTO colores (nombre) VALUES
 ('Gris');
 
 -- Insertar datos en variantes
-INSERT INTO variantes (sku, id_producto, id_estado_producto, id_aroma, id_color, stock) VALUES 
-('SKU001', 1, 1, 1, 1, 50),
-('SKU002', 1, 1, 2, 2, 30),
-('SKU003', 2, 1, 3, 3, 20),
-('SKU004', 2, 2, 4, 4, 0),
-('SKU005', 3, 1, 5, 1, 15),
-('SKU006', 3, 1, 6, 2, 10),
-('SKU007', 4, 1, 7, 3, 40),
-('SKU008', 4, 1, 8, 4, 25),
-('SKU009', 5, 1, 9, 1, 45),
-('SKU010', 5, 1, 10, 2, 30),
-('SKU011', 6, 1, 1, 3, 50),
-('SKU012', 6, 1, 2, 4, 20),
-('SKU013', 7, 1, 3, 1, 10),
-('SKU014', 8, 1, 4, 2, 15),
-('SKU015', 9, 1, 5, 3, 25),
-('SKU016', 9, 1, 6, 4, 20),
-('SKU017', 10, 1, 7, 1, 30),
-('SKU018', 11, 1, 8, 2, 15),
-('SKU019', 12, 1, 9, 3, 18),
-('SKU020', 13, 1, 10, 4, 12),
-('SKU021', 14, 1, 1, 1, 40),
-('SKU022', 15, 1, 2, 2, 30),
-('SKU023', 16, 1, 3, 3, 25),
-('SKU024', 17, 1, 4, 4, 35),
-('SKU025', 18, 1, 5, 1, 28),
-('SKU026', 19, 1, 6, 2, 22),
-('SKU027', 20, 1, 7, 3, 18),
-('SKU028', 21, 1, 8, 4, 50),
-('SKU029', 22, 1, 9, 1, 40),
-('SKU030', 23, 1, 10, 2, 10),
-('SKU031', 24, 1, 1, 3, 15);
+INSERT INTO variantes (sku, id_producto, id_estado_producto, aroma, id_color, stock) VALUES 
+('SKU001', 1, 1, 'Lavanda', 1, 50),
+('SKU002', 1, 1, 'Vainilla', 2, 30),
+('SKU003', 2, 1, 'Rosa', 3, 20),
+('SKU004', 2, 2, 'Jazmín', 4, 0),
+('SKU005', 3, 1, 'Coco', 1, 15),
+('SKU006', 3, 1, 'Canela', 2, 10),
+('SKU007', 4, 1, 'Eucalipto', 3, 40),
+('SKU008', 4, 1, 'Menta', 4, 25),
+('SKU009', 5, 1, 'Limón', 1, 45),
+('SKU010', 5, 1, 'Naranja', 2, 30),
+('SKU011', 6, 1, 'Lavanda', 3, 50),
+('SKU012', 6, 1, 'Vainilla', 4, 20),
+('SKU013', 7, 1, 'Rosa', 1, 10),
+('SKU014', 8, 1, 'Jazmín', 2, 15),
+('SKU015', 9, 1, 'Coco', 3, 25),
+('SKU016', 9, 1, 'Canela', 4, 20),
+('SKU017', 10, 1, 'Eucalipto', 1, 30),
+('SKU018', 11, 1, 'Menta', 2, 15),
+('SKU019', 12, 1, 'Limón', 3, 18),
+('SKU020', 13, 1, 'Naranja', 4, 12),
+('SKU021', 14, 1, 'Lavanda', 1, 40),
+('SKU022', 15, 1, 'Vainilla', 2, 30),
+('SKU023', 16, 1, 'Rosa', 3, 25),
+('SKU024', 17, 1, 'Jazmín', 4, 35),
+('SKU025', 18, 1, 'Coco', 1, 28),
+('SKU026', 19, 1, 'Canela', 2, 22),
+('SKU027', 20, 1, 'Eucalipto', 3, 18),
+('SKU028', 21, 1, 'Menta', 4, 50),
+('SKU029', 22, 1, 'Limón', 1, 40),
+('SKU030', 23, 1, 'Naranja', 2, 10),
+('SKU031', 24, 1, 'Lavanda', 3, 15);
 
 -- Insertar datos en imágenes
 INSERT INTO imagenes (id_producto, ruta, principal) VALUES 
@@ -353,31 +358,61 @@ INSERT INTO estados_pedidos (nombre, descripcion) VALUES
 ('entregado', 'Pedido entregado al cliente'),
 ('cancelado', 'Pedido cancelado por el cliente');
 
-INSERT INTO pedidos (id_usuario, id_estado_pedido, total, fecha, id_domicilio) VALUES 
-(2, 1, 1200.50, '2024-01-01', 1),
-(3, 2, 750.00, '2024-01-05', 1),
-(2, 3, 350.75, '2024-01-10', 1),
-(1, 4, 1500.00, '2024-01-11', 1),
-(2, 5, 300.00, '2024-01-12', 1),
-(3, 6, 850.00, '2024-01-13', 1),
-(1, 1, 500.00, '2024-01-14', 1),
-(2, 2, 1200.00, '2024-01-15', 1),
-(3, 3, 600.00, '2024-01-16', 1),
-(1, 4, 750.00, '2024-01-17', 1),
-(2, 5, 400.00, '2024-01-18', 1),
-(3, 6, 950.00, '2024-01-19', 1),
-(1, 1, 1250.00, '2024-01-20', 1),
-(2, 2, 800.00, '2024-01-21', 1),
-(3, 3, 900.00, '2024-01-22', 1),
-(1, 4, 700.00, '2024-01-23', 1),
-(2, 5, 300.00, '2024-01-24', 1),
-(3, 6, 450.00, '2024-01-25', 1),
-(1, 1, 600.00, '2024-01-26', 1),
-(2, 2, 350.00, '2024-01-27', 1),
-(3, 3, 500.00, '2024-01-28', 1),
-(1, 4, 1000.00, '2024-01-29', 1),
-(2, 5, 200.00, '2024-01-30', 1);
+-- Insertar datos en metodos_pago
+INSERT INTO metodos_pago (tipo) VALUES 
+('Transferencia bancaria'),
+('Mercado Pago');
 
+INSERT INTO pedidos (id_usuario, id_estado_pedido, total, fecha, id_domicilio, id_metodo_pago) VALUES 
+(2, 1, 1200.50, '2024-01-01', 1, 1),
+(3, 2, 750.00, '2024-01-05', 1, 2),
+(2, 3, 350.75, '2024-01-10', 1, 1),
+(1, 4, 1500.00, '2024-01-11', 1, 2),
+(2, 5, 300.00, '2024-01-12', 1, 1),
+(3, 6, 850.00, '2024-01-13', 1, 2),
+(1, 1, 500.00, '2024-01-14', 1, 1),
+(2, 2, 1200.00, '2024-01-15', 1, 2),
+(3, 3, 600.00, '2024-01-16', 1, 1),
+(1, 4, 750.00, '2024-01-17', 1, 2),
+(2, 5, 400.00, '2024-01-18', 1, 1),
+(3, 6, 950.00, '2024-01-19', 1, 2),
+(1, 1, 1250.00, '2024-01-20', 1, 1),
+(2, 2, 800.00, '2024-01-21', 1, 2),
+(3, 3, 900.00, '2024-01-22', 1, 1),
+(1, 4, 700.00, '2024-01-23', 1, 2),
+(2, 5, 300.00, '2024-01-24', 1, 1),
+(3, 6, 450.00, '2024-01-25', 1, 2),
+(1, 1, 600.00, '2024-01-26', 1, 1),
+(2, 2, 350.00, '2024-01-27', 1, 2),
+(3, 3, 500.00, '2024-01-28', 1, 1),
+(1, 4, 1000.00, '2024-01-29', 1, 2),
+(2, 5, 200.00, '2024-01-30', 1, 1);
+
+-- Insertar datos en pagos
+INSERT INTO pagos (id_pedido, fecha, comprobante, numero_transaccion) VALUES 
+(1, '2024-01-02', 'comprobante_001', NULL),
+(2, '2024-01-06', NULL, 'transaccion_001'),
+(3, '2024-01-11', 'comprobante_002', NULL),
+(4, '2024-01-12', NULL, 'transaccion_002'),
+(5, '2024-01-13', 'comprobante_003', NULL),
+(6, '2024-01-14', NULL, 'transaccion_003'),
+(7, '2024-01-15', 'comprobante_004', NULL),
+(8, '2024-01-16', NULL, 'transaccion_004'),
+(9, '2024-01-17', 'comprobante_005', NULL),
+(10, '2024-01-18', NULL, 'transaccion_005'),
+(11, '2024-01-19', 'comprobante_006', NULL),
+(12, '2024-01-20', NULL, 'transaccion_006'),
+(13, '2024-01-21', 'comprobante_007', NULL),
+(14, '2024-01-22', NULL, 'transaccion_007'),
+(15, '2024-01-23', 'comprobante_008', NULL),
+(16, '2024-01-24', NULL, 'transaccion_008'),
+(17, '2024-01-25', 'comprobante_009', NULL),
+(18, '2024-01-26', NULL, 'transaccion_009'),
+(19, '2024-01-27', 'comprobante_010', NULL),
+(20, '2024-01-28', NULL, 'transaccion_010'),
+(21, '2024-01-29', 'comprobante_011', NULL),
+(22, '2024-01-30', NULL, 'transaccion_011'),
+(23, '2024-01-31', 'comprobante_012', NULL);
 
 -- Insertar datos en productos_pedido
 INSERT INTO productos_pedido (id_pedido, id_producto, sku, cantidad, precio) VALUES 

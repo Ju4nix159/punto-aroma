@@ -11,7 +11,7 @@ if (!isset($_SESSION['usuario'])) {
     $id_usuario = $_SESSION['usuario'];
 }
 
-$sql_domicilios = $con->prepare("SELECT d.*, ud.tipo_domicilio, ud.principal
+$sql_domicilios = $con->prepare("SELECT d.*, ud.tipo_domicilio, ud.principal,ud.estado
 FROM domicilios d
     JOIN usuario_domicilios ud ON d.id_domicilio = ud.id_domicilio
     JOIN usuarios i ON ud.id_usuario = i.id_usuario
@@ -19,6 +19,27 @@ WHERE i.id_usuario = :id_usuario");
 $sql_domicilios->bindParam(':id_usuario', $id_usuario, PDO::PARAM_INT);
 $sql_domicilios->execute();
 $domicilios = $sql_domicilios->fetchAll(PDO::FETCH_ASSOC);
+
+$sql_informacio_usuario = $con->prepare("SELECT 
+                    u.id_usuario, 
+                    u.email, 
+                    iu.nombre, 
+                    iu.apellido, 
+                    iu.dni, 
+                    iu.fecha_nacimiento, 
+                    iu.telefono, 
+                    s.nombre AS sexo, 
+                    eu.nombre AS estado_usuario
+                FROM 
+                    usuarios u
+                    JOIN info_usuarios iu ON u.id_usuario = iu.id_usuario
+                    JOIN sexos s ON iu.id_sexo = s.id_sexo
+                    JOIN estados_usuarios eu ON u.id_estado_usuario = eu.id_estado_usuario
+                WHERE 
+                    u.id_usuario = :id_usuario;");
+$sql_informacio_usuario->bindParam(':id_usuario', $id_usuario, PDO::PARAM_INT);
+$sql_informacio_usuario->execute();
+$usuario = $sql_informacio_usuario->fetch(PDO::FETCH_ASSOC);
 
 
 $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
@@ -62,62 +83,33 @@ $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
     <div class="container mt-5">
         <h1 class="text-center mb-4">Checkout - Punto Aroma</h1>
         <div class="row">
-            <div class="col-md-8">
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="mb-0">Dirección de envío</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <select class="form-select" id="direccionSelect" onchange="mostrarDireccion()">
-                                <?php foreach ($domicilios as $domicilio): ?>
-                                    <option value="<?php echo $domicilio['id_domicilio']; ?>"
-                                        data-detalle="<?php echo htmlspecialchars($domicilio['calle'] . ', ' . $domicilio['localidad'] . ', ' . $domicilio['provincia'] . ', CP ' . $domicilio['codigo_postal']); ?>"
-                                        <?php echo $domicilio['principal'] == 1 ? 'selected' : ''; ?>>
-                                        <?php echo $domicilio['tipo_domicilio']; ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div id="direccionInfo" class="mt-3" style="display: none;">
-                            <h6 class="mb-2">Información de la dirección seleccionada:</h6>
-                            <p id="direccionDetalle"></p>
-                        </div>
 
-                        <div id="direccionInfo" class="mt-3" style="display: none;">
-                            <h6 class="mb-2">Información de la dirección seleccionada:</h6>
-                            <p id="direccionDetalle"></p>
-                        </div>
-                        <form id="nuevaDireccionForm" style="display: none;">
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="calle" class="form-label">Calle</label>
-                                    <input type="text" class="form-control" id="calle" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="numero" class="form-label">Número</label>
-                                    <input type="text" class="form-control" id="numero" required>
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="ciudad" class="form-label">Ciudad</label>
-                                    <input type="text" class="form-control" id="ciudad" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="provincia" class="form-label">Provincia</label>
-                                    <input type="text" class="form-control" id="provincia" required>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="codigoPostal" class="form-label">Código Postal</label>
-                                <input type="text" class="form-control" id="codigoPostal" required>
-                            </div>
-                        </form>
+            <div class="col-md-8 mb-4 ">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h5 class="mb-0">Información Personal</h5>
                     </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <strong><i class="fas fa-user mr-1"></i> Nombre Completo</strong>
+                        <p class="text-muted"><?php echo $usuario["nombre"] ?></p>
+
+                        <hr>
+
+                        <strong><i class="fas fa-envelope mr-1"></i> Correo Electrónico</strong>
+                        <p class="text-muted"><?php echo $usuario["email"] ?></p>
+
+                        <hr>
+
+                        <strong><i class="fas fa-phone mr-1"></i> Teléfono</strong>
+                        <p class="text-muted"><?php echo $usuario["telefono"] ?></p>
+                    </div>
+                    <!-- /.card-body -->
                 </div>
+                <!-- /.card -->
 
             </div>
+
             <div class="col-md-4">
                 <div class="card">
                     <div class="card-header">
@@ -174,31 +166,86 @@ $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
                     </div>
                 </div>
             </div>
+
+            <div class="col-md-8 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Información de Domicilio</h5>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <select class="form-select" id="direccionSelect" onchange="mostrarDireccion()">
+                                <?php foreach ($domicilios as $domicilio): ?>
+                                    <?php if ($domicilio['estado'] == 1): // Solo mostrar domicilios con estado 1 
+                                    ?>
+                                        <option
+                                            value="<?php echo $domicilio['id_domicilio']; ?>"
+                                            data-calle="<?php echo htmlspecialchars($domicilio['calle']); ?>"
+                                            data-numero="<?php echo htmlspecialchars($domicilio['numero']); ?>"
+                                            data-ciudad="<?php echo htmlspecialchars($domicilio['localidad']); ?>"
+                                            data-estado="<?php echo htmlspecialchars($domicilio['provincia']); ?>"
+                                            data-codigo-postal="<?php echo htmlspecialchars($domicilio['codigo_postal']); ?>"
+                                            <?php echo $domicilio['principal'] == 1 ? 'selected' : ''; ?>>
+                                            <?php echo htmlspecialchars($domicilio['tipo_domicilio']); ?>
+                                        </option>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div id="direccionInfo" class="mt-3" style="display: none;">
+                            <strong><i class="fas fa-map-marker-alt mr-1"></i> Dirección</strong>
+                            <p class="text-muted" id="direccionCalle"></p>
+
+                            <hr>
+
+                            <strong><i class="fas fa-city mr-1"></i> Ciudad</strong>
+                            <p class="text-muted" id="direccionCiudad"></p>
+
+                            <hr>
+
+                            <strong><i class="fas fa-map mr-1"></i> Provincia</strong>
+                            <p class="text-muted" id="direccionEstado"></p>
+
+                            <hr>
+
+                            <strong><i class="fas fa-mail-bulk mr-1"></i> Código Postal</strong>
+                            <p class="text-muted" id="direccionCodigoPostal"></p>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
         </div>
     </div>
+    <?php 
+        include './footer.php';
+    ?>
 
     <script src="carrito.js"></script>
     <script>
         function mostrarDireccion() {
             const select = document.getElementById('direccionSelect');
-            const info = document.getElementById('direccionInfo');
-            const detalle = document.getElementById('direccionDetalle');
+            const selectedOption = select.options[select.selectedIndex];
 
-            // Ocultamos inicialmente el contenedor de información
-            info.style.display = 'none';
+            // Extraer datos del atributo data
+            const calle = selectedOption.getAttribute('data-calle');
+            const numero = selectedOption.getAttribute('data-numero');
+            const ciudad = selectedOption.getAttribute('data-ciudad');
+            const estado = selectedOption.getAttribute('data-estado');
+            const codigoPostal = selectedOption.getAttribute('data-codigo-postal');
 
-            // Verificamos si hay una selección válida
-            if (select.value !== '') {
-                const selectedOption = select.options[select.selectedIndex];
-                const direccionDetalle = selectedOption.getAttribute('data-detalle');
+            // Actualizar el contenido del DOM
+            document.getElementById('direccionCalle').textContent = `${calle || 'No disponible'} ${numero || ''}`;
+            document.getElementById('direccionCiudad').textContent = ciudad || 'No disponible';
+            document.getElementById('direccionEstado').textContent = estado || 'No disponible';
+            document.getElementById('direccionCodigoPostal').textContent = codigoPostal || 'No disponible';
 
-                // Mostramos la información de la dirección seleccionada
-                if (direccionDetalle) {
-                    detalle.textContent = direccionDetalle;
-                    info.style.display = 'block';
-                }
-            }
+            // Mostrar la sección
+            document.getElementById('direccionInfo').style.display = 'block';
         }
+
         // Llamamos a la función al cargar para inicializar el estado
         document.addEventListener('DOMContentLoaded', mostrarDireccion);
 
@@ -251,7 +298,7 @@ $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
                     if (data.success) {
                         alert('Pedido realizado con éxito. ID del pedido: ' + data.id_pedido);
                         cargarCarrito();
-                        window.location.href = 'gracias.php?id_pedido='+data.id_pedido; // Redirigir a una página de agradecimiento
+                        window.location.href = 'gracias.php?id_pedido=' + data.id_pedido; // Redirigir a una página de agradecimiento
                     } else {
                         alert('Error: ' + (data.error || 'No se pudo realizar el pedido.'));
                     }

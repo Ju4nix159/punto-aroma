@@ -11,6 +11,7 @@ if (!isset($_SESSION['usuario'])) {
 <html lang="en">
 
 <head>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
@@ -24,10 +25,8 @@ if (!isset($_SESSION['usuario'])) {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="./css/styles.css">
-  <title>Panel administrado</title>
 
   <!-- Google Font: Source Sans Pro -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
 
   <!-- Font Awesome Icons -->
   <link href="../admin/css//fontawesome-free/css/all.min.css" rel="stylesheet">
@@ -35,9 +34,6 @@ if (!isset($_SESSION['usuario'])) {
 
   <!-- overlayScrollbars -->
   <link rel="stylesheet" href="../admin/css/OverlayScrollbars.min.css">
-
-  <!-- Theme style -->
-  <link rel="stylesheet" href="../admin/css/adminlte.min.css">
 
   <!-- DataTables -->
   <link rel="stylesheet" href="../admin/css/dataTables.bootstrap4.min.css">
