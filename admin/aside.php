@@ -72,9 +72,9 @@
               </a>
               <ul class="nav nav-treeview">
                 <li class="nav-item">
-                  <a href="carrusel.php" class="nav-link">
+                  <a href="banner.php" class="nav-link">
                     <i class="fas fa-solid fa-list"></i>
-                    <p>Mostrar imagenes</p>
+                    <p>Mostrar banner</p>
                   </a>
                 </li>
 

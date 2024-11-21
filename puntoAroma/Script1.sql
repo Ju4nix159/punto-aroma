@@ -821,6 +821,52 @@ WHERE
                          END
             WHERE id_producto = 1;
 
+            -- Query to get all information of an order by id_pedido
+        SELECT 
+            p.id_pedido, 
+            ep.nombre AS estado_pedido, 
+            pp.id_producto, 
+            pr.nombre AS producto_nombre, 
+            pp.sku, 
+            pp.cantidad, 
+            pp.precio
+        FROM 
+            pedidos p
+            JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido
+            JOIN productos_pedido pp ON p.id_pedido = pp.id_pedido
+            JOIN productos pr ON pp.id_producto = pr.id_producto
+        WHERE 
+            p.id_pedido = 1;
+
+            -- Query to get all information of an order by id_pedido
+            SELECT 
+                p.id_pedido, 
+                p.total, 
+                p.fecha, 
+                u.id_usuario, 
+                u.email, 
+                iu.nombre AS nombre_usuario, 
+                iu.apellido, 
+                iu.dni, 
+                iu.fecha_nacimiento, 
+                iu.telefono, 
+                ep.nombre AS estado_pedido, 
+                ep.descripcion AS estado_pedido_descripcion, 
+                d.codigo_postal, 
+                d.provincia, 
+                d.localidad, 
+                d.barrio, 
+                d.calle, 
+                d.numero
+            FROM 
+                pedidos p
+                JOIN usuarios u ON p.id_usuario = u.id_usuario
+                JOIN info_usuarios iu ON u.id_usuario = iu.id_usuario
+                JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido
+                JOIN domicilios d ON p.id_domicilio = d.id_domicilio
+            WHERE 
+                p.id_pedido = 1;
+
 
 SELECT id_sexo, nombre
 FROM sexos;
