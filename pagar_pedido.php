@@ -315,23 +315,27 @@ $metodos_pago = $sql_medotos_pago->fetchAll(PDO::FETCH_ASSOC);
             const idPedido = document.getElementById('id_pedido').value;
             const idUsuario = document.getElementById('id_usuario').value;
             const metodoPago = document.getElementById('forma_pago').value;
-            let nombreComprobante = null;
+
+            // Crear un FormData para enviar los datos
+            const data = new FormData();
+            data.append('id_pedido', idPedido);
+            data.append('id_usuario', idUsuario);
+            data.append('metodo_pago', metodoPago);
+
+            // Verificar si el método de pago es transferencia y manejar el archivo
             if (metodoPago === '1') {
                 const comprobanteTransferencia = document.getElementById('comprobante_transferencia').files[0];
+
                 if (!comprobanteTransferencia) {
                     alert('Por favor, suba su comprobante de transferencia.');
                     return;
                 }
-                nombreComprobante = comprobanteTransferencia.name;
-                console.log(comprobanteTransferencia);
+
+                // Agregar el archivo al FormData
+                data.append('comprobante_transferencia', comprobanteTransferencia);
             }
 
-            data = new FormData();
-            data.append('id_pedido', idPedido);
-            data.append('id_usuario', idUsuario);
-            data.append('metodo_pago', metodoPago);
-            data.append('nombre_comprobante', nombreComprobante);
-
+            // Realizar la solicitud fetch al backend
             fetch('./procesar_pago.php', {
                     method: 'POST',
                     body: data
@@ -343,11 +347,15 @@ $metodos_pago = $sql_medotos_pago->fetchAll(PDO::FETCH_ASSOC);
                         alert('El pago se realizó correctamente.');
                         window.location.href = './gracias2.php?id_pedido=' + idPedido;
                     } else {
-                        alert('Ocurrió un error al procesar el pago.');
+                        alert('Ocurrió un error al procesar el pago: ' + (data.error || 'Error desconocido.'));
                     }
                 })
-
+                .catch(error => {
+                    console.error('Error en la solicitud:', error);
+                    alert('Hubo un problema al realizar la solicitud.');
+                });
         }
+
 
         // Inicializar altura para que coincida con el contenido inicial
         window.addEventListener('DOMContentLoaded', function() {
