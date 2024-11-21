@@ -12,11 +12,10 @@ if (isset($_GET['id_producto'])) {
     $sql_producto->bindParam(':id_producto', $id_producto, PDO::PARAM_INT);
     $sql_producto->execute();
     $info_producto = $sql_producto->fetch(PDO::FETCH_ASSOC);
-    $sql_variantes = $con->prepare("SELECT DISTINCT a.nombre AS aroma, v.sku
+    $sql_variantes = $con->prepare("SELECT DISTINCT v.aroma , v.sku
 FROM productos p
     JOIN categorias c ON p.id_categoria = c.id_categoria
     JOIN variantes v ON p.id_producto = v.id_producto
-    JOIN aromas a ON v.id_aroma = a.id_aroma
 WHERE c.nombre = 'Perfumes' AND p.id_producto = :id_producto;");
     $sql_variantes->bindParam(':id_producto', $id_producto, PDO::PARAM_INT);
     $sql_variantes->execute();

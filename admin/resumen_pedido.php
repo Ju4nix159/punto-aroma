@@ -6,11 +6,10 @@ include './aside.php';
 include './footer.php';
 $id_pedido = $_GET['id_pedido'];
 
-$sql_productos = $con->prepare("SELECT pp.id_pedido, pp.sku, p.nombre AS producto_nombre, a.nombre AS aroma_nombre, pp.cantidad, pp.precio, pp.estado
+$sql_productos = $con->prepare("SELECT v.aroma, pp.id_pedido, pp.sku, p.nombre AS producto_nombre, pp.cantidad, pp.precio, pp.estado
     FROM productos_pedido pp
         JOIN productos p ON pp.id_producto = p.id_producto
         JOIN variantes v ON pp.sku = v.sku
-        JOIN aromas a ON v.id_aroma = a.id_aroma
     WHERE pp.id_pedido = :id_pedido;");
 $sql_productos->bindParam(':id_pedido', $id_pedido, PDO::PARAM_INT);
 $sql_productos->execute();
@@ -126,7 +125,7 @@ $pedido = $sql_informacion_pedido->fetch(PDO::FETCH_ASSOC);
                                                         <?php echo $detalle["producto_nombre"]; ?>
                                                     </td>
                                                     <td style="<?php echo $isUnavailable ? 'text-decoration: line-through;' : ''; ?>">
-                                                        <?php echo $detalle["aroma_nombre"]; ?>
+                                                        <?php echo $detalle["aroma"]; ?>
                                                     </td>
                                                     <td style="<?php echo $isUnavailable ? 'text-decoration: line-through;' : ''; ?>">
                                                         <?php echo $detalle["cantidad"]; ?>

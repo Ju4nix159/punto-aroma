@@ -804,9 +804,24 @@ WHERE
             JOIN estados_productos ep ON v.id_estado_producto = ep.id_estado_producto
             WHERE v.id_producto = 1;
 
+            -- Query to update all values of a product by id_producto
+            UPDATE productos
+            SET nombre = 'Nuevo Nombre',
+                descripcion = 'Nueva Descripción',
+                id_categoria = 2,
+                destacado = 0,
+                estado = 1
+            WHERE id_producto = 1;
+
+            -- Query to update the retail and wholesale price of a product by id_producto
+            UPDATE variantes_tipo_precio
+            SET precio = CASE 
+                            WHEN id_tipo_precio = 1 THEN 650.00  -- New retail price
+                            WHEN id_tipo_precio = 2 THEN 320.00  -- New wholesale price
+                         END
+            WHERE id_producto = 1;
 
 
-            
 SELECT id_sexo, nombre
 FROM sexos;
 
