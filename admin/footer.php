@@ -31,6 +31,7 @@
 <script src="../admin/js/Chart.min.js"></script>
 
 <!-- DataTables  & Plugins -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="../admin/js/jquery.dataTables.min.js"></script>
 <script src="../admin/js/dataTables.bootstrap4.min.js"></script>
 <script src="../admin/js/dataTables.responsive.min.js"></script>
@@ -45,7 +46,6 @@
 <script src="../admin/js/buttons.colVis.min.js"></script>
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.0/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->

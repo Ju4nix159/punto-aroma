@@ -20,6 +20,29 @@ $sql_informacion_pedido->bindParam(':id_pedido', $id_pedido, PDO::PARAM_INT);
 $sql_informacion_pedido->execute();
 $pedido = $sql_informacion_pedido->fetch(PDO::FETCH_ASSOC);
 
+$sql_pago = $con->prepare("    SELECT 
+        p.id_pago,
+        p.id_pedido,
+        p.fecha,
+        p.comprobante,
+        p.numero_transaccion,
+        ped.total,
+        ped.fecha AS fecha_pedido,
+        u.email AS usuario_email,
+        mp.tipo AS metodo_pago
+    FROM 
+        pagos p
+    JOIN 
+        pedidos ped ON p.id_pedido = ped.id_pedido
+    JOIN 
+        usuarios u ON ped.id_usuario = u.id_usuario
+    JOIN 
+        metodos_pago mp ON ped.id_metodo_pago = mp.id_metodo_pago
+    WHERE 
+        p.id_pedido = :id_pedido;");
+$sql_pago->bindParam(':id_pedido', $id_pedido, PDO::PARAM_INT);
+$sql_pago->execute();
+$pago = $sql_pago->fetch(PDO::FETCH_ASSOC);
 
 ?>
 
@@ -60,7 +83,7 @@ $pedido = $sql_informacion_pedido->fetch(PDO::FETCH_ASSOC);
             <section class="content">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-12">
+                        <div class="col-md-8">
                             <div class="card">
                                 <div class="card-header">
                                     <h3 class="card-title">Pedido: <?php echo $id_pedido ?></h3>
@@ -148,7 +171,7 @@ $pedido = $sql_informacion_pedido->fetch(PDO::FETCH_ASSOC);
                                 </div>
                                 <!-- /.card-body -->
                                 <div class="card-footer">
-                                    <a href="./pedidos.php" class="btn btn-warning " >Volver</a>
+                                    <a href="./pedidos.php" class="btn btn-warning ">Volver</a>
                                     <button type="button" class="btn btn-danger" id="cancelChangesBtn">Cancelar Cambios</button>
                                     <button type="button" class="btn btn-primary float-right ml-2" id="confirmOrderBtn">Confirmar Pedido</button>
                                     <button type="button" class="btn btn-success float-right" id="confirmChangesBtn">Confirmar Cambios</button>
@@ -156,6 +179,31 @@ $pedido = $sql_informacion_pedido->fetch(PDO::FETCH_ASSOC);
                             </div>
                             <!-- /.card -->
                         </div>
+                        <?php if (!empty($pago)) { ?>
+                            <div class="col-md-4">
+                                <div class="card card-warning">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Información de Pago</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <strong><i class="fas fa-money-bill mr-1"></i> Método de Pago:</strong>
+                                        <p class="text-muted"><?php echo $pago["metodo_pago"] ?></p>
+                                        <hr>
+                                        <strong><i class="fas fa-calendar-alt mr-1"></i> Fecha de Pago:</strong>
+                                        <p class="text-muted" id="fechaPago"><?php echo $pago["fecha"] ?></p>
+                                        <hr>
+                                        <strong><i class="fas fa-file-invoice mr-1"></i> Comprobante de Pago:</strong>
+                                        <div class="mt-2">
+                                            <img src="../assets/comprobantes/<?php echo $pago["id_pedido"] ?>/<?php echo $pago["comprobante"] ?>" alt="Comprobante de Transferencia" class="img-fluid img-thumbnail" style="max-width: 100%;" id="imagenComprobante">
+                                        </div>
+                                        <button class="btn btn-sm btn-primary mt-2" onclick="mostrarComprobante()">
+                                            <i class="fas fa-eye"></i> Ver Comprobante
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php } ?>
+
                         <!-- /.col -->
                     </div>
                     <!-- /.row -->
@@ -333,6 +381,17 @@ $pedido = $sql_informacion_pedido->fetch(PDO::FETCH_ASSOC);
                     alert('No se pudo confirmar el pedido.');
                 });
         });
+
+        function mostrarComprobante() {
+            Swal.fire({
+                title: 'Comprobante de Transferencia',
+                imageUrl: document.getElementById('imagenComprobante').src,
+                imageWidth: 600,
+                imageHeight: 500,
+                imageAlt: 'Comprobante de Transferencia',
+                confirmButtonText: 'Cerrar'
+            })
+        }
     </script>
 
 </body>
