@@ -29,6 +29,8 @@ try {
             // Si falla, revertir la transacción
             throw new Exception('Error al guardar la variante.');
         }
+        $con->commit();
+        echo json_encode(['status' => 'success']);
     } else {
         echo json_encode(['status' => 'error', 'message' => 'Método no permitido.']);
     }
