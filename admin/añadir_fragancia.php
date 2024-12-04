@@ -12,7 +12,6 @@ try {
         // Inicia una transacción
         $con->beginTransaction();
 
-
         // Insertar la variante en la tabla de variantes
         $sqlInsertVariante = "INSERT INTO variantes (id_producto, aroma, sku) 
                               VALUES (:id_producto, :aroma, :sku)";
@@ -27,11 +26,11 @@ try {
             echo json_encode(['status' => 'success']);
         } else {
             // Si falla, revertir la transacción
+            $con->rollBack();
             throw new Exception('Error al guardar la variante.');
         }
-        $con->commit();
-        echo json_encode(['status' => 'success']);
     } else {
+        // Respuesta para métodos no permitidos
         echo json_encode(['status' => 'error', 'message' => 'Método no permitido.']);
     }
 } catch (Exception $e) {
@@ -42,5 +41,5 @@ try {
     // Registrar el error en el log (opcional)
     error_log($e->getMessage());
     // Enviar respuesta de error en JSON
-    echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+    echo json_encode(['status' => 'error', 'message' => 'Ocurrió un problema al procesar la solicitud.']);
 }

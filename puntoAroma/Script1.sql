@@ -628,23 +628,3 @@ VALUES
     (24, 1, 800.00, 1);
 
     -- Query para obtener la información del pago de un pedido específico
-    SELECT 
-        p.id_pago,
-        p.id_pedido,
-        p.fecha,
-        p.comprobante,
-        p.numero_transaccion,
-        ped.total,
-        ped.fecha AS fecha_pedido,
-        u.email AS usuario_email,
-        mp.tipo AS metodo_pago
-    FROM 
-        pagos p
-    JOIN 
-        pedidos ped ON p.id_pedido = ped.id_pedido
-    JOIN 
-        usuarios u ON ped.id_usuario = u.id_usuario
-    JOIN 
-        metodos_pago mp ON ped.id_metodo_pago = mp.id_metodo_pago
-    WHERE 
-        p.id_pedido = 7; -- Cambiar el valor por el id del pedido deseado
