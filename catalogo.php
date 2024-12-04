@@ -170,32 +170,15 @@ $productos = $sql_catalogo->fetchAll(PDO::FETCH_ASSOC);
                                         data-product-description="<?php echo $producto['descripcion']; ?>"
                                         data-product-price="<?php echo $producto['precio_minorista']; ?>"
                                         data-product-imagen="<?php echo $producto['imagen_principal']; ?>"
-                                        data-product-variants='<?php echo $variantes_json; ?>'>
+                                        data-product-variants='<?php echo $variantes_json; ?>'
+                                        data-product-info = "<?php echo 'producto.php?id_producto=' . $producto['id_producto'] ?>"
+                                        >
                                         <i class="bi bi-eye"></i>
                                     </button>
                                 </div>
                             </div>
                         <?php } ?>
                     </div>
-
-                    <!-- Paginación mejorada -->
-                    <nav aria-label="Page navigation" class="mt-4">
-                        <ul class="pagination justify-content-center">
-                            <li class="page-item">
-                                <a class="page-link" href="#" aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
-                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#" aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
                 </div>
             </div>
         </div>
@@ -219,7 +202,10 @@ $productos = $sql_catalogo->fetchAll(PDO::FETCH_ASSOC);
                             <h4>Fragancias disponibles:</h4>
                             <ul id="quickViewFragrances"></ul>
                             <p><strong>Precio: </strong><span id="quickViewPrice"></span></p>
-                            <a href=""><button class="btn btn-primary-custom">Más información</button></a>
+                            <a id="quickViewMoreInfo" href="">
+                                <button class="btn btn-primary-custom">Más información</button>
+                            </a>
+
                         </div>
                     </div>
                 </div>
@@ -231,6 +217,7 @@ $productos = $sql_catalogo->fetchAll(PDO::FETCH_ASSOC);
     <footer class="">
         <?php include 'footer.php'; ?>
     </footer>
+    
 </body>
 
 </html>

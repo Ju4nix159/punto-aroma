@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
   // Selecciona todos los botones de vista rápida
-
   const quickViewButtons = document.querySelectorAll(".quick-view-btn");
 
   quickViewButtons.forEach((button) => {
@@ -13,6 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const productVariants = JSON.parse(
         this.getAttribute("data-product-variants")
       );
+      const productId = this.getAttribute("data-product-id"); // Nuevo: Obtener el ID del producto
 
       // Insertar los datos en el modal
       document.getElementById("quickViewTitle").innerText = productName;
@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("quickViewPrice").innerText = `$${productPrice}`;
       document.getElementById(
         "quickViewImage"
-      ).src = `../pa/assets/productos${productImage}`;
+      ).src = `../pa/assets/productos/${productImage}`;
 
       // Limpiar el contenido previo de las fragancias/colores
       const variantsList = document.getElementById("quickViewFragrances");
@@ -33,14 +33,14 @@ document.addEventListener("DOMContentLoaded", function () {
         listItem.innerText = variant;
         variantsList.appendChild(listItem);
       });
-    });
-  });
-});
 
-// Event listener para los botones de vista rápida
-document.querySelectorAll(".quick-view-btn").forEach((button) => {
-  button.addEventListener("click", function () {
-    updateQuickViewModal(this);
+      // Actualizar el enlace "Más información" con el ID del producto
+      const moreInfoButton = document.getElementById("quickViewMoreInfo");
+      moreInfoButton.setAttribute(
+        "href",
+        `producto.php?id_producto=${productId}`
+      );
+    });
   });
 });
 
