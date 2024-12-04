@@ -124,33 +124,24 @@ $productos = $sql_catalogo->fetchAll(PDO::FETCH_ASSOC);
                 <div class="col-md-9">
                     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
                         <?php foreach ($productos as $producto) {
-                            // Si la categoría es "Perfumes", selecciona fragancias; si es "Aromas para el hogar", selecciona colores
-                            if ($producto['categoria'] == 'Perfumes') {
-                                $query_variantes = "SELECT DISTINCT v.aroma
-                        FROM variantes v
-                        WHERE v.id_producto = :id_producto";
-                            } elseif ($producto['categoria'] == 'Aromas para el hogar') {
-                                $query_variantes = "SELECT DISTINCT c.nombre AS color_nombre
-                        FROM variantes v
-                        JOIN colores c ON v.id_color = c.id_color
-                        WHERE v.id_producto = :id_producto";
-                            } else {
-                                $query_variantes = null;
-                            }
+                            // Consulta para obtener todas las variantes del producto con estado 1 y color no null
+                            $query_variantes = "SELECT DISTINCT v.nombre_variante
+                            FROM variantes v
+                            WHERE v.id_producto = :id_producto 
+                            AND v.id_estado_producto = 1
+                            AND v.color IS NOT NULL";
 
-                            if ($query_variantes) {
-                                $variantes = $con->prepare($query_variantes);
-                                $variantes->bindParam(':id_producto', $producto['id_producto'], PDO::PARAM_INT);
-                                $variantes->execute();
-                                $variantes_result = $variantes->fetchAll(PDO::FETCH_ASSOC);
-                            }
+                            // Preparar y ejecutar la consulta
+                            $variantes = $con->prepare($query_variantes);
+                            $variantes->bindParam(':id_producto', $producto['id_producto'], PDO::PARAM_INT);
+                            $variantes->execute();
+                            $variantes_result = $variantes->fetchAll(PDO::FETCH_ASSOC);
 
                             // Crear un array de variantes para pasarlo como JSON al modal
                             $variantes_array = array_map(function ($variante) {
-                                return isset($variante['aroma']) ? $variante['aroma'] : $variante['color_nombre'];
+                                return $variante['nombre_variante']; // Asegúrate de que este sea el campo correcto
                             }, $variantes_result);
                             $variantes_json = json_encode($variantes_array);
-
                         ?>
                             <div class="col">
                                 <div class="card h-100 product-card">
@@ -159,7 +150,6 @@ $productos = $sql_catalogo->fetchAll(PDO::FETCH_ASSOC);
                                             <div class="img-container">
                                                 <img src="../pa/assets/productos/<?php echo $producto["imagen_principal"]; ?>" class="card-img-top w-100 h-100 object-fit-cover" alt="<?php echo $producto["id_producto"] ?>">
                                             </div>
-
                                             <div class="card-body flex-grow-1">
                                                 <h5 class="card-title"><?php echo $producto["nombre"] ?></h5>
                                                 <p class="card-text"><small class="text-muted">Categoría: <?php echo $producto["categoria"] ?></small></p>
@@ -169,9 +159,8 @@ $productos = $sql_catalogo->fetchAll(PDO::FETCH_ASSOC);
                                     </a>
 
                                     <div class="card-footer">
-                                        <a href="producto.php?id_producto=<?php echo $producto["id_producto"] ?>" class="btn btn-primary-custom w-100">ver producto</a>
+                                        <a href="producto.php?id_producto=<?php echo $producto["id_producto"] ?>" class="btn btn-primary-custom w-100">Ver producto</a>
                                     </div>
-
 
                                     <button class="btn btn-sm btn-secondary-custom quick-view-btn"
                                         data-bs-toggle="modal"
@@ -188,6 +177,7 @@ $productos = $sql_catalogo->fetchAll(PDO::FETCH_ASSOC);
                             </div>
                         <?php } ?>
                     </div>
+
                     <!-- Paginación mejorada -->
                     <nav aria-label="Page navigation" class="mt-4">
                         <ul class="pagination justify-content-center">
