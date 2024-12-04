@@ -175,14 +175,14 @@ function modificarCantidadFragancia(
     });
 }
 
-function incrementQuantity(sku, aroma) {
+function incrementQuantity(sku) {
   var quantityInput = document.getElementById("quantity-" + sku);
   var currentQuantity = parseInt(quantityInput.value);
   quantityInput.value = currentQuantity + 1;
   updateTotalPrice();
 }
 
-function decrementQuantity(sku, aroma) {
+function decrementQuantity(sku) {
   var quantityInput = document.getElementById("quantity-" + sku);
   var currentQuantity = parseInt(quantityInput.value);
   if (currentQuantity > 0) {

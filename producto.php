@@ -12,11 +12,10 @@ if (isset($_GET['id_producto'])) {
     $sql_producto->bindParam(':id_producto', $id_producto, PDO::PARAM_INT);
     $sql_producto->execute();
     $info_producto = $sql_producto->fetch(PDO::FETCH_ASSOC);
-    $sql_variantes = $con->prepare("SELECT DISTINCT v.aroma , v.sku
+    $sql_variantes = $con->prepare("SELECT DISTINCT v.aroma , v.sku, v.nombre_variante, v.color, v.id_estado_producto
 FROM productos p
-    JOIN categorias c ON p.id_categoria = c.id_categoria
     JOIN variantes v ON p.id_producto = v.id_producto
-WHERE c.nombre = 'Perfumes' AND p.id_producto = :id_producto;");
+WHERE p.id_producto = :id_producto;");
     $sql_variantes->bindParam(':id_producto', $id_producto, PDO::PARAM_INT);
     $sql_variantes->execute();
     $variantes = $sql_variantes->fetchAll(PDO::FETCH_ASSOC);
@@ -72,22 +71,43 @@ WHERE c.nombre = 'Perfumes' AND p.id_producto = :id_producto;");
                         <input type="hidden" id="id-producto" value="<?php echo $id_producto ?>">
                         <input type="hidden" id="precio-producto" value="<?php echo $info_producto['precio'] ?>">
                         <input type="hidden" id="nombre-producto" value="<?php echo $info_producto['nombre'] ?>">
-                        <div id="fragrances-list">
-                            <?php foreach ($variantes as $variante) { ?>
-                                <div class="fragrance-item" data-sku="<?php echo $variante['sku']; ?>" data-aroma="<?php echo $variante['aroma']; ?>">
-                                    <h5><?php echo $variante["aroma"] ?></h5>
-                                    <div class="product-count">
-                                        <div class="d-flex">
-                                            <button type="button" class="btn-primary-custom qtyminus" onclick="decrementQuantity('<?php echo $variante['sku'] ?>', '<?php echo $variante['aroma'] ?>')">-</button>
 
-                                            <input type="number" id="quantity-<?php echo $variante['sku'] ?>" class="cantidad" value="0" min="0">
-                                            <button type="button" class="btn-primary-custom qtyplus" onclick="incrementQuantity('<?php echo $variante['sku'] ?>', '<?php echo $variante['aroma'] ?>')">+</button>
-                                        </div>
-                                    </div>
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div id="variants">
+                                    <?php foreach ($variantes as $variante) { ?>
+                                        <?php if ($variante['id_estado_producto'] == 1) { ?>
+                                            <div class="fragrance-item" data-sku="<?php echo $variante['sku']; ?>" data-aroma="<?php echo $variante['aroma']; ?>">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <strong><?php echo $variante["nombre_variante"] ?></strong>
+                                                        <p class="text-muted mb-0 small">
+                                                            <?php
+                                                            echo !empty($variante["aroma"]) ? "Aroma: " . $variante["aroma"] : "";
+                                                            echo (!empty($variante["aroma"]) && !empty($variante["color"])) ? " | " : "";
+                                                            echo !empty($variante["color"]) ? "Color: " . $variante["color"] : "";
+                                                            ?>
+                                                        </p>
+                                                    </div>
+
+                                                    <div class="product-count">
+                                                        <div class="d-flex align-items-center">
+                                                            <button type="button" class="btn-primary-custom qtyminus" onclick="decrementQuantity('<?php echo $variante['sku'] ?>')">-</button>
+
+                                                            <input type="number" id="quantity-<?php echo $variante['sku'] ?>" class="cantidad" value="0" min="0">
+                                                            <button type="button" class="btn-primary-custom qtyplus" onclick="incrementQuantity('<?php echo $variante['sku'] ?>')">+</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <?php } ?>
+                                    <?php } ?>
+
+
+
                                 </div>
-                            <?php } ?>
+                            </div>
                         </div>
-
                         <div class="mt-4">
                             <h4>Total: $<span id="total-price">0.00</span></h4>
                         </div>

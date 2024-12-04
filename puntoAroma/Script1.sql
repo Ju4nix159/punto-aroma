@@ -19,8 +19,18 @@ DROP TABLE IF EXISTS estados_pedidos;
 DROP TABLE IF EXISTS estados_productos;
 DROP TABLE IF EXISTS colores;
 DROP TABLE IF EXISTS categorias;
+DROP TABLE IF EXISTS banner;
 DROP TABLE IF EXISTS info_transferencia;
 
+
+CREATE TABLE banner
+(
+    id_banner INT PRIMARY KEY,
+    nombre VARCHAR(100),
+    ruta VARCHAR(200),
+    descripcion VARCHAR(200),
+    id_pagina INT,
+);
 
 CREATE TABLE info_transferencia
 (
@@ -42,12 +52,7 @@ CREATE TABLE categorias
 
 
 
--- Tabla de color
-CREATE TABLE colores
-(
-    id_color INT PRIMARY KEY,
-    nombre VARCHAR(100)
-);
+
 
 -- Tabla de estado de productos
 CREATE TABLE estados_productos
@@ -226,15 +231,15 @@ CREATE TABLE pagos
 CREATE TABLE variantes
 (
     sku VARCHAR(100),
+    nombre_variante VARCHAR(100),
     id_producto INT,
-    id_estado_producto INT,
+    id_estado_producto INT DEFAULT 1,
     aroma VARCHAR(100),
-    id_color INT,
+    color INT,
     stock INT,
     CONSTRAINT PK_variante_sku_END PRIMARY KEY (sku),
     CONSTRAINT FK_variante_id_producto_END          FOREIGN KEY (id_producto)           REFERENCES productos(id_producto),
     CONSTRAINT FK_variante_id_estado_producto_END   FOREIGN KEY (id_estado_producto)    REFERENCES estados_productos(id_estado_producto),
-    CONSTRAINT FK_variante_id_color                 FOREIGN KEY (id_color)              REFERENCES colores(id_color)
 );
 
 -- Tabla de productos pedidos (relación entre pedidos y productos)
@@ -372,56 +377,42 @@ VALUES
     (24, 'Vela Aromática Naranja', 'Una vela con aroma a naranja', 2, 0);
 
 
--- Insertar datos en color
-INSERT INTO colores
-    (id_color, nombre)
-VALUES
-    (1, 'Rojo'),
-    (2, 'Azul'),
-    (3, 'Verde'),
-    (4, 'Amarillo'),
-    (5, 'Negro'),
-    (6, 'Blanco'),
-    (7, 'Rosa'),
-    (8, 'Morado'),
-    (9, 'Naranja'),
-    (10, 'Gris');
 
 
 INSERT INTO variantes
-    (sku, id_producto, id_estado_producto, aroma, id_color, stock)
+    (sku, nombre_variante, id_producto, id_estado_producto, aroma, color, stock)
 VALUES
-    ('SKU001', 1, 1, 'Floral', 1, 50),
-    ('SKU002', 1, 1, 'Floral', 2, 30),
-    ('SKU003', 2, 1, 'Amaderado', 3, 20),
-    ('SKU004', 2, 2, 'Amaderado', 4, 0),
-    ('SKU005', 3, 1, 'Vainilla', 1, 15),
-    ('SKU006', 3, 1, 'Vainilla', 2, 10),
-    ('SKU007', 4, 1, 'Lavanda', 3, 40),
-    ('SKU008', 4, 1, 'Lavanda', 4, 25),
-    ('SKU009', 5, 1, 'Cítrico', 1, 45),
-    ('SKU010', 5, 1, 'Cítrico', 2, 30),
-    ('SKU011', 6, 1, 'Dulce', 3, 50),
-    ('SKU012', 6, 1, 'Dulce', 4, 20),
-    ('SKU013', 7, 1, 'Eucalipto', 1, 10),
-    ('SKU014', 8, 1, 'Coco', 2, 15),
-    ('SKU015', 9, 1, 'Deportivo', 3, 25),
-    ('SKU016', 9, 1, 'Deportivo', 4, 20),
-    ('SKU017', 10, 1, 'De Noche', 1, 30),
-    ('SKU018', 11, 1, 'Frutos Rojos', 2, 15),
-    ('SKU019', 12, 1, 'Canela', 3, 18),
-    ('SKU020', 13, 1, 'De Viaje', 4, 12),
-    ('SKU021', 14, 1, 'De Verano', 1, 40),
-    ('SKU022', 15, 1, 'Lavanda', 2, 30),
-    ('SKU023', 16, 1, 'Limón', 3, 25),
-    ('SKU024', 17, 1, 'De Otoño', 4, 35),
-    ('SKU025', 18, 1, 'De Invierno', 1, 28),
-    ('SKU026', 19, 1, 'Té Verde', 2, 22),
-    ('SKU027', 20, 1, 'Jazmín', 3, 18),
-    ('SKU028', 21, 1, 'Exótico', 4, 50),
-    ('SKU029', 22, 1, 'Clásico', 1, 40),
-    ('SKU030', 23, 1, 'Menta', 2, 10),
-    ('SKU031', 24, 1, 'Naranja', 3, 15);
+    ('SKU001', 'Variante Floral 1', 1, 1, 'Floral', 1, 50),
+    ('SKU002', 'Variante Floral 2', 1, 1, 'Floral', 2, 30),
+    ('SKU003', 'Variante Amaderado 1', 2, 1, 'Amaderado', 3, 20),
+    ('SKU004', 'Variante Amaderado 2', 2, 2, 'Amaderado', 4, 0),
+    ('SKU005', 'Variante Vainilla 1', 3, 1, 'Vainilla', 5, 15),
+    ('SKU006', 'Variante Vainilla 2', 3, 1, 'Vainilla', 6, 10),
+    ('SKU007', 'Variante Lavanda 1', 4, 1, 'Lavanda', 7, 40),
+    ('SKU008', 'Variante Lavanda 2', 4, 1, 'Lavanda', 8, 25),
+    ('SKU009', 'Variante Cítrico 1', 5, 1, 'Cítrico', 9, 45),
+    ('SKU010', 'Variante Cítrico 2', 5, 1, 'Cítrico', 10, 30),
+    ('SKU011', 'Variante Dulce 1', 6, 1, 'Dulce', 1, 50),
+    ('SKU012', 'Variante Dulce 2', 6, 1, 'Dulce', 2, 20),
+    ('SKU013', 'Variante Eucalipto 1', 7, 1, 'Eucalipto', 3, 10),
+    ('SKU014', 'Variante Coco 1', 8, 1, 'Coco', 4, 15),
+    ('SKU015', 'Variante Deportivo 1', 9, 1, 'Deportivo', 5, 25),
+    ('SKU016', 'Variante Deportivo 2', 9, 1, 'Deportivo', 6, 20),
+    ('SKU017', 'Variante De Noche 1', 10, 1, 'De Noche', 7, 30),
+    ('SKU018', 'Variante Frutos Rojos 1', 11, 1, 'Frutos Rojos', 8, 15),
+    ('SKU019', 'Variante Canela 1', 12, 1, 'Canela', 9, 18),
+    ('SKU020', 'Variante De Viaje 1', 13, 1, 'De Viaje', 10, 12),
+    ('SKU021', 'Variante De Verano 1', 14, 1, 'De Verano', 1, 40),
+    ('SKU022', 'Variante Lavanda 3', 15, 1, 'Lavanda', 2, 30),
+    ('SKU023', 'Variante Limón 1', 16, 1, 'Limón', 3, 25),
+    ('SKU024', 'Variante De Otoño 1', 17, 1, 'De Otoño', 4, 35),
+    ('SKU025', 'Variante De Invierno 1', 18, 1, 'De Invierno', 5, 28),
+    ('SKU026', 'Variante Té Verde 1', 19, 1, 'Té Verde', 6, 22),
+    ('SKU027', 'Variante Jazmín 1', 20, 1, 'Jazmín', 7, 18),
+    ('SKU028', 'Variante Exótico 1', 21, 1, 'Exótico', 8, 50),
+    ('SKU029', 'Variante Clásico 1', 22, 1, 'Clásico', 9, 40),
+    ('SKU030', 'Variante Menta 1', 23, 1, 'Menta', 10, 10),
+    ('SKU031', 'Variante Naranja 1', 24, 1, 'Naranja', 1, 15);
 
 
 -- Insertar datos en imágenes (1 imagen por producto)

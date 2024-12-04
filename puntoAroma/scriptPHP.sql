@@ -1,3 +1,12 @@
+CREATE TABLE banner(
+    id_banner INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100),
+    ruta VARCHAR(200),
+    descripcion VARCHAR(200),
+    id_pagina INT
+);
+
+
 CREATE TABLE categorias (
     id_categoria INT PRIMARY KEY AUTO_INCREMENT,
     nombre VARCHAR(100),
@@ -5,11 +14,6 @@ CREATE TABLE categorias (
 );
 
 
--- Tabla de colores
-CREATE TABLE colores (
-    id_color INT PRIMARY KEY AUTO_INCREMENT,
-    nombre VARCHAR(100)
-);
 
 -- Tabla de estado de productos
 CREATE TABLE estados_productos (
@@ -145,15 +149,15 @@ CREATE TABLE pagos (
 -- Tabla de variantes (variante del producto)
 CREATE TABLE variantes (
     sku VARCHAR(100),
+    nombre_variante VARCHAR(100),
     id_producto INT,
-    id_estado_producto INT,
+    id_estado_producto INT DEFAULT 1,
     aroma VARCHAR(100),
-    id_color INT,
+    color INT,
     stock INT,
     CONSTRAINT PK_variante_sku_END PRIMARY KEY (sku),
     CONSTRAINT FK_variante_id_producto_END          FOREIGN KEY (id_producto)           REFERENCES productos(id_producto),
-    CONSTRAINT FK_variante_id_estado_producto_END   FOREIGN KEY (id_estado_producto)    REFERENCES estados_productos(id_estado_producto),
-    CONSTRAINT FK_variante_id_color                 FOREIGN KEY (id_color)              REFERENCES colores(id_color)
+    CONSTRAINT FK_variante_id_estado_producto_END   FOREIGN KEY (id_estado_producto)    REFERENCES estados_productos(id_estado_producto)
 );
 
 -- Tabla de productos pedidos (relación entre pedidos y productos)
@@ -267,52 +271,39 @@ INSERT INTO productos (nombre, descripcion, id_categoria, destacado) VALUES
 
 
 
--- Insertar datos en colores
-INSERT INTO colores (nombre) VALUES 
-('Rojo'),
-('Azul'),
-('Verde'),
-('Amarillo'),
-('Negro'),
-('Blanco'),
-('Rosa'),
-('Morado'),
-('Naranja'),
-('Gris');
-
 -- Insertar datos en variantes
-INSERT INTO variantes (sku, id_producto, id_estado_producto, aroma, id_color, stock) VALUES 
-('SKU001', 1, 1, 'Lavanda', 1, 50),
-('SKU002', 1, 1, 'Vainilla', 2, 30),
-('SKU003', 2, 1, 'Rosa', 3, 20),
-('SKU004', 2, 2, 'Jazmín', 4, 0),
-('SKU005', 3, 1, 'Coco', 1, 15),
-('SKU006', 3, 1, 'Canela', 2, 10),
-('SKU007', 4, 1, 'Eucalipto', 3, 40),
-('SKU008', 4, 1, 'Menta', 4, 25),
-('SKU009', 5, 1, 'Limón', 1, 45),
-('SKU010', 5, 1, 'Naranja', 2, 30),
-('SKU011', 6, 1, 'Lavanda', 3, 50),
-('SKU012', 6, 1, 'Vainilla', 4, 20),
-('SKU013', 7, 1, 'Rosa', 1, 10),
-('SKU014', 8, 1, 'Jazmín', 2, 15),
-('SKU015', 9, 1, 'Coco', 3, 25),
-('SKU016', 9, 1, 'Canela', 4, 20),
-('SKU017', 10, 1, 'Eucalipto', 1, 30),
-('SKU018', 11, 1, 'Menta', 2, 15),
-('SKU019', 12, 1, 'Limón', 3, 18),
-('SKU020', 13, 1, 'Naranja', 4, 12),
-('SKU021', 14, 1, 'Lavanda', 1, 40),
-('SKU022', 15, 1, 'Vainilla', 2, 30),
-('SKU023', 16, 1, 'Rosa', 3, 25),
-('SKU024', 17, 1, 'Jazmín', 4, 35),
-('SKU025', 18, 1, 'Coco', 1, 28),
-('SKU026', 19, 1, 'Canela', 2, 22),
-('SKU027', 20, 1, 'Eucalipto', 3, 18),
-('SKU028', 21, 1, 'Menta', 4, 50),
-('SKU029', 22, 1, 'Limón', 1, 40),
-('SKU030', 23, 1, 'Naranja', 2, 10),
-('SKU031', 24, 1, 'Lavanda', 3, 15);
+INSERT INTO variantes (sku, nombre_variante, id_producto, id_estado_producto, aroma, color, stock) VALUES 
+('SKU001', 'Variante Lavanda', 1, 1, 'Lavanda', 1, 50),
+('SKU002', 'Variante Vainilla', 1, 1, 'Vainilla', 2, 30),
+('SKU003', 'Variante Rosa', 2, 1, 'Rosa', 3, 20),
+('SKU004', 'Variante Jazmín', 2, 2, 'Jazmín', 4, 0),
+('SKU005', 'Variante Coco', 3, 1, 'Coco', 1, 15),
+('SKU006', 'Variante Canela', 3, 1, 'Canela', 2, 10),
+('SKU007', 'Variante Eucalipto', 4, 1, 'Eucalipto', 3, 40),
+('SKU008', 'Variante Menta', 4, 1, 'Menta', 4, 25),
+('SKU009', 'Variante Limón', 5, 1, 'Limón', 1, 45),
+('SKU010', 'Variante Naranja', 5, 1, 'Naranja', 2, 30),
+('SKU011', 'Variante Lavanda', 6, 1, 'Lavanda', 3, 50),
+('SKU012', 'Variante Vainilla', 6, 1, 'Vainilla', 4, 20),
+('SKU013', 'Variante Rosa', 7, 1, 'Rosa', 1, 10),
+('SKU014', 'Variante Jazmín', 8, 1, 'Jazmín', 2, 15),
+('SKU015', 'Variante Coco', 9, 1, 'Coco', 3, 25),
+('SKU016', 'Variante Canela', 9, 1, 'Canela', 4, 20),
+('SKU017', 'Variante Eucalipto', 10, 1, 'Eucalipto', 1, 30),
+('SKU018', 'Variante Menta', 11, 1, 'Menta', 2, 15),
+('SKU019', 'Variante Limón', 12, 1, 'Limón', 3, 18),
+('SKU020', 'Variante Naranja', 13, 1, 'Naranja', 4, 12),
+('SKU021', 'Variante Lavanda', 14, 1, 'Lavanda', 1, 40),
+('SKU022', 'Variante Vainilla', 15, 1, 'Vainilla', 2, 30),
+('SKU023', 'Variante Rosa', 16, 1, 'Rosa', 3, 25),
+('SKU024', 'Variante Jazmín', 17, 1, 'Jazmín', 4, 35),
+('SKU025', 'Variante Coco', 18, 1, 'Coco', 1, 28),
+('SKU026', 'Variante Canela', 19, 1, 'Canela', 2, 22),
+('SKU027', 'Variante Eucalipto', 20, 1, 'Eucalipto', 3, 18),
+('SKU028', 'Variante Menta', 21, 1, 'Menta', 4, 50),
+('SKU029', 'Variante Limón', 22, 1, 'Limón', 1, 40),
+('SKU030', 'Variante Naranja', 23, 1, 'Naranja', 2, 10),
+('SKU031', 'Variante Lavanda', 24, 1, 'Lavanda', 3, 15);
 
 -- Insertar datos en imágenes
 INSERT INTO imagenes (id_producto, ruta, principal) VALUES 
