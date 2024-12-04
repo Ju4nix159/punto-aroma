@@ -12,11 +12,10 @@ if (isset($_GET['id_producto'])) {
     $sql_producto->bindParam(':id_producto', $id_producto, PDO::PARAM_INT);
     $sql_producto->execute();
     $info_producto = $sql_producto->fetch(PDO::FETCH_ASSOC);
-    $sql_variantes = $con->prepare("SELECT DISTINCT v.aroma , v.sku
+    $sql_variantes = $con->prepare("SELECT DISTINCT v.aroma , v.sku, v.nombre_variante
 FROM productos p
-    JOIN categorias c ON p.id_categoria = c.id_categoria
     JOIN variantes v ON p.id_producto = v.id_producto
-WHERE c.nombre = 'Perfumes' AND p.id_producto = :id_producto;");
+WHERE p.id_producto = :id_producto;");
     $sql_variantes->bindParam(':id_producto', $id_producto, PDO::PARAM_INT);
     $sql_variantes->execute();
     $variantes = $sql_variantes->fetchAll(PDO::FETCH_ASSOC);
@@ -75,7 +74,7 @@ WHERE c.nombre = 'Perfumes' AND p.id_producto = :id_producto;");
                         <div id="fragrances-list">
                             <?php foreach ($variantes as $variante) { ?>
                                 <div class="fragrance-item" data-sku="<?php echo $variante['sku']; ?>" data-aroma="<?php echo $variante['aroma']; ?>">
-                                    <h5><?php echo $variante["aroma"] ?></h5>
+                                    <h5><?php echo $variante["nombre_variante"] ?></h5>
                                     <div class="product-count">
                                         <div class="d-flex">
                                             <button type="button" class="btn-primary-custom qtyminus" onclick="decrementQuantity('<?php echo $variante['sku'] ?>', '<?php echo $variante['aroma'] ?>')">-</button>

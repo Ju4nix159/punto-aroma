@@ -37,14 +37,14 @@ $sql_resume_producto->execute();
 $resumen = $sql_resume_producto->fetch(PDO::FETCH_ASSOC);
 
 
-$sql_fragancias = $con->prepare("SELECT ep.nombre AS estado_nombre, v.aroma, v.sku
+$sql_variante = $con->prepare("SELECT  ep.id_estado_producto AS estado,ep.nombre AS estado_nombre, v.aroma, v.sku, v.nombre_variante, v.color
             FROM variantes v
             JOIN estados_productos ep ON v.id_estado_producto = ep.id_estado_producto
             WHERE v.id_producto = :id_producto;");
 
-$sql_fragancias->bindParam(':id_producto', $id_producto);
-$sql_fragancias->execute();
-$fragancias = $sql_fragancias->fetchAll(PDO::FETCH_ASSOC);
+$sql_variante->bindParam(':id_producto', $id_producto);
+$sql_variante->execute();
+$variantes = $sql_variante->fetchAll(PDO::FETCH_ASSOC);
 
 $imagen = $con->prepare("SELECT p.id_producto, i.ruta AS imagen_principal
             FROM productos p
@@ -197,7 +197,7 @@ $categorias = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
             <div class="col-md-6">
               <div class="card card-secondary">
                 <div class="card-header">
-                  <h3 class="card-title">Fragancias</h3>
+                  <h3 class="card-title">variantes</h3>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -205,22 +205,40 @@ $categorias = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
                     <thead>
                       <tr>
                         <th>SKU</th>
-                        <th>Fragancia</th>
+                        <th>Variante</th>
+                        <th>aroma</th>
+                        <th>color</th>
                         <th>Estado</th>
                         <th>Acciones</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <?php foreach ($fragancias as $fragancia) { ?>
+                      <?php foreach ($variantes as $variante) { ?>
                         <tr>
-                          <td><?php echo $fragancia["sku"] ?></td>
-                          <td><?php echo $fragancia["aroma"] ?></td>
-                          <td><?php echo $fragancia["estado_nombre"] ?></td>
+                          <td><?php echo $variante["sku"] ?></td>
+                          <td><?php echo $variante["nombre_variante"] ?></td>
+                          <td><?php echo $variante["aroma"] ?></td>
+                          <td><?php echo $variante["color"] ?></td>
+                          <td><?php echo $variante["estado_nombre"] ?></td>
                           <td>
-                            <button type="button" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                            <?php if ($variante["estado"] == 1) { // Disponible 
+                            ?>
+                              <button type="button" class="btn btn-sm btn-danger" onclick="eliminarVariante(this)" data-sku="<?php echo $variante['sku']; ?>">
+                                <i class="fas fa-trash"></i> Eliminar
+                              </button>
+                            <?php } elseif ($variante["estado"] == 2) { // Agotado 
+                            ?>
+                              <button type="button" class="btn btn-sm bg-orange" onclick="editarVariante(this)" data-sku="<?php echo $variante['sku']; ?>">
+                                <i class="fas fa-edit"></i> Editar
+                              </button>
+                              <button type="button" class="btn btn-sm btn-success" onclick="activarVariante(this)" data-sku="<?php echo $variante['sku']; ?>">
+                                <i class="fas fa-play"></i> Activar
+                              </button>
+                            <?php } ?>
                           </td>
                         </tr>
                       <?php } ?>
+
                     </tbody>
                   </table>
                 </div>
@@ -304,32 +322,83 @@ $categorias = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
           <form>
             <div class="form-group">
               <input type="hidden" name="id_producto" id="id_producto" value="<?php echo $id_producto ?>">
-              <label for="fragrance-name">Nombre de la Fragancia</label>
-              <input type="text" class="form-control" id="fragrance-name" placeholder="Ingrese el nombre de la fragancia">
+              <label for="variante-name">Nombre de la variante</label>
+              <input type="text" class="form-control" id="variante-name" placeholder="Ingrese el nombre de la variante">
             </div>
             <div class="form-group">
-              <label for="fragrance-sku">SKU</label>
-              <input type="text" class="form-control" id="fragrance-sku" placeholder="Ingrese SKU de la fragancia">
+              <label for="variante-sku">SKU</label>
+              <input type="text" class="form-control" id="variante-sku" placeholder="Ingrese SKU de la variante">
+            </div>
+            <div class="form-group">
+              <label for="variante-color">color</label>
+              <input type="text" class="form-control" id="variante-color" placeholder="Ingrese color de la variante">
+            </div>
+            <div class="form-group">
+              <label for="variante-aroma">aroma</label>
+              <input type="text" class="form-control" id="variante-aroma" placeholder="Ingrese aroma de la variante">
             </div>
           </form>
         </div>
         <div class="modal-footer justify-content-between">
           <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-          <button type="button" class="btn btn-primary" onclick="agregarFragancia()">Guardar Fragancia</button>
+          <button type="button" class="btn btn-primary" onclick="agregarVariante()">Guardar Variante</button>
         </div>
       </div>
     </div>
   </div>
   <!-- /.modal -->
+
+  <!-- modal para  la edicion del producto -->
+  <div class="modal fade" id="modal-edit-fragrance">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Editar Variante</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="edit-variante-form">
+            <div class="form-group">
+              <label for="edit-variante-name">Nombre de la variante</label>
+              <input type="text" class="form-control" id="edit-variante-name">
+            </div>
+            <div class="form-group">
+              <label for="edit-variante-sku">SKU</label>
+              <input type="text" class="form-control" id="edit-variante-sku" readonly>
+            </div>
+            <div class="form-group">
+              <label for="edit-variante-color">Color</label>
+              <input type="text" class="form-control" id="edit-variante-color">
+            </div>
+            <div class="form-group">
+              <label for="edit-variante-aroma">Aroma</label>
+              <input type="text" class="form-control" id="edit-variante-aroma">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer justify-content-between">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-primary" onclick="guardarVarianteEditada()">Guardar Cambios</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
   <script>
-    async function agregarFragancia() {
+    async function agregarVariante() {
       // Obtener valores de los campos
       const id_producto = document.getElementById("id_producto").value;
-      const aroma = document.getElementById('fragrance-name').value;
-      const sku = document.getElementById('fragrance-sku').value;
+      const sku = document.getElementById("variante-sku").value;
+      const aroma = document.getElementById("variante-aroma").value;
+      const color = document.getElementById("variante-color").value;
+      const nombre_variante = document.getElementById("variante-name").value;
+
 
       // Validar campos obligatorios
-      if (!aroma || !sku) {
+      if (!sku || !nombre_variante) {
         alert('Por favor, completa todos los campos obligatorios.');
         return;
       }
@@ -340,6 +409,9 @@ $categorias = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
       formData.append('id_producto', id_producto);
       formData.append('sku', sku);
       formData.append('aroma', aroma);
+      formData.append('color', color);
+      formData.append('nombre_variante', nombre_variante);
+
 
       try {
         // Enviar solicitud
@@ -360,6 +432,142 @@ $categorias = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
         alert('Ocurrió un problema al procesar la solicitud. Inténtalo nuevamente.');
       }
     }
+
+    function eliminarVariante(button) {
+      const confirmar = confirm('¿Estás seguro de que deseas eliminar esta variante?');
+
+      if (confirmar) {
+        // Obtener el SKU del atributo data-sku del botón
+        const sku = button.getAttribute('data-sku');
+
+        if (!sku) {
+          alert('El SKU de la variante es requerido.');
+          return;
+        }
+
+        console.log('Eliminando variante con SKU:', sku);
+        const formData = new FormData();
+        formData.append('sku', sku);
+
+        fetch('eliminar_variante.php', {
+            method: 'POST',
+            body: formData,
+          })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Error en la solicitud al servidor.');
+            }
+            return response.json();
+          })
+          .then(data => {
+            if (data.status === 'success') {
+              alert('Variante eliminada correctamente');
+              location.reload(); // Recargar página
+            } else {
+              alert('Ocurrió un error al eliminar la variante: ' + (data.message || 'Error desconocido.'));
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert('Ocurrió un error inesperado.');
+          });
+      }
+    }
+
+    function editarVariante(button) {
+      // Obtener datos del botón usando atributos data-*
+      const sku = button.getAttribute('data-sku');
+      const nombre = button.closest('tr').querySelector('td:nth-child(2)').innerText;
+      const aroma = button.closest('tr').querySelector('td:nth-child(3)').innerText;
+      const color = button.closest('tr').querySelector('td:nth-child(4)').innerText;
+
+      // Cargar los datos obtenidos en el modal
+      document.getElementById('edit-variante-name').value = nombre;
+      document.getElementById('edit-variante-sku').value = sku;
+      document.getElementById('edit-variante-color').value = color;
+      document.getElementById('edit-variante-aroma').value = aroma;
+
+      // Mostrar el modal de edición
+      $('#modal-edit-fragrance').modal('show');
+    }
+
+    // Función para guardar la variante editada
+    function guardarVarianteEditada() {
+      // Recoger datos del formulario
+      const nombre = document.getElementById('edit-variante-name').value;
+      const sku = document.getElementById('edit-variante-sku').value;
+      const color = document.getElementById('edit-variante-color').value;
+      const aroma = document.getElementById('edit-variante-aroma').value;
+
+      // Aquí debes hacer una llamada AJAX para actualizar los datos en el servidor
+      const formData = new FormData();
+      formData.append('sku', sku);
+      formData.append('nombre_variante', nombre);
+      formData.append('color', color);
+      formData.append('aroma', aroma);
+
+      fetch('editar_variante.php', {
+          method: 'POST',
+          body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            alert('Variante actualizada correctamente');
+            location.reload(); // Recargar página
+          } else {
+            alert('Ocurrió un error al actualizar la variante: ' + (data.message || 'Error desconocido.'));
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Ocurrió un error inesperado.');
+        });
+
+      // Cerrar el modal después de la acción
+      $('#modal-edit-fragrance').modal('hide');
+    }
+
+
+
+    function activarVariante(button) {
+      const confirmar = confirm('¿Estás seguro de que deseas activar esta variante?');
+
+      if (confirmar) {
+        // Obtener el SKU del atributo data-sku del botón
+        const sku = button.getAttribute('data-sku');
+
+        console.log('activando variante con SKU:', sku);
+        const formData = new FormData();
+        formData.append('sku', sku);
+
+        fetch('activar_variante.php', {
+            method: 'POST',
+            body: formData,
+          })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Error en la solicitud al servidor.');
+            }
+            return response.json();
+          })
+          .then(data => {
+            if (data.status === 'success') {
+              alert('Variante activada correctamente');
+              location.reload(); // Recargar página
+            } else {
+              alert('Ocurrió un error al activar la variante: ' + (data.message || 'Error desconocido.'));
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert('Ocurrió un error inesperado.');
+          });
+      }
+    }
+
+
+
 
     function iniciarEdicion() {
       document.querySelectorAll('#editable-fields p').forEach(p => p.classList.add('d-none'));
