@@ -246,6 +246,7 @@ $metodos_pago = $sql_medotos_pago->fetchAll(PDO::FETCH_ASSOC);
                             <div id="info_mercado_pago" class="p-4" style="display: none;">
                                 <h6>Información de Mercado Pago</h6>
                                 <p>Será redirigido a Mercado Pago para completar su pago.</p>
+
                             </div>
                         </div>
                     </div>
@@ -259,6 +260,7 @@ $metodos_pago = $sql_medotos_pago->fetchAll(PDO::FETCH_ASSOC);
     </div>
 
     <script>
+
         document.addEventListener('DOMContentLoaded', function() {
             const selectFormaPago = document.getElementById('forma_pago');
             const infoTransferencia = document.getElementById('info_transferencia');

@@ -101,6 +101,24 @@
                     <p>Mostrar todos</p>
                   </a>
                 </li>
+                <li class="nav-item">
+                  <a href="#" class="nav-link">
+                    <i class="fas fa-upload"></i>
+                    <p>subir prodctos</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="#" class="nav-link">
+                    <i class="fas fa-plus"></i>
+                    <p>añadir producto</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="categorias.php" class="nav-link">
+                    <i class="fas fa-tags"></i>
+                    <p>categorias</p>
+                  </a>
+                </li>
               </ul>
             </li>
 
