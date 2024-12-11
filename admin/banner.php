@@ -25,6 +25,18 @@ $imagenes = $sql_imagenes->fetchAll(PDO::FETCH_ASSOC);
             height: 200px;
             object-fit: cover;
         }
+
+        .no-banner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            background-color: #f0f0f0;
+            border: 1px dashed #ccc;
+            color: #999;
+            font-size: 18px;
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -67,20 +79,26 @@ $imagenes = $sql_imagenes->fetchAll(PDO::FETCH_ASSOC);
                                 <!-- /.card-header -->
                                 <div class="card-body">
                                     <div class="row">
-                                        <?php foreach ($imagenes as $imagen) { ?>
-                                            <div class="col-sm-4">
-                                                <div class="card">
-                                                    <img src="../<?php echo $imagen["ruta"] ?>" class="card-img-top carousel-image" alt="Imagen 1">
-                                                    <div class="card-body">
-                                                        <h5 class="card-title"><?php echo $imagen["nombre"] ?></h5>
-                                                        <p class="card-text"><?php echo $imagen["descripcion"]?></p>
-                                                        
-                                                        <button type="button" class="btn btn-danger btn-sm" onclick="deleteImage(<?php echo $imagen['id_banner'] ?>)">
-                                                            <i class="fas fa-trash"></i> Eliminar
-                                                        </button>
+                                        <?php if (empty($imagenes)) { ?>
+                                            <div class="col-12">
+                                                <div class="no-banner">Aún no hay banner disponible</div>
+                                            </div>
+                                        <?php } else { ?>
+                                            <?php foreach ($imagenes as $imagen) { ?>
+                                                <div class="col-sm-4">
+                                                    <div class="card">
+                                                        <img src="../<?php echo $imagen["ruta"] ?>" class="card-img-top carousel-image" alt="Imagen 1">
+                                                        <div class="card-body">
+                                                            <h5 class="card-title"><?php echo $imagen["nombre"] ?></h5>
+                                                            <p class="card-text"><?php echo $imagen["descripcion"] ?></p>
+
+                                                            <button type="button" class="btn btn-danger btn-sm" onclick="deleteImage(<?php echo $imagen['id_banner'] ?>)">
+                                                                <i class="fas fa-trash"></i> Eliminar
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            <?php } ?>
                                         <?php } ?>
                                     </div>
                                 </div>
@@ -188,8 +206,6 @@ $imagenes = $sql_imagenes->fetchAll(PDO::FETCH_ASSOC);
     <!-- /.modal -->
 
     <script>
-
-
         function deleteImage(id) {
             Swal.fire({
                 title: '¿Estás seguro?',
