@@ -15,34 +15,17 @@ $sql_productos->bindParam(':id_pedido', $id_pedido, PDO::PARAM_INT);
 $sql_productos->execute();
 $detalles = $sql_productos->fetchAll(PDO::FETCH_ASSOC);
 
-$sql_informacion_pedido = $con->prepare("SELECT p.id_pedido, p.total, p.fecha, u.email, iu.nombre AS nombre_usuario, iu.apellido, iu.dni, iu.telefono, ep.nombre AS estado_pedido, ep.descripcion AS estado_pedido_descripcion, d.codigo_postal, d.provincia, d.localidad, d.calle, d.numero,d.barrio , fp.tipo AS forma_pago FROM pedidos p LEFT JOIN usuarios u ON p.id_usuario = u.id_usuario LEFT JOIN info_usuarios iu ON u.id_usuario = iu.id_usuario LEFT JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido LEFT JOIN domicilios d ON p.id_domicilio = d.id_domicilio LEFT JOIN metodos_pago fp ON p.id_metodo_pago = fp.id_metodo_pago WHERE p.id_pedido = :id_pedido;");
+$sql_informacion_pedido = $con->prepare("SELECT p.id_pedido, p.total, p.fecha, u.email, iu.nombre AS nombre_usuario, iu.apellido, iu.dni, iu.telefono, ep.nombre AS estado_pedido, ep.descripcion AS estado_pedido_descripcion, d.codigo_postal, d.provincia, d.localidad, d.calle, d.numero,d.barrio FROM pedidos p 
+LEFT JOIN usuarios u ON p.id_usuario = u.id_usuario 
+LEFT JOIN info_usuarios iu ON u.id_usuario = iu.id_usuario 
+LEFT JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido 
+LEFT JOIN domicilios d ON p.id_domicilio = d.id_domicilio 
+WHERE p.id_pedido = :id_pedido;");
 $sql_informacion_pedido->bindParam(':id_pedido', $id_pedido, PDO::PARAM_INT);
 $sql_informacion_pedido->execute();
 $pedido = $sql_informacion_pedido->fetch(PDO::FETCH_ASSOC);
 
-$sql_pago = $con->prepare("    SELECT 
-        p.id_pago,
-        p.id_pedido,
-        p.fecha,
-        p.comprobante,
-        p.numero_transaccion,
-        ped.total,
-        ped.fecha AS fecha_pedido,
-        u.email AS usuario_email,
-        mp.tipo AS metodo_pago
-    FROM 
-        pagos p
-    JOIN 
-        pedidos ped ON p.id_pedido = ped.id_pedido
-    JOIN 
-        usuarios u ON ped.id_usuario = u.id_usuario
-    JOIN 
-        metodos_pago mp ON ped.id_metodo_pago = mp.id_metodo_pago
-    WHERE 
-        p.id_pedido = :id_pedido;");
-$sql_pago->bindParam(':id_pedido', $id_pedido, PDO::PARAM_INT);
-$sql_pago->execute();
-$pago = $sql_pago->fetch(PDO::FETCH_ASSOC);
+
 
 ?>
 
@@ -179,7 +162,7 @@ $pago = $sql_pago->fetch(PDO::FETCH_ASSOC);
                             </div>
                             <!-- /.card -->
                         </div>
-                        <?php if (!empty($pago)) { ?>
+                        <?php if (true) { ?>
                             <div class="col-md-4">
                                 <div class="card card-warning">
                                     <div class="card-header">
@@ -187,14 +170,38 @@ $pago = $sql_pago->fetch(PDO::FETCH_ASSOC);
                                     </div>
                                     <div class="card-body">
                                         <strong><i class="fas fa-money-bill mr-1"></i> Método de Pago:</strong>
-                                        <p class="text-muted"><?php echo $pago["metodo_pago"] ?></p>
+                                        <p class="text-muted"><?php  ?></p>
                                         <hr>
                                         <strong><i class="fas fa-calendar-alt mr-1"></i> Fecha de Pago:</strong>
-                                        <p class="text-muted" id="fechaPago"><?php echo $pago["fecha"] ?></p>
+                                        <p class="text-muted" id="fechaPago"><?php  ?></p>
                                         <hr>
                                         <strong><i class="fas fa-file-invoice mr-1"></i> Comprobante de Pago:</strong>
                                         <div class="mt-2">
-                                            <img src="../assets/comprobantes/<?php echo $pago["id_pedido"] ?>/<?php echo $pago["comprobante"] ?>" alt="Comprobante de Transferencia" class="img-fluid img-thumbnail" style="max-width: 100%;" id="imagenComprobante">
+                                            <img src="../assets/comprobantes/<?php  ?>/<?php  ?>" alt="Comprobante de Transferencia" class="img-fluid img-thumbnail" style="max-width: 100%;" id="imagenComprobante">
+                                        </div>
+                                        <button class="btn btn-sm btn-primary mt-2" onclick="mostrarComprobante()">
+                                            <i class="fas fa-eye"></i> Ver Comprobante
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php } ?>
+                        <?php if (true) { ?>
+                            <div class="col-md-4">
+                                <div class="card card-warning">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Información de Pago</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <strong><i class="fas fa-money-bill mr-1"></i> Método de Pago:</strong>
+                                        <p class="text-muted"><?php  ?></p>
+                                        <hr>
+                                        <strong><i class="fas fa-calendar-alt mr-1"></i> Fecha de Pago:</strong>
+                                        <p class="text-muted" id="fechaPago"><?php  ?></p>
+                                        <hr>
+                                        <strong><i class="fas fa-file-invoice mr-1"></i> Comprobante de Pago:</strong>
+                                        <div class="mt-2">
+                                            <img src="../assets/comprobantes/<?php  ?>/<?php  ?>" alt="Comprobante de Transferencia" class="img-fluid img-thumbnail" style="max-width: 100%;" id="imagenComprobante">
                                         </div>
                                         <button class="btn btn-sm btn-primary mt-2" onclick="mostrarComprobante()">
                                             <i class="fas fa-eye"></i> Ver Comprobante

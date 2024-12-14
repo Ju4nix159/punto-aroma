@@ -150,6 +150,17 @@ $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
                         $envio = 5.00;
                         $total = $subtotal + $envio;
                         ?>
+                        <div class="justify-content-between mb-3">
+                            <label for="" class="form-label">Tipo pago</label>
+                            <select
+                                class="form-select form-select-lg"
+                                name="tipo_pago"
+                                id="tipo_pago">
+                                <option value="seña" selected>seña(60%)</option>
+                                <option value="pago total">Pago total</option>
+                            </select>
+
+                        </div>
                         <div class="d-flex justify-content-between mb-3">
                             <span>Subtotal</span>
                             <strong>$<?php echo number_format($subtotal, 2); ?></strong>
@@ -219,8 +230,8 @@ $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
             </div>
         </div>
     </div>
-    <?php 
-        include './footer.php';
+    <?php
+    include './footer.php';
     ?>
 
     <script src="carrito.js"></script>

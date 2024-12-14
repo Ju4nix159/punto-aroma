@@ -115,10 +115,22 @@ CREATE TABLE info_usuarios (
 );
 
 
+CREATE TABLE detalle_metodo_pago(
+    id_detalle INT PRIMARY KEY AUTO_INCREMENT,
+    banco VARCHAR(100),
+    cbu VARCHAR(100),
+    alias VARCHAR(100),
+    titular VARCHAR(100)
+);
+
+
 -- metodos de pago
 CREATE TABLE metodos_pago (
     id_metodo_pago INT PRIMARY KEY AUTO_INCREMENT,
-    tipo VARCHAR(100)
+    nombre_metodo_pago VARCHAR(100),
+    descripcion_metodo_pago VARCHAR(200),
+    id_detalle INT NULL,
+    CONSTRAINT FK_metodos_pago_id_detalle_END FOREIGN KEY (id_detalle) REFERENCES detalle_metodo_pago(id_detalle)
 );
 
 -- Tabla de pedidos
@@ -129,21 +141,26 @@ CREATE TABLE pedidos (
     total DECIMAL(10, 2),
     fecha DATE,
     id_domicilio INT,
-    id_metodo_pago INT,
+    estado_seña TINYINT DEFAULT 0,
     CONSTRAINT FK_pedidos_id_usuario_END FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
     CONSTRAINT FK_pedidos_id_estado_pedido_END FOREIGN KEY (id_estado_pedido) REFERENCES estados_pedidos(id_estado_pedido),
-    CONSTRAINT FK_pedidos_id_domicilio_END FOREIGN KEY (id_domicilio) REFERENCES domicilios(id_domicilio),
-    CONSTRAINT FK_pedidos_id_metodo_pago_END FOREIGN KEY (id_metodo_pago) REFERENCES metodos_pago(id_metodo_pago)
+    CONSTRAINT FK_pedidos_id_domicilio_END FOREIGN KEY (id_domicilio) REFERENCES domicilios(id_domicilio)
+    
 );
+
+
 
 -- Tabla de pagos
 CREATE TABLE pagos (
     id_pago INT PRIMARY KEY AUTO_INCREMENT,
     id_pedido INT,
-    fecha DATE,
+    id_metodo_pago INT,
     comprobante VARCHAR(100),
-    numero_transaccion VARCHAR(100),
-    CONSTRAINT FK_pagos_id_pedido_END FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido)
+    monto DECIMAL(10, 2),
+    fecha DATE,
+    descripcion VARCHAR(200),
+    CONSTRAINT FK_pagos_id_pedido_END FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido),
+    CONSTRAINT FK_pagos_id_metodo_pago_END FOREIGN KEY (id_metodo_pago) REFERENCES metodos_pago(id_metodo_pago)
 );
 
 -- Tabla de variantes (variante del producto)
@@ -349,61 +366,58 @@ INSERT INTO estados_pedidos (nombre, descripcion) VALUES
 ('entregado', 'Pedido entregado al cliente'),
 ('cancelado', 'Pedido cancelado por el cliente');
 
+-- Insertar datos en detalle_metodo_pago
+INSERT INTO detalle_metodo_pago (banco, cbu, alias, titular) VALUES 
+('Banco Santander', '12345678901234567890', 'Cuenta sueldo', 'Juan Pérez'),
+('Banco Galicia', '09876543210987654321', 'Caja de ahorro', 'María González'),
+('Banco Nación', '13579246801357924680', 'Cuenta corriente', 'Carlos López');
+
 -- Insertar datos en metodos_pago
-INSERT INTO metodos_pago (tipo) VALUES 
-('Transferencia bancaria'),
-('Mercado Pago');
+INSERT INTO metodos_pago (nombre_metodo_pago, descripcion_metodo_pago, id_detalle) VALUES 
+('Transferencia bancaria', 'Transferencia bancaria a una cuenta bancaria santander', 1),
+('Transferencia bancaria', 'Transferencia bancaria a una cuenta bancaria galicia', 2),
+('Transferencia bancaria', 'Transferencia bancaria a una cuenta bancaria nacion', 3),
+('mercado pago', 'Pago con app mercado pago', NULL),
+('Efectivo', 'Pago en efectivo al recibir el pedido', NULL);
 
-INSERT INTO pedidos (id_usuario, id_estado_pedido, total, fecha, id_domicilio, id_metodo_pago) VALUES 
-(2, 1, 1200.50, '2024-01-01', 1, 1),
-(3, 2, 750.00, '2024-01-05', 1, 2),
-(2, 3, 350.75, '2024-01-10', 1, 1),
-(1, 4, 1500.00, '2024-01-11', 1, 2),
-(2, 5, 300.00, '2024-01-12', 1, 1),
-(3, 6, 850.00, '2024-01-13', 1, 2),
-(1, 1, 500.00, '2024-01-14', 1, 1),
-(2, 2, 1200.00, '2024-01-15', 1, 2),
-(3, 3, 600.00, '2024-01-16', 1, 1),
-(1, 4, 750.00, '2024-01-17', 1, 2),
-(2, 5, 400.00, '2024-01-18', 1, 1),
-(3, 6, 950.00, '2024-01-19', 1, 2),
-(1, 1, 1250.00, '2024-01-20', 1, 1),
-(2, 2, 800.00, '2024-01-21', 1, 2),
-(3, 3, 900.00, '2024-01-22', 1, 1),
-(1, 4, 700.00, '2024-01-23', 1, 2),
-(2, 5, 300.00, '2024-01-24', 1, 1),
-(3, 6, 450.00, '2024-01-25', 1, 2),
-(1, 1, 600.00, '2024-01-26', 1, 1),
-(2, 2, 350.00, '2024-01-27', 1, 2),
-(3, 3, 500.00, '2024-01-28', 1, 1),
-(1, 4, 1000.00, '2024-01-29', 1, 2),
-(2, 5, 200.00, '2024-01-30', 1, 1);
+INSERT INTO pedidos (id_usuario, id_estado_pedido, total, fecha, id_domicilio, estado_seña) VALUES 
+(2, 1, 1200.50, '2024-01-01', 1, 0),
+(3, 2, 750.00, '2024-01-05', 1, 0),
+(2, 3, 350.75, '2024-01-10', 1, 0),
+(1, 4, 1500.00, '2024-01-11', 1, 0),
+(2, 5, 300.00, '2024-01-12', 1, 0),
+(3, 6, 850.00, '2024-01-13', 1, 0),
+(1, 1, 500.00, '2024-01-14', 1, 0),
+(2, 2, 1200.00, '2024-01-15', 1, 0),
+(3, 3, 600.00, '2024-01-16', 1, 0),
+(1, 4, 750.00, '2024-01-17', 1, 0),
+(2, 5, 400.00, '2024-01-18', 1, 0),
+(3, 6, 950.00, '2024-01-19', 1, 0),
+(1, 1, 1250.00, '2024-01-20', 1, 0),
+(2, 2, 800.00, '2024-01-21', 1, 0),
+(3, 3, 900.00, '2024-01-22', 1, 0),
+(1, 4, 700.00, '2024-01-23', 1, 0),
+(2, 5, 300.00, '2024-01-24', 1, 0),
+(3, 6, 450.00, '2024-01-25', 1, 0),
+(1, 1, 600.00, '2024-01-26', 1, 0),
+(2, 2, 350.00, '2024-01-27', 1, 0),
+(3, 3, 500.00, '2024-01-28', 1, 0),
+(1, 4, 1000.00, '2024-01-29', 1, 0),
+(2, 5, 200.00, '2024-01-30', 1, 0);
 
--- Insertar datos en pagos
-INSERT INTO pagos (id_pedido, fecha, comprobante, numero_transaccion) VALUES 
-(1, '2024-01-02', 'comprobante_001', NULL),
-(2, '2024-01-06', NULL, 'transaccion_001'),
-(3, '2024-01-11', 'comprobante_002', NULL),
-(4, '2024-01-12', NULL, 'transaccion_002'),
-(5, '2024-01-13', 'comprobante_003', NULL),
-(6, '2024-01-14', NULL, 'transaccion_003'),
-(7, '2024-01-15', 'comprobante_004', NULL),
-(8, '2024-01-16', NULL, 'transaccion_004'),
-(9, '2024-01-17', 'comprobante_005', NULL),
-(10, '2024-01-18', NULL, 'transaccion_005'),
-(11, '2024-01-19', 'comprobante_006', NULL),
-(12, '2024-01-20', NULL, 'transaccion_006'),
-(13, '2024-01-21', 'comprobante_007', NULL),
-(14, '2024-01-22', NULL, 'transaccion_007'),
-(15, '2024-01-23', 'comprobante_008', NULL),
-(16, '2024-01-24', NULL, 'transaccion_008'),
-(17, '2024-01-25', 'comprobante_009', NULL),
-(18, '2024-01-26', NULL, 'transaccion_009'),
-(19, '2024-01-27', 'comprobante_010', NULL),
-(20, '2024-01-28', NULL, 'transaccion_010'),
-(21, '2024-01-29', 'comprobante_011', NULL),
-(22, '2024-01-30', NULL, 'transaccion_011'),
-(23, '2024-01-31', 'comprobante_012', NULL);
+INSERT INTO pagos (id_pedido, id_metodo_pago, comprobante, monto, fecha, descripcion) VALUES 
+(1, 1, 'comprobante_024', 720.30, '2024-01-01', 'Pago de seña por transferencia bancaria'),
+(1, 1, 'comprobante_001', 480.20, '2024-01-02', 'Pago por transferencia bancaria'),
+(2, 2, 'comprobante_025', 450.00, '2024-01-05', 'Pago de seña por transferencia bancaria'),
+(2, 2, 'comprobante_002', 300.00, '2024-01-06', 'Pago por transferencia bancaria'),
+(3, 3, 'comprobante_026', 210.45, '2024-01-10', 'Pago de seña por transferencia bancaria'),
+(3, 3, 'comprobante_003', 140.30, '2024-01-11', 'Pago por transferencia bancaria'),
+(4, 4, 'comprobante_027', 900.00, '2024-01-11', 'Pago de seña por mercado pago'),
+(4, 4, 'comprobante_004', 600.00, '2024-01-12', 'Pago por mercado pago'),
+(5, 5, 'comprobante_028', 180.00, '2024-01-12', 'Pago de seña en efectivo'),
+(5, 5, 'comprobante_005', 120.00, '2024-01-13', 'Pago en efectivo'),
+(6, 1, 'comprobante_029', 510.00, '2024-01-13', 'Pago de seña por transferencia bancaria'),
+(6, 1, 'comprobante_006', 340.00, '2024-01-14', 'Pago por transferencia bancaria');
 
 -- Insertar datos en productos_pedido
 INSERT INTO productos_pedido (id_pedido, id_producto, sku, cantidad, precio) VALUES 
@@ -488,3 +502,5 @@ INSERT INTO variantes_tipo_precio (id_producto, id_tipo_precio, precio, cantidad
 (22, 1, 600.00, 1),
 (23, 1, 700.00, 1),
 (24, 1, 800.00, 1);
+
+

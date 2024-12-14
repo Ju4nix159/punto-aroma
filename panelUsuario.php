@@ -66,14 +66,6 @@ WHERE i.id_usuario = :id_usuario AND ud.estado = 1 " );
     $sql_domicilios->execute();
     $domicilios = $sql_domicilios->fetchAll(PDO::FETCH_ASSOC);
 
-
-    $sql_tipos_domicilio = $con->prepare("SELECT ud.tipo_domicilio
-FROM usuario_domicilios ud
-JOIN usuarios u ON ud.id_usuario = u.id_usuario
-WHERE u.id_usuario = :id_usuario;");
-    $sql_tipos_domicilio->bindParam(":id_usuario", $id_usuario);
-    $sql_tipos_domicilio->execute();
-    $tipos_domicilio = $sql_tipos_domicilio->fetchAll(PDO::FETCH_ASSOC);
 }
 
 
