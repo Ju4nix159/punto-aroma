@@ -116,7 +116,13 @@
                 <li class="nav-item">
                   <a href="categorias.php" class="nav-link">
                     <i class="fas fa-tags"></i>
-                    <p>categorias</p>
+                    <p>Categorias</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="marcas.php" class="nav-link">
+                    <i class="fas fa-tag"></i>
+                    <p>Marcas</p>
                   </a>
                 </li>
               </ul>

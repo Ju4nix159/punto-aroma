@@ -30,7 +30,7 @@ $categorias = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
                 <!-- Sidebar con filtros -->
                 <div class="col-md-3 mb-4">
                     <div class="sticky-sidebar">
-                        <h4 class="mb-3">Filtros</h4>
+                        <h4 class="mb-3">Filtros <i class="fas fa-filter"></i></h4>
                         <div class="accordion" id="accordionFilters">
                             <!-- Búsqueda por texto -->
                             <div class="mb-3">

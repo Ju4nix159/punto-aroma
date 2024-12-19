@@ -10,10 +10,15 @@ CREATE TABLE banner(
 CREATE TABLE categorias (
     id_categoria INT PRIMARY KEY AUTO_INCREMENT,
     nombre VARCHAR(100),
-    descripcion TEXT
+    descripcion TEXT,
+    estado TINYINT DEFAULT 1
 );
 
-
+CREATE TABLE marcas(
+    id_marca INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100),
+    estado TINYINT DEFAULT 1
+);
 
 -- Tabla de estado de productos
 CREATE TABLE estados_productos (
@@ -74,10 +79,12 @@ CREATE TABLE productos (
     nombre VARCHAR(100),
     descripcion TEXT,
     id_categoria INT,
+    id_marca INT,
     destacado TINYINT DEFAULT 0,
     estado TINYINT DEFAULT 1,
     decuento DECIMAL(10, 2) DEFAULT 0,
-    CONSTRAINT FK_productos_id_categoria_END FOREIGN KEY (id_categoria) REFERENCES categorias(id_categoria)
+    CONSTRAINT FK_productos_id_categoria_END FOREIGN KEY (id_categoria) REFERENCES categorias(id_categoria),
+    CONSTRAINT FK_productos_id_marca_END FOREIGN KEY (id_marca) REFERENCES marcas(id_marca)
 );
 
 -- Tabla de usuarios
@@ -254,39 +261,44 @@ INSERT INTO categorias (nombre, descripcion) VALUES
 ('Perfumes', 'Fragrancias y perfumes'),
 ('Aromas para el hogar', 'Difusores y velas aromáticas');
 
+-- Insertar datos en marcas
+INSERT INTO marcas (nombre) VALUES 
+('Marca A'),
+('Marca B'),
+('Marca C');
+
+
 -- Insertar datos en estado_producto
 INSERT INTO estados_productos (nombre, descripcion) VALUES 
 ('Disponible', 'Producto en stock'),
 ('Agotado', 'Producto fuera de stock');
 
 -- Insertar datos en productos
-INSERT INTO productos (nombre, descripcion, id_categoria, destacado) VALUES 
-('Perfume Floral', 'Un perfume con fragancias florales', 1, 1),
-('Perfume Amaderado', 'Un perfume con fragancia amaderada', 1, 0),
-('Difusor de Vainilla', 'Un difusor con aroma a vainilla', 2, 1),
-('Vela Aromática', 'Una vela con aroma a lavanda', 2, 0),
-('Perfume Cítrico', 'Un perfume con fragancias cítricas', 1, 1),
-('Perfume Dulce', 'Un perfume con un toque dulce', 1, 0),
-('Difusor de Eucalipto', 'Un difusor con aroma a eucalipto', 2, 1),
-('Vela Aromática Coco', 'Una vela con aroma a coco', 2, 0),
-('Perfume Deportivo', 'Un perfume ideal para actividades deportivas', 1, 1),
-('Perfume de Noche', 'Un perfume ideal para la noche', 1, 0),
-('Difusor de Frutos Rojos', 'Un difusor con aroma a frutos rojos', 2, 1),
-('Vela Aromática Canela', 'Una vela con aroma a canela', 2, 0),
-('Perfume de Viaje', 'Un perfume ideal para llevar en viajes', 1, 0),
-('Perfume de Verano', 'Un perfume fresco para el verano', 1, 0),
-('Difusor de Lavanda', 'Un difusor con aroma a lavanda', 2, 0),
-('Vela Aromática Limón', 'Una vela con aroma a limón', 2, 0),
-('Perfume de Otoño', 'Un perfume cálido para el otoño', 1, 0),
-('Perfume de Invierno', 'Un perfume suave para el invierno', 1, 0),
-('Difusor de Té Verde', 'Un difusor con aroma a té verde', 2, 0),
-('Vela Aromática Jazmín', 'Una vela con aroma a jazmín', 2, 0),
-('Perfume Exótico', 'Un perfume con fragancias exóticas', 1, 0),
-('Perfume Clásico', 'Un perfume con un toque clásico', 1, 0),
-('Difusor de Menta', 'Un difusor con aroma a menta', 2, 0),
-('Vela Aromática Naranja', 'Una vela con aroma a naranja', 2, 0);
-
-
+INSERT INTO productos (nombre, descripcion, id_categoria, id_marca, destacado) VALUES 
+('Perfume Floral', 'Un perfume con fragancias florales', 1, 1, 1),
+('Perfume Amaderado', 'Un perfume con fragancia amaderada', 1, 2, 0),
+('Difusor de Vainilla', 'Un difusor con aroma a vainilla', 2, 3, 1),
+('Vela Aromática', 'Una vela con aroma a lavanda', 2, 1, 0),
+('Perfume Cítrico', 'Un perfume con fragancias cítricas', 1, 2, 1),
+('Perfume Dulce', 'Un perfume con un toque dulce', 1, 3, 0),
+('Difusor de Eucalipto', 'Un difusor con aroma a eucalipto', 2, 1, 1),
+('Vela Aromática Coco', 'Una vela con aroma a coco', 2, 2, 0),
+('Perfume Deportivo', 'Un perfume ideal para actividades deportivas', 1, 3, 1),
+('Perfume de Noche', 'Un perfume ideal para la noche', 1, 1, 0),
+('Difusor de Frutos Rojos', 'Un difusor con aroma a frutos rojos', 2, 2, 1),
+('Vela Aromática Canela', 'Una vela con aroma a canela', 2, 3, 0),
+('Perfume de Viaje', 'Un perfume ideal para llevar en viajes', 1, 1, 0),
+('Perfume de Verano', 'Un perfume fresco para el verano', 1, 2, 0),
+('Difusor de Lavanda', 'Un difusor con aroma a lavanda', 2, 3, 0),
+('Vela Aromática Limón', 'Una vela con aroma a limón', 2, 1, 0),
+('Perfume de Otoño', 'Un perfume cálido para el otoño', 1, 2, 0),
+('Perfume de Invierno', 'Un perfume suave para el invierno', 1, 3, 0),
+('Difusor de Té Verde', 'Un difusor con aroma a té verde', 2, 1, 0),
+('Vela Aromática Jazmín', 'Una vela con aroma a jazmín', 2, 2, 0),
+('Perfume Exótico', 'Un perfume con fragancias exóticas', 1, 3, 0),
+('Perfume Clásico', 'Un perfume con un toque clásico', 1, 1, 0),
+('Difusor de Menta', 'Un difusor con aroma a menta', 2, 2, 0),
+('Vela Aromática Naranja', 'Una vela con aroma a naranja', 2, 3, 0);
 
 -- Insertar datos en variantes
 INSERT INTO variantes (sku, nombre_variante, id_producto, id_estado_producto, aroma, color, stock) VALUES 

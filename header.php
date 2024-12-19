@@ -61,6 +61,10 @@ include 'carrito.php';
             color: #dc3545;
             cursor: pointer;
         }
+        .img-header{
+            width: 130px;
+            height: 70px;
+        }
     </style>
 </head>
 
@@ -68,13 +72,10 @@ include 'carrito.php';
     <header id="header" class="py-3 bg-white border-bottom sticky-top">
         <div class="container d-flex flex-wrap justify-content-center">
             <a href="index.php#hero" class="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto text-dark text-decoration-none">
-                <span class="fs-4 fw-bold text-primary-custom">Punto Aroma</span>
+                <img class="img-header" src="./assets/logoos/ayb-cto.jpg" alt="logo empres">
             </a>
 
             <nav class="navbar navbar-expand-lg navbar-light">
-                <form class="d-flex mx-auto">
-                    <input class="form-control me-2" type="search" placeholder="Buscar productos..." aria-label="Search">
-                </form>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -88,6 +89,9 @@ include 'carrito.php';
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-primary-custom" href="index.php#testimonios">Testimonios</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-primary-custom" href="como_comprar.php">¿Como Comprar?</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-primary-custom" href="index.php#contacto">Contacto</a>

@@ -1,19 +1,19 @@
-<?php 
-    include 'header.php';
+<?php
+include 'header.php';
 
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Punto Aroma - Descubre la Magia de los Aromas</title>
 </head>
+
 <body>
-    <!-- Código anterior sin cambios -->
 
     <main>
-        <!-- Secciones anteriores sin cambios -->
 
         <section id="sobre-nosotros" class="py-5">
             <div class="container">
@@ -99,7 +99,34 @@
             </div>
         </section>
 
-        <!-- Secciones posteriores sin cambios -->
+        <!-- Sección de Visítanos -->
+        <section id="visit-us" class="py-5 bg-light">
+            <div class="container">
+                <h2 class="text-center mb-5 text-primary-custom">Visítanos en Nuestro Local</h2>
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d914.4958900926504!2d-64.11918995487365!3d-32.180088467034786!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95cd6f91a3a46489%3A0xcace4a13644961f3!2sPunto%20Aroma!5e0!3m2!1ses-419!2sar!4v1734578085950!5m2!1ses-419!2sar" width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="mision-vision" class="py-5">
+            <div class="container">
+                <h2 class="text-center mb-5 text-primary-custom">Nuestra Misión y Visión</h2>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <h3 class="text-secondary">Misión</h3>
+                        <p>Crear momentos inolvidables a través de la magia de los aromas, utilizando ingredientes naturales y procesos sostenibles que respeten el medio ambiente. Nos esforzamos por inspirar bienestar y armonía en cada hogar, conectando a las personas con la esencia de la naturaleza.</p>
+                    </div>
+                    <div class="col-lg-6">
+                        <h3 class="text-secondary">Visión</h3>
+                        <p>Ser líderes mundiales en el arte de los aromas naturales, reconocidos por nuestra innovación, calidad y compromiso ecológico. Aspiramos a transformar la manera en que las personas experimentan el bienestar, llevando nuestra pasión por los aromas a cada rincón del planeta.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <footer class="">
@@ -107,4 +134,5 @@
     </footer>
 
 </body>
+
 </html>

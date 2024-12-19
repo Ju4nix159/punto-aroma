@@ -157,7 +157,7 @@ $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
                                 name="tipo_pago"
                                 id="tipo_pago">
                                 <option value="seña" selected>seña(60%)</option>
-                                <option value="pago total">Pago total</option>
+                                <option value="pago_total">Pago total</option>
                             </select>
 
                         </div>
@@ -171,7 +171,7 @@ $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
                         </div>
                         <div class="d-flex justify-content-between mb-3">
                             <span>Total</span>
-                            <strong class="text-primary-custom">$<?php echo number_format($total, 2); ?></strong>
+                            <strong id="total" class="text-primary-custom"></strong>
                         </div>
                         <button type="button" class="btn btn-primary-custom w-100" onclick="procesarPago()">Realizar pedido</button>
                     </div>
@@ -319,5 +319,27 @@ $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
                     alert('Ocurrió un error al realizar el pedido.', error);
                 });
         };
+
+
+        document.getElementById('tipo_pago').addEventListener('change', function() {
+            const tipoPago = this.value;
+            const totalElement = document.getElementById('total');
+            const subtotal = <?php echo $subtotal; ?>;
+            const envio = <?php echo $envio; ?>;
+            let total;
+
+            if (tipoPago === 'seña') {
+            total = (subtotal + envio) * 0.60;
+            } else {
+            total = subtotal + envio;
+            }
+
+            totalElement.textContent = '$' + total.toFixed(2);
+        });
+
+        // Llamamos a la función al cargar para inicializar el estado
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('tipo_pago').dispatchEvent(new Event('change'));
+        });
     </script>
 </body>

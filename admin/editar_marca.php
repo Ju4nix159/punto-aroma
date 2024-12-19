@@ -4,22 +4,20 @@ include './config/sbd.php';
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['idCategoria']) && isset($_POST['nombreCategoria'])) {
-        $id_categoria = $_POST['idCategoria'];
-        $nombre = $_POST['nombreCategoria'];
-        $descripcion = $_POST['descripcionCategoria'];
+    if (isset($_POST['idMarca']) && isset($_POST['nombreMarca'])) {
+        $id_marca = $_POST['idMarca'];
+        $nombre = $_POST['nombreMarca'];
 
         try {
-            $sql = "UPDATE categorias SET nombre = :nombre, descripcion = :descripcion WHERE id_categoria = :id_categoria";
+            $sql = "UPDATE marcas SET nombre = :nombre WHERE id_marca = :id_marca";
             $stmt = $con->prepare($sql);
-            $stmt->bindValue(':id_categoria', $id_categoria, PDO::PARAM_INT);
+            $stmt->bindValue(':id_marca', $id_marca, PDO::PARAM_INT);
             $stmt->bindValue(':nombre', $nombre, PDO::PARAM_STR);
-            $stmt->bindValue(':descripcion', $descripcion, PDO::PARAM_STR);
 
             if ($stmt->execute()) {
                 echo json_encode(['success' => true]);
             } else {
-                echo json_encode(['success' => false, 'error' => 'Error al actualizar la categoría.']);
+                echo json_encode(['success' => false, 'error' => 'Error al actualizar la marca.']);
             }
         } catch (Exception $e) {
             echo json_encode(['success' => false, 'error' => 'Excepción capturada: ' . $e->getMessage()]);

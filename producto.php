@@ -34,7 +34,48 @@ WHERE p.id_producto = :id_producto;");
 
 <head>
     <title>Resumen del Producto - Punto Aroma</title>
+    <style>
+        .icon-container {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
 
+        .icon-container .hover-table {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            display: none;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .icon-container .hover-table table {
+            border-collapse: collapse;
+            width: 200px;
+        }
+
+        .icon-container .hover-table th,
+        .icon-container .hover-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .icon-container .hover-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        .icon-container:hover .hover-table {
+            display: block;
+        }
+    </style>
 </head>
 
 <body>
@@ -64,7 +105,32 @@ WHERE p.id_producto = :id_producto;");
                 <div class="col-md-6">
                     <h2 class="mb-3 text-primary-custom"><?php echo $info_producto["nombre"] ?></h2>
                     <p class="lead">Disfruta de la calidez y el aroma relajante de nuestras velas aromáticas de alta calidad.</p>
-                    <p><strong>Precio:</strong> <?php echo $info_producto["precio"] ?></p>
+                    <p>
+                        <strong>Precio:</strong>
+                    <div class="icon-container" style="display: inline-flex; align-items: center;">
+                        <i class="fas fa-info-circle" style="font-size: 24px; cursor: pointer; margin-right: 10px;"></i>
+                        <span><?php echo $info_producto["precio"]; ?></span>
+                        <div class="hover-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Título 1</th>
+                                        <th>Título 2</th>
+                                        <th>Título 3</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Dato 1</td>
+                                        <td>Dato 2</td>
+                                        <td>Dato 3</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    </p>
+
                     <p>Elige entre nuestras diferentes fragancias y personaliza tu experiencia aromática.</p>
 
                     <form id="product-form">

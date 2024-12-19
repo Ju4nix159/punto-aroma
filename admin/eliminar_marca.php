@@ -6,16 +6,16 @@ header('Content-Type: application/json');
 try {
     // Verificar el método de la solicitud
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        if (isset($_POST['id_categoria'])) {
-            $id_categoria = $_POST['id_categoria'];
+        if (isset($_POST['id_marca'])) {
+            $id_marca = $_POST['id_marca'];
 
             // Preparar la consulta SQL para "eliminar" la marca (cambiar estado a 0)
-            $sql = "UPDATE categorias SET estado = 0 WHERE id_categoria = :id_categoria";
+            $sql = "UPDATE marcas SET estado = 0 WHERE id_marca = :id_marca";
 
             // Verifica que la conexión `$con` sea un PDO
             if ($con instanceof PDO) {
                 $stmt = $con->prepare($sql);
-                $stmt->bindValue(':id_categoria', $id_categoria, PDO::PARAM_INT);
+                $stmt->bindValue(':id_marca', $id_marca, PDO::PARAM_INT);
 
                 if ($stmt->execute()) {
                     echo json_encode(['success' => true]);
