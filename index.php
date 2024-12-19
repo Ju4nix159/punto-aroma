@@ -21,57 +21,60 @@ $banners = $sql_banner->fetchAll(PDO::FETCH_ASSOC);
 <html lang="es">
 
 <body>
-    <section id="hero" class="py-5 text-center bg-primary-light">
+    <section id="hero" class="py-5 text-center">
         <div class="container">
             <h1 class="display-4 fw-bold text-primary-custom mb-4" data-aos="fade-up">Descubre la Magia de los Aromas</h1>
             <p class="lead mb-4" data-aos="fade-up" data-aos-delay="200">Transforma tu espacio con nuestros sahumerios, velas aromáticas y perfumes exclusivos.</p>
             <div class="d-grid gap-2 d-sm-flex justify-content-sm-center" data-aos="fade-up" data-aos-delay="400">
-                <a href="catalogo.php"><button type="button" class="btn btn-primary-custom btn-lg px-4 gap-3">Explorar Catalogo</button></a>
+                <a href="catalogo.php"><button type="button" class="btn btn-primary-custom btn-lg px-4 gap-3">Explorar Catálogo</button></a>
                 <a href="nosotros.php"><button type="button" class="btn btn-secondary-custom btn-lg px-4">Sobre nosotros</button></a>
             </div>
         </div>
     </section>
 
+
+
+
     <section id="banner" class="container py-5">
-    <div class="container">
-        <h2 class="text-center mb-4 text-secondary-custom">Ofertas Especiales</h2>
-        <div id="ofertasCarousel" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                <?php
-                // Variable para controlar el primer elemento como "active"
-                $first = true;
-                foreach ($banners as $banner) {
-                    // Extrae los datos del banner
-                    $imagen = $banner['ruta'];
-                    $titulo = $banner['nombre'];
-                    $descripcion = $banner['descripcion'];
-                    $enlace = $banner['id_pagina'];
-                ?>
-                    <div class="carousel-item <?php echo $first ? 'active' : ''; ?>">
-                        <img src="<?php echo htmlspecialchars($imagen); ?>" class="d-block w-100" alt="<?php echo htmlspecialchars($titulo); ?>">
-                        <div class="carousel-caption d-none d-md-block">
-                            <h3><?php echo htmlspecialchars($titulo); ?></h3>
-                            <p><?php echo htmlspecialchars($descripcion); ?></p>
-                            <a href="<?php echo htmlspecialchars($enlace); ?>" class="btn btn-primary-custom">Ver oferta</a>
+        <div class="container">
+            <h2 class="text-center mb-4 text-secondary-custom">Ofertas Especiales</h2>
+            <div id="ofertasCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <?php
+                    // Variable para controlar el primer elemento como "active"
+                    $first = true;
+                    foreach ($banners as $banner) {
+                        // Extrae los datos del banner
+                        $imagen = $banner['ruta'];
+                        $titulo = $banner['nombre'];
+                        $descripcion = $banner['descripcion'];
+                        $enlace = $banner['id_pagina'];
+                    ?>
+                        <div class="carousel-item <?php echo $first ? 'active' : ''; ?>">
+                            <img src="<?php echo htmlspecialchars($imagen); ?>" class="d-block w-100" alt="<?php echo htmlspecialchars($titulo); ?>">
+                            <div class="carousel-caption d-none d-md-block">
+                                <h3><?php echo htmlspecialchars($titulo); ?></h3>
+                                <p><?php echo htmlspecialchars($descripcion); ?></p>
+                                <a href="<?php echo htmlspecialchars($enlace); ?>" class="btn btn-primary-custom">Ver oferta</a>
+                            </div>
                         </div>
-                    </div>
-                <?php
-                    // Cambia $first a false después de la primera iteración
-                    $first = false;
-                }
-                ?>
+                    <?php
+                        // Cambia $first a false después de la primera iteración
+                        $first = false;
+                    }
+                    ?>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#ofertasCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#ofertasCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Siguiente</span>
+                </button>
             </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#ofertasCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Anterior</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#ofertasCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Siguiente</span>
-            </button>
         </div>
-    </div>
-</section>
+    </section>
 
 
     <section id="categorias" class="py-5">
@@ -253,6 +256,12 @@ $banners = $sql_banner->fetchAll(PDO::FETCH_ASSOC);
                 d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2V448c0 17.7 14.3 32 32 32s32-14.3 32-32V141.2L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z"></path>
         </svg>
     </button>
+    <ul class="wrapper">
+        <li class="icon whatsapp">
+            <span class="tooltip">whatsapp</span>
+            <i class="fab fa-whatsapp"></i>
+        </li>
+    </ul>
 
     <footer class="">
         <?php include 'footer.php'; ?>
