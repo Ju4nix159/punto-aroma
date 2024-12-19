@@ -78,7 +78,11 @@ $categorias = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
                                                     <td><?php echo $categoria['nombre']; ?></td>
                                                     <td><?php echo $categoria['descripcion']; ?></td>
                                                     <td>
-                                                        <button class="btn btn-primary btn-sm edit-category" data-id="<?php echo $categoria['id_categoria']; ?>"><i class="fas fa-edit"></i> Editar</button>
+                                                        <button class="btn btn-primary btn-sm edit-categoria"
+                                                            data-id="<?php echo $categoria['id_categoria']; ?>"
+                                                            onclick="editarCategoria(<?php echo $categoria['id_categoria']; ?>)">
+                                                            <i class="fas fa-edit"></i> Editar
+                                                        </button>
                                                         <button class="btn btn-danger btn-sm delete-category" data-id="<?php echo $categoria['id_categoria']; ?>" onclick="deleteCategory(<?php echo $categoria['id_categoria']; ?>)"><i class="fas fa-trash"></i> Eliminar</button>
                                                     </td>
                                                 </tr>
@@ -136,30 +140,34 @@ $categorias = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
     <!-- /.modal -->
 
     <!-- Modal para editar categoría -->
-    <div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modalEditarCategoria" tabindex="-1" aria-labelledby="modalEditarCategoriaLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editCategoryModalLabel">Editar Categoría</h5>
+                    <h5 class="modal-title" id="modalEditarCategoriaLabel">Editar Categoría</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="editCategoryForm">
-                        <input type="hidden" id="editCategoryId" name="id_categoria">
+                    <form id="formEditarCategoria">
                         <div class="mb-3">
-                            <label for="editCategoryName" class="form-label">Nombre</label>
-                            <input type="text" class="form-control" id="editCategoryName" name="nombre" required>
+                            <label for="nombreCategoria" class="form-label">Nombre de la Categoría</label>
+                            <input type="text" class="form-control" id="nombreCategoria" name="nombreCategoria" required>
                         </div>
                         <div class="mb-3">
-                            <label for="editCategoryDescription" class="form-label">Descripción</label>
-                            <textarea class="form-control" id="editCategoryDescription" name="descripcion" rows="3" required></textarea>
+                            <label for="descripcionCategoria" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="descripcionCategoria" name="descripcionCategoria" rows="3"></textarea>
                         </div>
-                        <button type="button" class="btn btn-primary" id="saveCategoryChanges">Guardar Cambios</button>
+                        <input type="hidden" id="idCategoria" name="idCategoria">
                     </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" onclick="guardarCambiosCategoria()">Guardar cambios</button>
                 </div>
             </div>
         </div>
     </div>
+
 
 
     <script>
@@ -231,60 +239,52 @@ $categorias = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
             }
         }
 
-        $(document).ready(function() {
-            // Abrir modal y cargar datos de la categoría seleccionada
-            $('.edit-category').on('click', function() {
-                var categoryId = $(this).data('id');
-
-                // Obtener datos de la categoría actual
-                $.ajax({
-                    url: 'get_categoria.php', // Endpoint para obtener datos de una categoría específica
-                    type: 'GET',
-                    data: {
-                        id: categoryId
-                    },
-                    success: function(response) {
-                        // Rellenar el formulario del modal con los datos recibidos
-                        var categoria = JSON.parse(response);
-                        $('#editCategoryId').val(categoria.id_categoria);
-                        $('#editCategoryName').val(categoria.nombre);
-                        $('#editCategoryDescription').val(categoria.descripcion);
+        function editarCategoria(id) {
+            // Enviar solicitud al backend para obtener datos de la categoría
+            fetch(`obtener_categoria.php?id_categoria=${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Llenar el modal con los datos de la categoría
+                        document.getElementById('idCategoria').value = data.categoria.id_categoria;
+                        document.getElementById('nombreCategoria').value = data.categoria.nombre;
+                        document.getElementById('descripcionCategoria').value = data.categoria.descripcion;
 
                         // Abrir el modal
-                        $('#editCategoryModal').modal('show');
-                    },
-                    error: function() {
-                        alert('Error al obtener los datos de la categoría.');
+                        const modal = new bootstrap.Modal(document.getElementById('modalEditarCategoria'));
+                        modal.show();
+                    } else {
+                        alert("Error al obtener la información de la categoría: " + data.error);
                     }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("Ocurrió un error al intentar obtener la información de la categoría.");
                 });
-            });
+        }
 
-            // Guardar los cambios de la categoría
-            $('#saveCategoryChanges').on('click', function() {
-                var formData = $('#editCategoryForm').serialize();
+        function guardarCambiosCategoria() {
+            const form = document.getElementById('formEditarCategoria');
+            const formData = new FormData(form);
 
-                $.ajax({
-                    url: 'editar_categoria.php', // Endpoint para actualizar la categoría
-                    type: 'POST',
-                    data: formData,
-                    success: function(response) {
-                        // Comprobar si la respuesta indica éxito
-                        if (response === 'success') {
-                            alert('Categoría actualizada con éxito.');
-                            $('#editCategoryModal').modal('hide');
-
-                            // Opcional: recargar la tabla de categorías o actualizar los datos directamente
-                            location.reload();
-                        } else {
-                            alert('Error al actualizar la categoría.');
-                        }
-                    },
-                    error: function() {
-                        alert('Error en el servidor al actualizar la categoría.');
+            fetch('editar_categoria.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Categoría actualizada correctamente.");
+                        location.reload(); // Recargar la página para reflejar los cambios
+                    } else {
+                        alert("Error al actualizar la categoría: " + data.error);
                     }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("Ocurrió un error al intentar guardar los cambios.");
                 });
-            });
-        });
+        }
     </script>
 </body>
 
