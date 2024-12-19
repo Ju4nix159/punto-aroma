@@ -10,12 +10,14 @@ CREATE TABLE banner(
 CREATE TABLE categorias (
     id_categoria INT PRIMARY KEY AUTO_INCREMENT,
     nombre VARCHAR(100),
-    descripcion TEXT
+    descripcion TEXT,
+    estado TINYINT DEFAULT 1
 );
 
 CREATE TABLE marcas(
     id_marca INT PRIMARY KEY AUTO_INCREMENT,
-    nombre VARCHAR(100)
+    nombre VARCHAR(100),
+    estado TINYINT DEFAULT 1
 );
 
 -- Tabla de estado de productos
