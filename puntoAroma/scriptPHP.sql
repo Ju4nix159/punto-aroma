@@ -516,3 +516,15 @@ INSERT INTO variantes_tipo_precio (id_producto, id_tipo_precio, precio, cantidad
 (24, 1, 800.00, 1);
 
 
+SELECT 
+    mp.id_metodo_pago,
+    mp.nombre_metodo_pago,
+    mp.descripcion_metodo_pago,
+    dmp.banco,
+    dmp.cbu,
+    dmp.alias,
+    dmp.titular
+FROM 
+    metodos_pago mp
+LEFT JOIN 
+    detalle_metodo_pago dmp ON mp.id_detalle = dmp.id_detalle;

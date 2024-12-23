@@ -42,7 +42,7 @@ if (!isset($_SESSION['usuario'])) {
   <!-- Bootstrap 3.3.7 -->
   <!-- <link rel="stylesheet" href="../admin/css/bootstrap.min.css"> -->
 
-  <link rel="icon" type="image/png" href="../assets/Punto-Aroma-original-con-sombra-despegue-sin-fondo.png">
+  <link rel="icon" type="image/png" href="../assets/logoos/ayb-logo.svg">
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
@@ -50,7 +50,7 @@ if (!isset($_SESSION['usuario'])) {
 
     <!-- Preloader -->
     <div class="preloader flex-column justify-content-center align-items-center">
-      <img class="animation__wobble" src="../assets/Punto-Aroma-original-con-sombra-despegue-sin-fondo.png" alt="punto aroma logo" height="60" width="60">
+      <img class="animation__wobble" src="../assets/logoos/ayb-cto-sinfondo.svg" alt="punto aroma logo" height="60" width="60">
     </div>
 
     <!-- Navbar -->
@@ -78,7 +78,7 @@ if (!isset($_SESSION['usuario'])) {
           <ul class="dropdown-menu">
             <!-- User image -->
             <li class="user-header">
-              <img src="../assets/Punto-Aroma-original-con-sombra-despegue-sin-fondo.png" class="img-circle" alt="usuario imagen">
+              <img src="../assets/logoos/ayb-logo.png" class="img-circle" alt="usuario imagen">
 
               <p>
                 <?php echo $_SESSION["email"] ?>

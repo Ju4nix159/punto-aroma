@@ -17,7 +17,7 @@
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
       <!-- Brand Logo -->
       <a href="admin.php" class="brand-link">
-        <img src="../assets/Punto-Aroma-original-con-sombra-despegue-sin-fondo.png" alt="punto aroma logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+        <img src="../assets/logoos/ayb-logo-sinfondo.svg" alt="aroma y bienestar logo" class="brand-image img-circle elevation-3" style="opacity: .8">
       </a>
 
       <!-- Sidebar -->
