@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizarInfo'])) {
         $insertStmt->execute();
     }
 
-    header("Location: /pa/panelUsuario.php");
+    header("Location: ../panelUsuario.php");
     exit();
 }
 

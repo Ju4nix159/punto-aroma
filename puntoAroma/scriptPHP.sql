@@ -177,7 +177,7 @@ CREATE TABLE variantes (
     id_producto INT,
     id_estado_producto INT DEFAULT 1,
     aroma VARCHAR(100),
-    color INT,
+    color VARCHAR(100),
     stock INT,
     CONSTRAINT PK_variante_sku_END PRIMARY KEY (sku),
     CONSTRAINT FK_variante_id_producto_END          FOREIGN KEY (id_producto)           REFERENCES productos(id_producto),

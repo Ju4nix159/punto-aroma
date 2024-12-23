@@ -175,7 +175,7 @@ $banners = $sql_banner->fetchAll(PDO::FETCH_ASSOC);
                     <div class="col-md-3">
                         <a href="producto.php?id_producto=<?php echo $destacado["id_producto"] ?>" class="text-decoration-none">
                             <div class="product-card-destacado">
-                                <img src="../pa/assets/productos<?php echo $destacado["imagen_principal"] ?>" alt="<?php echo $destacado["nombre"] ?>" class="img-fluid">
+                                <img src="./assets/productos<?php echo $destacado["imagen_principal"] ?>" alt="<?php echo $destacado["nombre"] ?>" class="img-fluid">
                                 <div class="product-overlay">
                                     <h3 class="product-name"><?php echo $destacado["nombre"] ?></h3>
                                 </div>

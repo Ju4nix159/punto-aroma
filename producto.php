@@ -92,12 +92,12 @@ WHERE p.id_producto = :id_producto;");
             <div class="row">
                 <div class="col-md-6">
                     <div class="product-gall">
-                        <img src="../pa/assets/productos<?php echo $info_producto["imagen_principal"] ?>" alt="<?php echo $info_producto["nombre"] ?>" class="gall-main-image" id="main-image">
+                        <img src="./assets/productos<?php echo $info_producto["imagen_principal"] ?>" alt="<?php echo $info_producto["nombre"] ?>" class="gall-main-image" id="main-image">
                         <button class="gall-nav prev" onclick="changeImage(-1)">&lt;</button>
                         <button class="gall-nav next" onclick="changeImage(1)">&gt;</button>
                         <div class="gall-thumbnails">
                             <?php foreach ($imagenes as $imagen) { ?>
-                                <img src="../pa/assets/productos<?php echo $imagen['ruta']; ?>" alt="Thumbnail <?php echo $imagen['id_imagen']; ?>" class="gall-thumbnail" onclick="setMainImage(this.src)">
+                                <img src="./assets/productos<?php echo $imagen['ruta']; ?>" alt="Thumbnail <?php echo $imagen['id_imagen']; ?>" class="gall-thumbnail" onclick="setMainImage(this.src)">
                             <?php } ?>
                         </div>
                     </div>

@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["inicar_sesion"])) {
     $usuario = $sql_usuario->fetch(PDO::FETCH_ASSOC);
 
     if ($usuario) {
-        if ($password == $usuario["clave"]) { // Aquí podrías usar password_verify() si la clave está hasheada
+        if (password_verify($password, $usuario["clave"])) {
             // Iniciar sesión
             $_SESSION["usuario"] = $usuario["id_usuario"];
             $_SESSION["email"] = $usuario["email"];
@@ -21,9 +21,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["inicar_sesion"])) {
 
             // Definir redirección y tipo de éxito
             if ($usuario["id_permiso"] == 1) {
-                $redirectUrl = "/pa/admin/admin.php";
+                $redirectUrl = "../admin/admin.php";
             } else {
-                $redirectUrl = "/pa/panelUsuario.php";
+                $redirectUrl = "../panelUsuario.php";
             }
 
             // Redirigir con una señal de éxito
@@ -34,14 +34,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["inicar_sesion"])) {
         } else {
             // Enviar señal de error
             echo "<script>
-                    window.location.href = '/pa/iniciarSesion.php?status=error';
+                    window.location.href = '../iniciarSesion.php?status=error';
                   </script>";
             exit;
         }
     } else {
         // Enviar señal de error
         echo "<script>
-                window.location.href = '/pa/iniciarSesion.php?status=error';
+                window.location.href = '../iniciarSesion.php?status=error';
               </script>";
         exit;
     }
@@ -60,7 +60,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["registrar_usuario"]))
     if ($usuario_existente) {
         echo 
         "<script>
-                window.location.href = '/pa/registro.php?status=error';
+                window.location.href = '../registro.php?status=error';
         </script>";
         exit;
     } else {
@@ -75,7 +75,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["registrar_usuario"]))
 
         echo
         "<script>
-            window.location.href = '/pa/registro.php?status=success'; 
+            window.location.href = '../registro.php?status=success'; 
         </script>";
     }
 }

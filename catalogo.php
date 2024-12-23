@@ -11,9 +11,13 @@ WHERE vtp.id_tipo_precio = 1;");
 $sql_catalogo->execute();
 $productos = $sql_catalogo->fetchAll(PDO::FETCH_ASSOC);
 
-$sql_categorias = $con->prepare("SELECT * FROM categorias;");
+$sql_categorias = $con->prepare("SELECT * FROM categorias WHERE estado = 1 ;");
 $sql_categorias->execute();
 $categorias = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
+
+$sql_marcas = $con->prepare("SELECT * FROM marcas WHERE estado = 1;");
+$sql_marcas->execute();
+$marcas = $sql_marcas->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 <!DOCTYPE html>
@@ -51,6 +55,25 @@ $categorias = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
                                                 <input class="form-check-input category-filter" type="checkbox" value="<?php echo $categoria['id_categoria']; ?>" id="cat<?php echo $categoria['id_categoria']; ?>">
                                                 <label class="form-check-label" for="cat<?php echo $categoria['id_categoria']; ?>">
                                                     <?php echo htmlspecialchars($categoria['nombre']); ?>
+                                                </label>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingMarca">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMarca" aria-expanded="false" aria-controls="collapseMarca">
+                                        Marcas
+                                    </button>
+                                </h2>
+                                <div id="collapseMarca" class="accordion-collapse collapse" aria-labelledby="headingMarca">
+                                    <div class="accordion-body">
+                                        <?php foreach ($marcas as $marca): ?>
+                                            <div class="form-check">
+                                                <input class="form-check-input brand-filter" type="checkbox" value="<?php echo $marca['id_marca']; ?>" id="brand<?php echo $marca['id_marca']; ?>">
+                                                <label class="form-check-label" for="brand<?php echo $marca['id_marca']; ?>">
+                                                    <?php echo htmlspecialchars($marca['nombre']); ?>
                                                 </label>
                                             </div>
                                         <?php endforeach; ?>
@@ -121,7 +144,7 @@ $categorias = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
                                     <a href="producto.php?id_producto=<?php echo $producto["id_producto"] ?>" class="text-decoration-none text-dark">
                                         <div class="card-catalogo h-100 d-flex flex-column">
                                             <div class="img-container">
-                                                <img src="../pa/assets/productos/<?php echo $producto["imagen_principal"]; ?>" class="card-img-top w-100 h-100 object-fit-cover" alt="<?php echo $producto["id_producto"] ?>">
+                                                <img src="./assets/productos/<?php echo $producto["imagen_principal"]; ?>" class="card-img-top w-100 h-100 object-fit-cover" alt="<?php echo $producto["id_producto"] ?>">
                                             </div>
                                             <div class="card-body flex-grow-1">
                                                 <h5 class="card-title"><?php echo $producto["nombre"] ?></h5>
@@ -193,6 +216,7 @@ $categorias = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
         document.addEventListener('DOMContentLoaded', () => {
             const searchText = document.getElementById('searchText');
             const categoryFilters = document.querySelectorAll('.category-filter');
+            const brandFilters = document.querySelectorAll('.brand-filter');
             const precioMin = document.getElementById('precioMin');
             const precioMax = document.getElementById('precioMax');
             const orderBy = document.getElementById('orderBy');
@@ -200,6 +224,7 @@ $categorias = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
             const filters = {
                 search: '',
                 categories: [],
+                brands: [],
                 minPrice: null,
                 maxPrice: null,
                 order: 'asc'
@@ -224,7 +249,7 @@ $categorias = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
                             <a href="producto.php?id_producto=${producto.id_producto}" class="text-decoration-none text-dark">
                                 <div class="card-catalogo h-100 d-flex flex-column">
                                     <div class="img-container">
-                                        <img src="../pa/assets/productos/${producto.imagen_principal}" class="card-img-top w-100 h-100 object-fit-cover" alt="${producto.id_producto}">
+                                        <img src="./assets/productos/${producto.imagen_principal}" class="card-img-top w-100 h-100 object-fit-cover" alt="${producto.id_producto}">
                                     </div>
                                     <div class="card-body flex-grow-1">
                                         <h5 class="card-title">${producto.nombre}</h5>
@@ -252,8 +277,6 @@ $categorias = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
                     });
             }
 
-
-
             searchText.addEventListener('input', () => {
                 filters.search = searchText.value;
                 applyFilters();
@@ -268,29 +291,31 @@ $categorias = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
                 });
             });
 
+            brandFilters.forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    filters.brands = Array.from(brandFilters)
+                        .filter(cb => cb.checked)
+                        .map(cb => cb.value);
+                    applyFilters();
+                });
+            });
+
             precioMin.addEventListener('input', () => {
                 filters.minPrice = precioMin.value ? parseFloat(precioMin.value) : null;
                 applyFilters();
             });
 
             precioMax.addEventListener('input', () => {
-                const minPrice = parseFloat(precioMin.value);
-                const maxPrice = parseFloat(precioMax.value);
-
-                if (!isNaN(minPrice) && !isNaN(maxPrice) && maxPrice < minPrice) {
-                    return;
-                }
-
-                filters.maxPrice = maxPrice ? maxPrice : null;
+                filters.maxPrice = precioMax.value ? parseFloat(precioMax.value) : null;
                 applyFilters();
             });
-
 
             orderBy.addEventListener('change', () => {
                 filters.order = orderBy.value;
                 applyFilters();
             });
         });
+
 
         function initializeQuickViewButtons() {
             const quickViewButtons = document.querySelectorAll('.quick-view-btn');
@@ -316,7 +341,7 @@ $categorias = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
                     quickViewTitle.textContent = productName;
                     quickViewDescription.textContent = productDescription;
                     quickViewPrice.textContent = productPrice;
-                    quickViewImage.src = `../pa/assets/productos/${productImage}`;
+                    quickViewImage.src = `./assets/productos/${productImage}`;
                     quickViewMoreInfo.href = productInfo;
 
                     // Limpiar y añadir variantes

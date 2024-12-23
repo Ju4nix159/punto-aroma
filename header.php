@@ -106,11 +106,11 @@ include 'carrito.php';
                                 <?php if (isset($_SESSION["usuario"])): ?>
                                     <?php if ($_SESSION["permiso"] == 2): ?>
                                         <li><a class="dropdown-item" href="panelUsuario.php"><i class="fas fa-user-circle nav-icon"></i> Panel de Usuario</a></li>
-                                        <li><a class="dropdown-item" href="/pa/admin/cerrar_sesion.php"><i class="fas fa-sign-out-alt nav-icon"></i> Cerrar Sesión</a></li>
+                                        <li><a class="dropdown-item" href="./admin/cerrar_sesion.php"><i class="fas fa-sign-out-alt nav-icon"></i> Cerrar Sesión</a></li>
                                     <?php elseif ($_SESSION["permiso"] == 1): ?>
-                                        <li><a class="dropdown-item" href="/pa/admin/admin.php"><i class="fas fa-user-circle nav-icon"></i> Panel de Admin</a></li>
+                                        <li><a class="dropdown-item" href="./admin/admin.php"><i class="fas fa-user-circle nav-icon"></i> Panel de Admin</a></li>
                                         <li><a class="dropdown-item" href="panelUsuario.php"><i class="fas fa-user-circle nav-icon"></i> Panel de usuario</a></li>
-                                        <li><a class="dropdown-item" href="/pa/admin/cerrar_sesion.php"><i class="fas fa-sign-out-alt nav-icon"></i> Cerrar Sesión</a></li>
+                                        <li><a class="dropdown-item" href="./admin/cerrar_sesion.php"><i class="fas fa-sign-out-alt nav-icon"></i> Cerrar Sesión</a></li>
                                     <?php endif; ?>
                                 <?php else: ?>
                                     <li><a class="dropdown-item" href="iniciarSesion.php"><i class="fas fa-sign-in-alt nav-icon"></i> Iniciar Sesión</a></li>
