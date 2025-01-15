@@ -120,7 +120,7 @@ $marcas = $sql_marcas->fetchAll(PDO::FETCH_ASSOC);
                 <div class="col-md-9">
                     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
                         <?php foreach ($productos as $producto) {
-                            // Consulta para obtener todas las variantes del producto con estado 1 y color no null
+                            // Consulta para obtener todas las variantes del producto con estado 1
                             $query_variantes = "SELECT DISTINCT v.nombre_variante
                             FROM variantes v
                             WHERE v.id_producto = :id_producto 

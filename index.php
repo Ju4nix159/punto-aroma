@@ -256,18 +256,37 @@ $banners = $sql_banner->fetchAll(PDO::FETCH_ASSOC);
                 d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2V448c0 17.7 14.3 32 32 32s32-14.3 32-32V141.2L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z"></path>
         </svg>
     </button>
+    <?php
+    // Variables dinámicas
+    $numero = "3571311240";
+    $mensaje = "Quiero hacer una compra";
+
+    // Codificar el mensaje para URL
+    $mensajeCodificado = urlencode($mensaje);
+    ?>
+
     <ul class="wrapper">
-        <li class="icon whatsapp">
-            <span class="tooltip">whatsapp</span>
+        <li class="icon whatsapp" id="whatsappButton">
+            <span class="tooltip">WhatsApp</span>
             <i class="fab fa-whatsapp"></i>
         </li>
     </ul>
+
 
     <footer class="">
         <?php include 'footer.php'; ?>
 
     </footer>
     <script>
+        // Datos dinámicos desde PHP
+        const numero = "<?php echo $numero; ?>";
+        const mensaje = "<?php echo $mensajeCodificado; ?>";
+
+        // Agregar evento de clic al botón de WhatsApp
+        document.getElementById("whatsappButton").addEventListener("click", function() {
+            const url = `https://wa.me/${numero}?text=${mensaje}`;
+            window.open(url, "_blank"); // Abre WhatsApp en una nueva pestaña
+        });
         AOS.init({
             duration: 1000,
             once: true,

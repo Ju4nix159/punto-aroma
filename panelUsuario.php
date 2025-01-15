@@ -61,11 +61,10 @@ if (isset($_SESSION["usuario"])) {
 FROM domicilios d
     JOIN usuario_domicilios ud ON d.id_domicilio = ud.id_domicilio
     JOIN usuarios i ON ud.id_usuario = i.id_usuario
-WHERE i.id_usuario = :id_usuario AND ud.estado = 1 " );
+WHERE i.id_usuario = :id_usuario AND ud.estado = 1 ");
     $sql_domicilios->bindParam(":id_usuario", $id_usuario);
     $sql_domicilios->execute();
     $domicilios = $sql_domicilios->fetchAll(PDO::FETCH_ASSOC);
-
 }
 
 
@@ -139,7 +138,8 @@ WHERE i.id_usuario = :id_usuario AND ud.estado = 1 " );
         .status-cancelado {
             background-color: #dc3545;
         }
-        .status-pagado{
+
+        .status-pagado {
             background-color: #28a745;
         }
 
@@ -455,6 +455,38 @@ WHERE i.id_usuario = :id_usuario AND ud.estado = 1 " );
                                     </div>
                                 </div>
                             </div>
+                            <!-- Modal -->
+                            <div class="modal fade" id="modalEditarDomicilio" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="modalLabel">Editar Domicilio</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form id="formEditarDomicilio">
+                                                <input type="hidden" id="domicilioId" name="domicilioId">
+                                                <div class="mb-3">
+                                                    <label for="direccion" class="form-label">Dirección</label>
+                                                    <input type="text" class="form-control" id="direccion" name="direccion">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="ciudad" class="form-label">Ciudad</label>
+                                                    <input type="text" class="form-control" id="ciudad" name="ciudad">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="codigoPostal" class="form-label">Código Postal</label>
+                                                    <input type="text" class="form-control" id="codigoPostal" name="codigoPostal">
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                            <button type="button" class="btn btn-primary" onclick="guardarDomicilios()">Guardar Cambios</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -513,6 +545,7 @@ WHERE i.id_usuario = :id_usuario AND ud.estado = 1 " );
                     alert('Hubo un error al cancelar el pedido. Inténtalo nuevamente.2');
                 });
         }
+
         function verDetallePedido(idPedido) {
             // Crear la solicitud AJAX
             const xhr = new XMLHttpRequest();
@@ -613,29 +646,48 @@ WHERE i.id_usuario = :id_usuario AND ud.estado = 1 " );
                 });
         }
 
-        function editarDomicilio(id_domicilio) {
-            // Crear la solicitud AJAX
-            const xhr = new XMLHttpRequest();
-            xhr.open("POST", "editar_domicilio.php", true);
-            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        function editarDomicilio(idDomicilio) {
+            // Realiza una solicitud AJAX para obtener los datos del domicilio
+            fetch(`getDomicilio.php?id=${idDomicilio}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Rellena el formulario con los datos obtenidos
+                    document.getElementById('domicilioId').value = data.id;
+                    document.getElementById('direccion').value = data.direccion;
+                    document.getElementById('ciudad').value = data.ciudad;
+                    document.getElementById('codigoPostal').value = data.codigoPostal;
 
-            // Manejador para la respuesta
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    // Insertar la respuesta en el modal
-                    document.getElementById("editarDomicilioBody").innerHTML = xhr.responseText;
-
-                    // Mostrar el modal
-                    const modal = new bootstrap.Modal(document.getElementById("editarDomicilioModal"));
+                    // Muestra el modal
+                    const modal = new bootstrap.Modal(document.getElementById('modalEditarDomicilio'));
                     modal.show();
-                } else {
-                    alert("Error al obtener los detalles del domicilio.");
-                }
-            };
-
-            // Enviar los datos al servidor
-            xhr.send(`id_domicilio=${id_domicilio}`);
+                })
+                .catch(error => console.error('Error al obtener los datos del domicilio:', error));
         }
+
+        function guardarDomicilios() {
+            // Obtén los datos del formulario
+            const formData = new FormData(document.getElementById('formEditarDomicilio'));
+
+            // Realiza la solicitud AJAX para guardar los datos
+            fetch('/guardarDomicilio.php', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        alert('Domicilio guardado exitosamente.');
+                        // Oculta el modal
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('modalEditarDomicilio'));
+                        modal.hide();
+                        // Actualiza la interfaz según sea necesario
+                    } else {
+                        alert('Error al guardar el domicilio.');
+                    }
+                })
+                .catch(error => console.error('Error al guardar el domicilio:', error));
+        }
+
 
         function hacerPrincipal(idDomicilioActual, idDomicilioNuevo) {
             if (!confirm('¿Está seguro de que desea establecer este domicilio como principal?')) {

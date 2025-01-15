@@ -87,7 +87,7 @@ include 'carrito.php';
                             <a class="nav-link text-primary-custom" href="catalogo.php">Catálogo</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-primary-custom" href="index.php#destacados">destacados</a>
+                            <a class="nav-link text-primary-custom" href="index.php#destacados">Destacados</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-primary-custom" href="index.php#testimonios">Testimonios</a>
