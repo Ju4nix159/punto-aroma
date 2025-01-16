@@ -11,6 +11,10 @@ $sql_categorias = $con->prepare("SELECT * FROM categorias;");
 $sql_categorias->execute();
 $categorias = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
 
+$sql_marcas = $con->prepare("SELECT * FROM marcas;");
+$sql_marcas->execute();
+$marcas = $sql_marcas->fetchAll(PDO::FETCH_ASSOC);
+
 
 
 
@@ -47,7 +51,7 @@ $categorias = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
 <body>
     <div class="wrapper">
         <div class="content-wrapper">
-            <!-- Content Header (Page header) -->
+            Content Header (Page header)
             <section class="content-header">
                 <div class="container-fluid">
                     <div class="row mb-2">
@@ -79,6 +83,16 @@ $categorias = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
                                     <hr>
                                     <strong><i class="fas fa-box mr-1"></i> Nombre del Producto</strong>
                                     <input type="text" id="nombre-input" class="form-control" required>
+
+                                    <hr>
+
+                                    <strong><i class="fas fa-tag mr-1"></i> Marca</strong>
+                                    <select id="marca-input" class="form-control" required>
+                                        <?php foreach ($marcas as $marca) {  ?>
+                                            <option value="<?php echo $marca['id_marca'] ?>"><?php echo $marca['nombre'] ?></option>
+                                        <?php } ?>
+                                    </select>
+
                                     <hr>
 
                                     <strong><i class="fas fa-tag mr-1"></i> Categoría</strong>
@@ -87,17 +101,22 @@ $categorias = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
                                             <option value="<?php echo $categoria['id_categoria'] ?>"><?php echo $categoria['nombre'] ?></option>
                                         <?php } ?>
                                     </select>
+
                                     <hr>
+
+                                    
 
                                     <strong><i class="fas fa-dollar-sign mr-1"></i> Precio Minorista</strong>
                                     <input type="number" id="precio_minorista-input" class="form-control" value="0" min="0" required>
 
                                     <hr>
+
                                     <strong><i class="fas fa-warehouse mr-1"></i> Precio Mayorista</strong>
                                     <div class="d-flex align-items-center">
                                         <input type="number" id="precio_mayorista-input" class="form-control" value="0" min="0" placeholder="Precio" required>
                                         <input type="number" id="cantidad_minima-input" class="form-control ml-2" value="1" min="1" placeholder="Cantidad mínima" required>
                                     </div>
+
                                     <hr>
 
                                     <strong><i class="fas fa-cubes mr-1"></i> Destacado</strong>
@@ -105,6 +124,7 @@ $categorias = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
                                         <option value="1">Si</option>
                                         <option value="0">No</option>
                                     </select>
+
                                     <hr>
 
                                     <strong><i class="fas fa-align-left mr-1"></i> Descripción</strong>
@@ -145,6 +165,7 @@ $categorias = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
             // Obtener todos los campos para añadir un producto
             const nombre = document.getElementById('nombre-input').value;
             const categoria = document.getElementById('categoria-input').value;
+            const marca = document.getElementById('marca-input').value;
             const precio_minorista = parseFloat(document.getElementById('precio_minorista-input').value) || 0;
             const precio_mayorista = parseFloat(document.getElementById('precio_mayorista-input').value) || 0;
             const cantidad_minima = parseInt(document.getElementById('cantidad_minima-input').value) || 1;
@@ -152,7 +173,7 @@ $categorias = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
             const descripcion = document.getElementById('descripcion-input').value;
 
             // Validar campos obligatorios
-            if (!nombre || !categoria || !descripcion) {
+            if (!nombre || !categoria || !descripcion || !marca) {
                 alert('Por favor, completa todos los campos obligatorios.');
                 return;
             }
@@ -172,6 +193,7 @@ $categorias = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
             const formData = new FormData();
             formData.append('nombre', nombre);
             formData.append('categoria', categoria);
+            formData.append('marca', marca);
             formData.append('precio_minorista', precio_minorista);
             formData.append('precio_mayorista', precio_mayorista);
             formData.append('cantidad_minima', cantidad_minima);

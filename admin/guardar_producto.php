@@ -12,6 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $nombre = $_POST['nombre'];
         $descripcion = $_POST['descripcion'];
         $categoria = $_POST['categoria'];
+        $marca = $_POST['marca'];
         $destacado = $_POST['destacado'];
         $estado = $_POST['estado'];
         $precio_minorista = $_POST['precio_minorista'];
@@ -22,6 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                     SET nombre = :nombre_producto,
                                                         descripcion = :descripcion_producto,
                                                         id_categoria = :id_categoria,
+                                                        id_marca = :id_marca,
                                                         destacado = :destacado,
                                                         estado = :estado
                                                     WHERE id_producto = :id_producto;");
@@ -29,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $sql_actualizar_productos->bindparam(':nombre_producto', $nombre, PDO::PARAM_STR);
         $sql_actualizar_productos->bindparam(':descripcion_producto', $descripcion, PDO::PARAM_STR);
         $sql_actualizar_productos->bindparam(':id_categoria', $categoria, PDO::PARAM_INT);
+        $sql_actualizar_productos->bindparam(':id_marca', $marca, PDO::PARAM_INT);
         $sql_actualizar_productos->bindparam(':destacado', $destacado, PDO::PARAM_INT);
         $sql_actualizar_productos->bindparam(':estado', $estado, PDO::PARAM_INT);
 

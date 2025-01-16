@@ -16,11 +16,14 @@ $sql_resume_producto = $con->prepare(" SELECT
             p.destacado, 
             i.ruta AS imagen_principal,
             c.id_categoria,
+            m.nombre AS marca,
+            m.id_marca,
             MIN(CASE WHEN vtp.id_tipo_precio = 1 THEN vtp.precio END) AS precio_minorista,
             MIN(CASE WHEN vtp.id_tipo_precio = 2 THEN vtp.precio END) AS precio_mayorista
         FROM 
             productos p
             JOIN categorias c ON p.id_categoria = c.id_categoria
+            JOIN marcas m ON p.id_marca = m.id_marca
             LEFT JOIN imagenes i ON p.id_producto = i.id_producto AND i.principal = 1
             LEFT JOIN variantes_tipo_precio vtp ON p.id_producto = vtp.id_producto
         WHERE 
@@ -57,6 +60,10 @@ $imagen = $imagen->fetch(PDO::FETCH_ASSOC);
 $sql_categorias = $con->prepare("SELECT * FROM categorias;");
 $sql_categorias->execute();
 $categorias = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
+
+$sql_marca = $con->prepare("SELECT * FROM marcas;");
+$sql_marca->execute();
+$marcas = $sql_marca->fetchAll(PDO::FETCH_ASSOC);
 
 
 ?>
@@ -128,6 +135,15 @@ $categorias = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
                     <strong><i class="fas fa-box mr-1"></i> Nombre del Producto</strong>
                     <p class="text-muted mb-0" id="nombre-text"><?php echo $resumen["nombre"] ?></p>
                     <input type="text" id="nombre-input" class="form-control d-none" value="<?php echo $resumen["nombre"] ?>">
+                    <hr>
+
+                    <strong><i class="fas fa-tag mr-1"></i> Marca</strong>
+                    <p class="text-muted mb-0" id="marca-text"><?php echo $resumen["marca"] ?></p>
+                    <select name="marca" id="marca-input" class="form-control d-none">
+                      <?php foreach ($marcas as $marca) {  ?>
+                        <option value="<?php echo $marca['id_marca'] ?>" <?php echo $marca['id_marca'] == $resumen['id_marca'] ? 'selected' : '' ?>><?php echo $marca['nombre'] ?></option>
+                      <?php } ?>
+                    </select>
 
                     <hr>
                     <strong><i class="fas fa-tag mr-1"></i> Categoría</strong>
@@ -589,6 +605,7 @@ $categorias = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
       const id_producto = document.getElementById('id_producto-input').value;
       const nombre = document.getElementById('nombre-input').value;
       const categoria = document.getElementById('categoria-input').value;
+      const marca = document.getElementById('marca-input').value;
       const precio_minorista = document.getElementById('precio_minorista-input').value;
       const precio_mayorista = document.getElementById('precio_mayorista-input').value;
       const destacado = document.getElementById('destacado-input').value;
@@ -599,6 +616,7 @@ $categorias = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
       formData.append('id_producto', id_producto);
       formData.append('nombre', nombre);
       formData.append('categoria', categoria);
+      formData.append('marca', marca);
       formData.append('precio_minorista', precio_minorista);
       formData.append('precio_mayorista', precio_mayorista);
       formData.append('destacado', destacado);

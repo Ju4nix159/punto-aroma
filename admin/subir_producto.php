@@ -8,6 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Obtener datos enviados por POST
         $nombre = $_POST['nombre'];
         $categoria = $_POST['categoria'];
+        $marca = $_POST['marca'];
         $precio_minorista = $_POST['precio_minorista'];
         $precio_mayorista = $_POST['precio_mayorista'];
         $cantidad_minima = $_POST['cantidad_minima'];
@@ -15,11 +16,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $descripcion = $_POST['descripcion'];
 
         // Preparar consulta SQL para insertar en la tabla productos
-        $sql_insertar_producto = $con->prepare("INSERT INTO productos (nombre, descripcion, id_categoria, destacado)
-                                                VALUES (:nombre_producto, :descripcion_producto, :id_categoria, :destacado);");
+        $sql_insertar_producto = $con->prepare("INSERT INTO productos (nombre, descripcion, id_categoria,id_marca, destacado)
+                                                VALUES (:nombre_producto, :descripcion_producto, :id_categoria, :id_marca , :destacado);");
         $sql_insertar_producto->bindparam(':nombre_producto', $nombre, PDO::PARAM_STR);
         $sql_insertar_producto->bindparam(':descripcion_producto', $descripcion, PDO::PARAM_STR);
         $sql_insertar_producto->bindparam(':id_categoria', $categoria, PDO::PARAM_INT);
+        $sql_insertar_producto->bindparam(':id_marca', $marca, PDO::PARAM_INT);
         $sql_insertar_producto->bindparam(':destacado', $destacado, PDO::PARAM_INT);
 
         // Ejecutar consulta
