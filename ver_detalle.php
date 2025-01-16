@@ -5,7 +5,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id_pedido'])) {
     $id_pedido = intval($_POST['id_pedido']);
 
     // Consulta para el resumen del pedido
-    $sql_resumen = $con->prepare("SELECT p.id_pedido, p.total, p.fecha, u.email, iu.nombre AS nombre_usuario, iu.apellido, iu.dni, iu.telefono, ep.nombre AS estado_pedido, ep.descripcion AS estado_pedido_descripcion, d.codigo_postal, d.provincia, d.localidad, d.calle, d.numero, fp.tipo AS forma_pago FROM pedidos p LEFT JOIN usuarios u ON p.id_usuario = u.id_usuario LEFT JOIN info_usuarios iu ON u.id_usuario = iu.id_usuario LEFT JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido LEFT JOIN domicilios d ON p.id_domicilio = d.id_domicilio LEFT JOIN metodos_pago fp ON p.id_metodo_pago = fp.id_metodo_pago WHERE p.id_pedido = :id_pedido;
+    $sql_resumen = $con->prepare("SELECT p.id_pedido, p.total, p.fecha, u.email, iu.nombre AS nombre_usuario, iu.apellido, iu.dni, iu.telefono, ep.nombre AS estado_pedido, ep.descripcion AS estado_pedido_descripcion, d.codigo_postal, d.provincia, d.localidad, d.calle, d.numero FROM pedidos p 
+    LEFT JOIN usuarios u ON p.id_usuario = u.id_usuario 
+    LEFT JOIN info_usuarios iu ON u.id_usuario = iu.id_usuario 
+    LEFT JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido 
+    LEFT JOIN domicilios d ON p.id_domicilio = d.id_domicilio 
+    WHERE p.id_pedido = :id_pedido;
     ");
     $sql_resumen->bindParam(':id_pedido', $id_pedido, PDO::PARAM_INT);
     $sql_resumen->execute();

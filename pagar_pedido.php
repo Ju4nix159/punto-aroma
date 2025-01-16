@@ -56,8 +56,18 @@ $sq_detalle_pedido->bindParam(':id_pedido', $id_pedido, PDO::PARAM_INT);
 $sq_detalle_pedido->execute();
 $detalle_pedido = $sq_detalle_pedido->fetch(PDO::FETCH_ASSOC);
 
-$sql_medotos_pago =  $con->prepare("SELECT mp.id_metodo_pago, mp.tipo, it.id_info_transferencia, it.banco, it.cuenta, it.cbu, it.alias FROM metodos_pago mp LEFT JOIN info_transferencia it ON mp.id_info_transferencia = it.id_info_transferencia;
-");
+$sql_medotos_pago =  $con->prepare("SELECT 
+    mp.id_metodo_pago,
+    mp.nombre_metodo_pago,
+    mp.descripcion_metodo_pago,
+    dmp.banco,
+    dmp.cbu,
+    dmp.alias,
+    dmp.titular
+FROM 
+    metodos_pago mp
+LEFT JOIN 
+    detalle_metodo_pago dmp ON mp.id_detalle = dmp.id_detalle;");
 $sql_medotos_pago->execute();
 $metodos_pago = $sql_medotos_pago->fetchAll(PDO::FETCH_ASSOC);
 
@@ -213,10 +223,10 @@ $metodos_pago = $sql_medotos_pago->fetchAll(PDO::FETCH_ASSOC);
                                     <option
                                         value="<?php echo $metodo_pago['id_metodo_pago']; ?>"
                                         data-banco="<?php echo $metodo_pago['banco']; ?>"
-                                        data-cuenta="<?php echo $metodo_pago['cuenta']; ?>"
+                                        data-cuenta="<?php echo $metodo_pago['titular']; ?>"
                                         data-cbu="<?php echo $metodo_pago['cbu']; ?>"
                                         data-alias="<?php echo $metodo_pago['alias']; ?>">
-                                        <?php echo $metodo_pago['tipo']; ?>
+                                        <?php echo $metodo_pago['nombre_metodo_pago']; ?>
                                     </option>
                                 <?php } ?>
                             </select>

@@ -11,7 +11,8 @@ CREATE TABLE categorias (
     id_categoria INT PRIMARY KEY AUTO_INCREMENT,
     nombre VARCHAR(100),
     descripcion TEXT,
-    estado TINYINT DEFAULT 1
+    estado TINYINT DEFAULT 1,
+    destacado TINYINT DEFAULT 0
 );
 
 CREATE TABLE marcas(
@@ -177,7 +178,7 @@ CREATE TABLE variantes (
     id_producto INT,
     id_estado_producto INT DEFAULT 1,
     aroma VARCHAR(100),
-    color INT,
+    color VARCHAR(100),
     stock INT,
     CONSTRAINT PK_variante_sku_END PRIMARY KEY (sku),
     CONSTRAINT FK_variante_id_producto_END          FOREIGN KEY (id_producto)           REFERENCES productos(id_producto),
@@ -516,3 +517,22 @@ INSERT INTO variantes_tipo_precio (id_producto, id_tipo_precio, precio, cantidad
 (24, 1, 800.00, 1);
 
 
+-- Query para contar la cantidad de productos por categoría
+SELECT c.nombre AS categoria, COUNT(p.id_producto) AS cantidad_productos
+FROM productos p
+JOIN categorias c ON p.id_categoria = c.id_categoria
+GROUP BY c.nombre;
+
+
+-- Query para obtener los nombres de las fragancias de un producto por su id
+SELECT v.nombre_variante AS fragancia
+FROM variantes v
+JOIN productos p ON v.id_producto = p.id_producto
+WHERE p.id_producto = 1; -- Reemplaza 1 por el id del producto deseado
+
+
+-- Query para obtener el nombre, descripción e imagen principal de un producto por su id
+SELECT p.nombre, p.descripcion, i.ruta AS imagen_principal
+FROM productos p
+JOIN imagenes i ON p.id_producto = i.id_producto
+WHERE p.id_producto = 1 AND i.principal = 1; -- Reemplaza 1 por el id del producto deseado

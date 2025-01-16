@@ -9,6 +9,8 @@ include 'carrito.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aroma y bienestar</title>
+    <link rel="icon" type="image/png" href="./assets/logoos/ayb-logo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
@@ -85,7 +87,7 @@ include 'carrito.php';
                             <a class="nav-link text-primary-custom" href="catalogo.php">Catálogo</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-primary-custom" href="index.php#destacados">destacados</a>
+                            <a class="nav-link text-primary-custom" href="index.php#destacados">Destacados</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-primary-custom" href="index.php#testimonios">Testimonios</a>
@@ -106,11 +108,11 @@ include 'carrito.php';
                                 <?php if (isset($_SESSION["usuario"])): ?>
                                     <?php if ($_SESSION["permiso"] == 2): ?>
                                         <li><a class="dropdown-item" href="panelUsuario.php"><i class="fas fa-user-circle nav-icon"></i> Panel de Usuario</a></li>
-                                        <li><a class="dropdown-item" href="/pa/admin/cerrar_sesion.php"><i class="fas fa-sign-out-alt nav-icon"></i> Cerrar Sesión</a></li>
+                                        <li><a class="dropdown-item" href="./admin/cerrar_sesion.php"><i class="fas fa-sign-out-alt nav-icon"></i> Cerrar Sesión</a></li>
                                     <?php elseif ($_SESSION["permiso"] == 1): ?>
-                                        <li><a class="dropdown-item" href="/pa/admin/admin.php"><i class="fas fa-user-circle nav-icon"></i> Panel de Admin</a></li>
+                                        <li><a class="dropdown-item" href="./admin/admin.php"><i class="fas fa-user-circle nav-icon"></i> Panel de Admin</a></li>
                                         <li><a class="dropdown-item" href="panelUsuario.php"><i class="fas fa-user-circle nav-icon"></i> Panel de usuario</a></li>
-                                        <li><a class="dropdown-item" href="/pa/admin/cerrar_sesion.php"><i class="fas fa-sign-out-alt nav-icon"></i> Cerrar Sesión</a></li>
+                                        <li><a class="dropdown-item" href="./admin/cerrar_sesion.php"><i class="fas fa-sign-out-alt nav-icon"></i> Cerrar Sesión</a></li>
                                     <?php endif; ?>
                                 <?php else: ?>
                                     <li><a class="dropdown-item" href="iniciarSesion.php"><i class="fas fa-sign-in-alt nav-icon"></i> Iniciar Sesión</a></li>

@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("quickViewPrice").innerText = `$${productPrice}`;
       document.getElementById(
         "quickViewImage"
-      ).src = `../pa/assets/productos/${productImage}`;
+      ).src = `./assets/productos/${productImage}`;
 
       // Limpiar el contenido previo de las fragancias/colores
       const variantsList = document.getElementById("quickViewFragrances");
