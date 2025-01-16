@@ -1,5 +1,5 @@
 <?php
-include 'admin/config/sbd.php';
+include './admin/config/sbd.php';
 
 header('Content-Type: application/json');
 

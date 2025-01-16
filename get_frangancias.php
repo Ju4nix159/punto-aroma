@@ -1,6 +1,6 @@
 <?php
 header('Content-Type: application/json');
-include 'admin/config/sbd.php'; // Asegúrate de que esta conexión use PDO
+include './admin/config/sbd.php'; // Asegúrate de que esta conexión use PDO
 
 $idProducto = $_GET['id_producto'] ?? null;
 

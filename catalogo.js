@@ -66,6 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
     )}&precioMin=${precioMinSeleccionado}&precioMax=${precioMaxSeleccionado}&productosPorPagina=${productosPorPagina}&ordenar=${
       ordenarDescendente ? "desc" : "asc"
     }`;
+
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
@@ -76,29 +77,39 @@ document.addEventListener("DOMContentLoaded", () => {
           mostrarMas.style.display = "none";
         } else {
           mensajeSinProductos.style.display = "none";
-          catalogo.style.display = "grid";
           data.productos.forEach((producto) => {
             const div = document.createElement("div");
-            div.classList.add("producto");
+            div.classList.add("col-12", "col-sm-6", "col-md-4", "col-lg-3"); // Aseguramos que cada tarjeta ocupe un tamaño proporcional
             div.innerHTML = `
-                            <img src="./assets/productos/${producto.imagen_principal}" alt="${producto.nombre}">
-                            <h3>${producto.nombre}</h3>
-                            <p>Marca: ${producto.marca}</p>
-                            <p>${producto.descripcion}</p>
-                            <p>Precio: $${producto.precio_minorista}</p>
-                            <button class="vista-rapida" data-id="${producto.id_producto}">Vista Rápida</button>`;
+              <div class="card h-100 product-card">
+                <div class="img-container position-relative">
+                  <img src="../pa/assets/productos/${producto.imagen_principal}" class="card-img-top" alt="${producto.nombre}">
+                  <button class="quick-view-btn" data-id="${producto.id_producto}">Vista rápida</button>
+                </div>
+                <div class="card-body">
+                  <h5 class="card-title">${producto.nombre}</h5>
+                  <p class="card-text"><small class="text-muted">Categoría: ${producto.categoria}</small></p>
+                  <p class="card-text"><small class="text-muted">Categoría: ${producto.marca}</small></p>
+                  <p class="card-text"><strong>$${producto.precio_minorista}</strong></p>
+                </div>
+                <div class="card-footer">
+                  <a href="producto.php?id_producto=${producto.id_producto}" class="btn btn-primary-custom w-100">Ver producto</a>
+                </div>
+              </div>
+            `;
             catalogo.appendChild(div);
           });
-          mostrarMas.style.display =
-            data.total > pagina * productosPorPagina ? "block" : "none";
 
-          // Asignar evento a botones de vista rápida
-          document.querySelectorAll(".vista-rapida").forEach((boton) => {
+          // Agregar evento a los botones de "Vista rápida"
+          document.querySelectorAll(".quick-view-btn").forEach((boton) => {
             boton.addEventListener("click", (e) => {
               const idProducto = e.target.dataset.id;
               abrirModal(idProducto);
             });
           });
+
+          mostrarMas.style.display =
+            data.total > pagina * productosPorPagina ? "block" : "none";
         }
       });
   };
@@ -110,39 +121,55 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((response) => response.json())
       .then((data) => {
         const modal = document.getElementById("modal");
-        modal.querySelector(".modal-content").innerHTML = `
-          <button id="cerrar-modal" class="cerrar-modal">×</button>
-          <img src="./assets/productos/${data.imagen_principal}" alt="${data.nombre}" style="max-width: 100%; height: auto;">
-          <h3>${data.nombre}</h3>
-          <p>${data.descripcion}</p>
-          <h4>Fragancias disponibles:</h4>
-          <ul>
-            ${data.fragancias.map((fragancia) => `<li>${fragancia}</li>`).join("")}
-          </ul>
-          <button class="comprar" onclick="location.href='producto.php?id_producto=${idProducto}'">Comprar</button>`;
-        modal.style.display = "flex";
-  
-        // Vincula el evento de cierre al botón dinámico
-        document.getElementById("cerrar-modal").addEventListener("click", () => {
-          modal.style.display = "none";
-        });
+        modal.querySelector(".modal-body").innerHTML = `
+        <div class="row g-4">
+          <div class="col-12 col-md-4">
+            <img src="../pa/assets/productos/${data.imagen_principal}" alt="${
+          data.nombre
+        }" class="img-fluid rounded">
+          </div>
+          <div class="col-12 col-md-8">
+            <h3>${data.nombre}</h3>
+            <p>${data.descripcion}</p>
+            <h4>Fragancias disponibles:</h4>
+            <div class="fragancias-scroll">
+              <ul class="list-inline">
+                ${data.fragancias
+                  .map(
+                    (fragancia) =>
+                      `<li class="list-inline-item badge bg-primary">${fragancia}</li>`
+                  )
+                  .join("")}
+              </ul>
+            </div>
+            <button class="btn btn-primary-custom mt-3" onclick="location.href='producto.php?id_producto=${idProducto}'">Comprar</button>
+          </div>
+        </div>
+      `;
+        // Usar Bootstrap para mostrar el modal
+        const bootstrapModal = new bootstrap.Modal(modal);
+        bootstrapModal.show();
       });
   };
-  
-  // Cerrar modal al hacer clic fuera del contenido
-  document.getElementById("modal").addEventListener("click", (event) => {
-    if (event.target.id === "modal") {
-      document.getElementById("modal").style.display = "none";
-    }
-  });
-  
 
   // Cerrar modal
-  document.getElementById("cerrar-modal").addEventListener("click", () => {
-    document.getElementById("modal").style.display = "none";
+  document.getElementById("modal").addEventListener("click", (event) => {
+    if (event.target.id === "modal") {
+      const bootstrapModal = bootstrap.Modal.getInstance(event.currentTarget);
+      bootstrapModal.hide();
+    }
   });
 
-
+  // Asociar eventos a los botones de cierre
+  document
+    .querySelectorAll("#cerrar-modal, #cerrar-modal-footer")
+    .forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const modal = document.getElementById("modal");
+        const bootstrapModal = bootstrap.Modal.getInstance(modal);
+        bootstrapModal.hide();
+      });
+    });
 
   mostrarMas.addEventListener("click", () => {
     paginaActual++;
