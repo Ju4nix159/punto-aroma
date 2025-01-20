@@ -146,7 +146,9 @@ $pedido = $sql_informacion_pedido->fetch(PDO::FETCH_ASSOC);
                                         <?php
                                         $total = 0;
                                         foreach ($detalles as $detalle) {
-                                            $total += $detalle["cantidad"] * $detalle["precio"];
+                                            if ($detalle["estado"] == 1){
+                                                $total += $detalle["cantidad"] * $detalle["precio"];
+                                            } 
                                         }
                                         ?>
                                         <h4>Total: $<span id="orderTotal"><?php echo $total ?></span></h4>
@@ -244,6 +246,7 @@ $pedido = $sql_informacion_pedido->fetch(PDO::FETCH_ASSOC);
                         row.querySelectorAll('td').forEach((td) => {
                             td.style.textDecoration = 'none';
                         });
+                        
                     } else {
                         button.textContent = 'Restaurar';
                         button.classList.remove('btn-delete-product', 'btn-danger');

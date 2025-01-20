@@ -275,17 +275,7 @@ WHERE i.id_usuario = :id_usuario AND ud.estado = 1 ");
                                         <label for="telefono" class="form-label">Teléfono</label>
                                         <input placeholder="Ingrese su telefono" type="tel" class="form-control" id="telefono" name="telefono" value="<?php echo $telefono ?>" required>
                                     </div>
-                                    <div class="col-md-6">
-                                        <label for="sexo" class="form-label">Sexo</label>
-                                        <select class="form-select" id="sexo" name="sexo" required>
-                                            <option value="" disabled selected>Seleccionar</option>
-                                            <?php foreach ($sexos as $sexo_option) { ?>
-                                                <option value="<?php echo $sexo_option['id_sexo']; ?>" <?php echo ($sexo_option['nombre'] == $sexo) ? 'selected' : ''; ?>>
-                                                    <?php echo $sexo_option['nombre']; ?>
-                                                </option>
-                                            <?php } ?>
-                                        </select>
-                                    </div>
+                                    
                                 </div>
                                 <div class="text-center mt-4">
                                     <button type="button" class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#confirmUpdateInfoModal">Guardar cambios</button>

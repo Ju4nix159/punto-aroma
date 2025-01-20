@@ -304,11 +304,6 @@ $marcas = $sql_marca->fetchAll(PDO::FETCH_ASSOC);
                   </div>
                 </div>
 
-                <div class="card-footer">
-                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-add-fragrance">
-                    <i class="fas fa-plus"></i> Agregar Fragancia
-                  </button>
-                </div>
               </div>
             </div>
             <!-- /.col -->
