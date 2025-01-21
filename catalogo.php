@@ -156,7 +156,7 @@
     <div class="row">
       <!-- Filtros (1 columna a la izquierda) -->
       <aside class="col-lg-3 col-md-4 col-sm-12" id="filtros-container">
-        <h2 class="mb-3">Filtros</h2>
+        <h2 class="mb-3">Filtros <i class="fa-solid fa-filter"></i></h2>
         <label for="categoria">Categoría:</label>
         <select id="categoria" class="form-select mb-3">
           <option value="">Todas</option>
