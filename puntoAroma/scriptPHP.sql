@@ -383,7 +383,8 @@ INSERT INTO estados_pedidos (nombre, descripcion) VALUES
 ('cambiado', 'Pedido cambiado por falta de stock'),
 ('en-camino', 'Pedido enviado al cliente'),
 ('entregado', 'Pedido entregado al cliente'),
-('cancelado', 'Pedido cancelado por el cliente');
+('cancelado', 'Pedido cancelado por el cliente'),
+('pagado', 'Pedido pagado por el cliente');
 
 -- Insertar datos en detalle_metodo_pago
 INSERT INTO detalle_metodo_pago (banco, cbu, alias, titular) VALUES 
