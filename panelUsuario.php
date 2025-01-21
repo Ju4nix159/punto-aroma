@@ -237,10 +237,6 @@ WHERE i.id_usuario = :id_usuario AND ud.estado = 1 ");
                                         <div class="user-info-label">Teléfono:</div>
                                         <div class="user-info-value" id="telefono-display"><?php echo $telefono ?></div>
                                     </div>
-                                    <div class="col-md-6 user-info-item">
-                                        <div class="user-info-label">Sexo:</div>
-                                        <div class="user-info-value" id="sexo-display"><?php echo $sexo ?></div>
-                                    </div>
                                 </div>
                                 <?php if (!$mostrar_alerta_perfil_incompleto) { ?>
                                     <div class="text-center mt-4">
