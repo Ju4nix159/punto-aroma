@@ -83,7 +83,11 @@ CREATE TABLE productos (
     id_marca INT,
     destacado TINYINT DEFAULT 0,
     estado TINYINT DEFAULT 1,
-    padre TINYINT DEFAULT 0,
+    unico TINYINT DEFAULT 0,
+    peso DECIMAL(10, 2) DEFAULT NULL,
+    alto DECIMAL(10, 2) DEFAULT NULL,
+    ancho DECIMAL(10, 2) DEFAULT NULL,
+    prodfundidad DECIMAL(10, 2) DEFAULT NULL,
     decuento DECIMAL(10, 2) DEFAULT 0,
     CONSTRAINT FK_productos_id_categoria_END FOREIGN KEY (id_categoria) REFERENCES categorias(id_categoria),
     CONSTRAINT FK_productos_id_marca_END FOREIGN KEY (id_marca) REFERENCES marcas(id_marca)
@@ -151,6 +155,7 @@ CREATE TABLE pedidos (
     fecha DATE,
     id_domicilio INT,
     estado_seña TINYINT DEFAULT 0,
+    envio DECIMAL(10, 2) DEFAULT 0,
     CONSTRAINT FK_pedidos_id_usuario_END FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
     CONSTRAINT FK_pedidos_id_estado_pedido_END FOREIGN KEY (id_estado_pedido) REFERENCES estados_pedidos(id_estado_pedido),
     CONSTRAINT FK_pedidos_id_domicilio_END FOREIGN KEY (id_domicilio) REFERENCES domicilios(id_domicilio)

@@ -5,6 +5,7 @@ $data = json_decode(file_get_contents('php://input'), true);
 $id_pedido = $data['id_pedido'];
 $productos = $data['productos'];
 $nuevo_estado = $data['nuevo_estado'];
+$costo_envio = $data['envio'];
 
 try {
     $con->beginTransaction();
@@ -29,11 +30,13 @@ try {
             SELECT id_estado_pedido 
             FROM estados_pedidos 
             WHERE nombre = :nuevo_estado
-        )
+        ),
+        envio = :costo_envio
         WHERE id_pedido = :id_pedido;
     ");
     $sqlPedido->bindParam(':nuevo_estado', $nuevo_estado, PDO::PARAM_STR);
     $sqlPedido->bindParam(':id_pedido', $id_pedido, PDO::PARAM_INT);
+    $sqlPedido->bindParam(':costo_envio', $costo_envio, PDO::PARAM_INT);
     $sqlPedido->execute();
 
     $con->commit();

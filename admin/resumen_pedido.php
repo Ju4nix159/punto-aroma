@@ -15,7 +15,7 @@ $sql_productos->bindParam(':id_pedido', $id_pedido, PDO::PARAM_INT);
 $sql_productos->execute();
 $detalles = $sql_productos->fetchAll(PDO::FETCH_ASSOC);
 
-$sql_informacion_pedido = $con->prepare("SELECT p.id_pedido, p.total, p.fecha, u.email, iu.nombre AS nombre_usuario, iu.apellido, iu.dni, iu.telefono, ep.nombre AS estado_pedido, ep.descripcion AS estado_pedido_descripcion, d.codigo_postal, d.provincia, d.localidad, d.calle, d.numero,d.barrio FROM pedidos p 
+$sql_informacion_pedido = $con->prepare("SELECT p.envio, p.id_pedido, p.total, p.fecha, u.email, iu.nombre AS nombre_usuario, iu.apellido, iu.dni, iu.telefono, ep.nombre AS estado_pedido, ep.descripcion AS estado_pedido_descripcion, d.codigo_postal, d.provincia, d.localidad, d.calle, d.numero,d.barrio FROM pedidos p 
 LEFT JOIN usuarios u ON p.id_usuario = u.id_usuario 
 LEFT JOIN info_usuarios iu ON u.id_usuario = iu.id_usuario 
 LEFT JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido 
@@ -24,6 +24,10 @@ WHERE p.id_pedido = :id_pedido;");
 $sql_informacion_pedido->bindParam(':id_pedido', $id_pedido, PDO::PARAM_INT);
 $sql_informacion_pedido->execute();
 $pedido = $sql_informacion_pedido->fetch(PDO::FETCH_ASSOC);
+
+$sql_estados_pedidos = $con->prepare("SELECT * FROM estados_pedidos;");
+$sql_estados_pedidos->execute();
+$estados_pedidos = $sql_estados_pedidos->fetchAll(PDO::FETCH_ASSOC);
 
 
 
@@ -36,6 +40,8 @@ $pedido = $sql_informacion_pedido->fetch(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
     <title>resuemn del pedido</title>
 </head>
 
@@ -89,9 +95,10 @@ $pedido = $sql_informacion_pedido->fetch(PDO::FETCH_ASSOC);
                                         </div>
                                         <div class="col-md-6">
                                             <h4>Detalles del Pedido</h4>
-                                            <p><strong>Número de Pedido:</strong> <?php echo $id_pedido ?></p>
+                                            <p><strong>Número de telefono</strong> <?php echo $pedido["telefono"] ?></p>
                                             <p><strong>Fecha:</strong> <?php echo $pedido["fecha"] ?></p>
-                                            <p><strong>Estado:</strong> <?php echo $pedido["estado_pedido"] ?></p>
+                                            <p><strong>Estado:</strong> <span id="estado-actual"><?php echo htmlspecialchars($pedido["estado_pedido"]); ?></span></p>
+
                                         </div>
                                     </div>
                                     <table class="table table-bordered table-striped">
@@ -131,33 +138,41 @@ $pedido = $sql_informacion_pedido->fetch(PDO::FETCH_ASSOC);
                                                     </td>
                                                     <td>
                                                         <?php if ($isUnavailable) { ?>
-                                                            <button type="button" class="btn btn-secondary btn-restore-product">Restaurar</button>
+                                                            <button type="button" class="btn btn-secondary btn-restore-product" onclick="calcularTotal()">Restaurar</button>
                                                         <?php } else { ?>
-                                                            <button type="button" class="btn btn-danger btn-delete-product">Eliminar</button>
+                                                            <button type="button" class="btn btn-danger btn-delete-product" onclick="calcularTotal()">Eliminar</button>
                                                         <?php } ?>
                                                     </td>
                                                 </tr>
                                             <?php } ?>
                                         </tbody>
+                                        <tfoot>
+                                            <!-- calcular el envio -->
+                                            <tr>
+                                                <td>Costo de Envío</td>
+                                                <td>
+                                                    <input
+                                                        type="number"
+                                                        id="costoEnvio"
+                                                        class="form-control"
+                                                        value="<?php echo $pedido["envio"] ?>"
+                                                        oninput="calcularTotal()"> <!-- Llamar a la función cuando el valor cambie -->
+                                                </td>
+                                            </tr>
+                                        </tfoot>
 
 
                                     </table>
                                     <div class="text-right">
-                                        <?php
-                                        $total = 0;
-                                        foreach ($detalles as $detalle) {
-                                            if ($detalle["estado"] == 1){
-                                                $total += $detalle["cantidad"] * $detalle["precio"];
-                                            } 
-                                        }
-                                        ?>
-                                        <h4>Total: $<span id="orderTotal"><?php echo $total ?></span></h4>
+                                        <h4>Total: $<span id="orderTotal"></span></h4>
                                     </div>
                                 </div>
                                 <!-- /.card-body -->
                                 <div class="card-footer">
                                     <a href="./pedidos.php" class="btn btn-warning ">Volver</a>
                                     <button type="button" class="btn btn-danger" id="cancelChangesBtn">Cancelar Cambios</button>
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCambiarEstado">
+                                        Cambiar Estado </button>
                                     <button type="button" class="btn btn-primary float-right ml-2" id="confirmOrderBtn">Confirmar Pedido</button>
                                     <button type="button" class="btn btn-success float-right" id="confirmChangesBtn">Confirmar Cambios</button>
                                 </div>
@@ -223,7 +238,71 @@ $pedido = $sql_informacion_pedido->fetch(PDO::FETCH_ASSOC);
         </div>
         <!-- /.content-wrapper -->
     </div>
+    <div class="modal fade" id="modalCambiarEstado" tabindex="-1" aria-labelledby="modalCambiarEstadoLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalCambiarEstadoLabel">Cambiar Estado del Pedido</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Estado Actual -->
+                    <p><strong>Estado Actual:</strong> <span id="estado-actual"><?= htmlspecialchars($pedido['estado_pedido']); ?></span></p>
+
+                    <!-- Formulario -->
+                    <form id="formCambiarEstado">
+                        <div class="mb-3">
+                            <label for="nuevoEstado" class="form-label">Seleccionar Nuevo Estado</label>
+                            <select class="form-select" id="nuevoEstado" name="nuevo_estado" required>
+                                <option value="" selected disabled>Selecciona un estado</option>
+                                <?php foreach ($estados_pedidos as $estado): ?>
+                                    <option value="<?= htmlspecialchars($estado['id_estado_pedido']); ?>">
+                                        <?= htmlspecialchars($estado['nombre']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <input type="hidden" name="id_pedido" value="<?= htmlspecialchars($pedido['id_pedido']); ?>">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" id="guardarCambioEstado" class="btn btn-primary">Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
+        document.getElementById('guardarCambioEstado').addEventListener('click', function() {
+            const form = document.getElementById('formCambiarEstado');
+            const formData = new FormData(form);
+
+            fetch('actualizar_estado.php', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Estado actualizado correctamente.');
+
+                        // Actualizar el contenido del estado en la página
+                        document.getElementById('estado-actual').textContent = data.nuevo_estado;
+
+                        // Cerrar el modal
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('modalCambiarEstado'));
+                        modal.hide();
+                    } else {
+                        alert('Error al actualizar el estado: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Ocurrió un error al intentar actualizar el estado.');
+                });
+        });
+
+
         document.addEventListener('DOMContentLoaded', function() {
             const productTableBody = document.getElementById('productTableBody');
 
@@ -246,7 +325,8 @@ $pedido = $sql_informacion_pedido->fetch(PDO::FETCH_ASSOC);
                         row.querySelectorAll('td').forEach((td) => {
                             td.style.textDecoration = 'none';
                         });
-                        
+                        calcularTotal();
+
                     } else {
                         button.textContent = 'Restaurar';
                         button.classList.remove('btn-delete-product', 'btn-danger');
@@ -255,6 +335,7 @@ $pedido = $sql_informacion_pedido->fetch(PDO::FETCH_ASSOC);
                         row.querySelectorAll('td').forEach((td) => {
                             td.style.textDecoration = 'line-through';
                         });
+                        calcularTotal();
                     }
                 }
             });
@@ -309,6 +390,7 @@ $pedido = $sql_informacion_pedido->fetch(PDO::FETCH_ASSOC);
                 const idPedido = <?php echo json_encode($id_pedido); ?>;
                 const cambios = [];
 
+
                 // Recolectar el estado actual de los productos visibles en la tabla
                 productTableBody.querySelectorAll('tr').forEach((row) => {
                     const sku = row.dataset.sku;
@@ -318,6 +400,7 @@ $pedido = $sql_informacion_pedido->fetch(PDO::FETCH_ASSOC);
                         estado
                     });
                 });
+                const envio = document.getElementById('costoEnvio').value;
 
                 // Enviar datos al servidor para actualizar en la base de datos
                 fetch('./confirmar_cambios.php', {
@@ -327,7 +410,9 @@ $pedido = $sql_informacion_pedido->fetch(PDO::FETCH_ASSOC);
                         },
                         body: JSON.stringify({
                             id_pedido: idPedido,
-                            cambios
+                            cambios,
+                            envio: envio
+
                         }),
                     })
                     .then((response) => response.json())
@@ -362,6 +447,7 @@ $pedido = $sql_informacion_pedido->fetch(PDO::FETCH_ASSOC);
             // Determinar el estado del pedido
             const hayCambiados = productos.some((producto) => producto.estado === 0);
             const nuevoEstado = hayCambiados ? 'Cambiado' : 'Procesado'; // Decidir el estado
+            const envio = document.getElementById('costoEnvio').value;
 
             // Enviar datos al servidor
             fetch('./confirmar_pedido.php', {
@@ -372,7 +458,8 @@ $pedido = $sql_informacion_pedido->fetch(PDO::FETCH_ASSOC);
                     body: JSON.stringify({
                         id_pedido: idPedido,
                         productos,
-                        nuevo_estado: nuevoEstado
+                        nuevo_estado: nuevoEstado,
+                        envio: envio
                     }),
                 })
                 .then((response) => response.json())
@@ -402,6 +489,51 @@ $pedido = $sql_informacion_pedido->fetch(PDO::FETCH_ASSOC);
                 confirmButtonText: 'Cerrar'
             })
         }
+
+        function calcularTotal() {
+            let total = 0;
+
+            // Obtener todas las filas del cuerpo de la tabla
+            const filas = document.querySelectorAll("#productTableBody tr");
+
+            filas.forEach(fila => {
+                // Comprobar si la fila está tachada (producto eliminado)
+                const isUnavailable = fila.classList.contains("text-muted");
+
+                // Solo sumar subtotales de filas que no estén eliminadas
+                if (!isUnavailable) {
+                    // Seleccionar la columna de subtotal
+                    const subtotalElement = fila.querySelector("td:nth-child(5)");
+
+                    if (subtotalElement) {
+                        // Extraer el texto, eliminar el símbolo de $ y convertir a número
+                        const subtotalText = subtotalElement.innerText.trim();
+                        const subtotal = parseFloat(subtotalText.replace("$", "").replace(",", ""));
+
+                        // Validar que el subtotal sea un número antes de sumarlo
+                        if (!isNaN(subtotal)) {
+                            total += subtotal;
+                        }
+                    }
+                }
+            });
+
+            const costoEnvioInput = document.getElementById("costoEnvio");
+            if (costoEnvioInput) {
+                const costoEnvio = parseFloat(costoEnvioInput.value);
+                if (!isNaN(costoEnvio)) {
+                    total += costoEnvio; // Agregar el costo de envío al total
+                }
+            }
+            // Actualizar el total en el elemento con id="orderTotal"
+            const totalElement = document.getElementById("orderTotal");
+            if (totalElement) {
+                totalElement.innerText = total.toFixed(2);
+            }
+        }
+        document.addEventListener("DOMContentLoaded", function() {
+            calcularTotal(); // Llamar a la función para calcular el total al cargar la página
+        });
     </script>
 
 </body>

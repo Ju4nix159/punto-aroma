@@ -147,8 +147,6 @@ $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
                             }
                             return $carry;
                         }, 0);
-                        $envio = 5.00;
-                        $total = $subtotal + $envio;
                         ?>
                         <div class="justify-content-between mb-3">
                             <label for="" class="form-label">Tipo pago</label>
@@ -156,7 +154,7 @@ $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
                                 class="form-select form-select-lg"
                                 name="tipo_pago"
                                 id="tipo_pago">
-                                <option value="seña" selected>seña(60%)</option>
+                                <option value="seña" selected>seña(30%)</option>
                                 <option value="pago_total">Pago total</option>
                             </select>
 
@@ -164,10 +162,6 @@ $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
                         <div class="d-flex justify-content-between mb-3">
                             <span>Subtotal</span>
                             <strong>$<?php echo number_format($subtotal, 2); ?></strong>
-                        </div>
-                        <div class="d-flex justify-content-between mb-3">
-                            <span>Envío</span>
-                            <strong>$<?php echo number_format($envio, 2); ?></strong>
                         </div>
                         <div class="d-flex justify-content-between mb-3">
                             <span>Total</span>
@@ -325,13 +319,12 @@ $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
             const tipoPago = this.value;
             const totalElement = document.getElementById('total');
             const subtotal = <?php echo $subtotal; ?>;
-            const envio = <?php echo $envio; ?>;
             let total;
 
             if (tipoPago === 'seña') {
-            total = (subtotal + envio) * 0.60;
+            total = (subtotal) * 0.30;
             } else {
-            total = subtotal + envio;
+            total = subtotal ;
             }
 
             totalElement.textContent = '$' + total.toFixed(2);
