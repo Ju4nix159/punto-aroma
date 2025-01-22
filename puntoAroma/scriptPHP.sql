@@ -64,7 +64,8 @@ CREATE TABLE domicilios (
     localidad VARCHAR(100),
     barrio VARCHAR(100),
     calle VARCHAR(100),
-    numero VARCHAR(10)
+    numero VARCHAR(10),
+    informacion_adicional TEXT
 );
 
 -- Tabla de tipos de precios

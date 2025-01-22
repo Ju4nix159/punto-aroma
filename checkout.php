@@ -1,6 +1,7 @@
 <?php
 
-include './header.php';
+include "./header.php";
+
 include './admin/config/sbd.php';
 
 if (!isset($_SESSION['usuario'])) {
@@ -44,295 +45,240 @@ $usuario = $sql_informacio_usuario->fetch(PDO::FETCH_ASSOC);
 
 $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
 ?>
+
+
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout - Punto Aroma</title>
-    <style>
-        .form-control:focus,
-        .form-select:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(131, 175, 55, 0.25);
-        }
-
-        .card-header {
-            background-color: var(--secondary-color);
-            color: white;
-        }
-
-        .fragrance-toggle {
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .fragrance-toggle:hover {
-            text-decoration: underline;
-        }
-
-        .fragrance-list {
-            margin-top: 0.5rem;
-            padding-left: 1rem;
-        }
-    </style>
+    <title>Checkout</title>
+    <link href="styles.css" rel="stylesheet">
 </head>
 
 <body>
-    <div class="container mt-5">
-        <h1 class="text-center mb-4">Checkout - Punto Aroma</h1>
-        <div class="row">
-
-            <div class="col-md-8 mb-4 ">
-                <div class="card card-primary">
-                    <div class="card-header">
-                        <h5 class="mb-0">Información Personal</h5>
-                    </div>
-                    <!-- /.card-header -->
-                    <div class="card-body">
-                        <strong><i class="fas fa-user mr-1"></i> Nombre Completo</strong>
-                        <p class="text-muted"><?php echo $usuario["nombre"] ?></p>
-
-                        <hr>
-
-                        <strong><i class="fas fa-envelope mr-1"></i> Correo Electrónico</strong>
-                        <p class="text-muted"><?php echo $usuario["email"] ?></p>
-
-                        <hr>
-
-                        <strong><i class="fas fa-phone mr-1"></i> Teléfono</strong>
-                        <p class="text-muted"><?php echo $usuario["telefono"] ?></p>
-                    </div>
-                    <!-- /.card-body -->
-                </div>
-                <!-- /.card -->
-
+    <div class="container my-5">
+        <div class="card">
+            <div class="card-header">
+                <h1 class="card-title">Finalizar compra</h1>
+                <p class="card-text">Complete su pedido en 3 sencillos pasos</p>
             </div>
-
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">Resumen del pedido</h5>
+            <div class="card-body">
+                <div class="checkout_steps mb-4">
+                    <div class="checkout_step active" data-step="1">
+                        <div class="checkout_step-icon">
+                            <i class="bi bi-box-seam"></i>
+                        </div>
+                        <span class="checkout_step-text">Resumen</span>
                     </div>
-                    <div class="card-body">
-                        <ul class="list-group list-group-flush">
-                            <?php foreach ($cart as $index => $item): ?>
-                                <li class="list-group-item">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <h6 class="mb-0"><?php echo htmlspecialchars($item['nombre']); ?></h6>
-                                        <span class="fragrance-toggle" onclick="toggleFragrances(<?php echo $index; ?>)">
-                                            Ver fragancias <i class="bi bi-chevron-down"></i>
-                                        </span>
-                                    </div>
-                                    <ul id="checkout-fragancias-<?php echo $index; ?>" class="fragrance-list" style="display: none;">
-
-                                        <?php foreach ($item['fragancias'] as $fragancia): ?>
-                                            <li>
-                                                <?php echo htmlspecialchars($fragancia['aroma']); ?>
-                                                (<?php echo $fragancia['cantidad']; ?>) - $<?php echo number_format($item['precio'] * $fragancia['cantidad'], 2); ?>
-                                            </li>
-                                        <?php endforeach; ?>
-                                    </ul>
-                                </li>
-
-                            <?php endforeach; ?>
-                        </ul>
-                        <hr>
-                        <!-- Resumen del total -->
-                        <?php
-                        $subtotal = array_reduce($cart, function ($carry, $item) {
-                            foreach ($item['fragancias'] as $fragancia) {
-                                $carry += $item['precio'] * $fragancia['cantidad'];
-                            }
-                            return $carry;
-                        }, 0);
-                        ?>
-                        <div class="justify-content-between mb-3">
-                            <label for="" class="form-label">Tipo pago</label>
-                            <select
-                                class="form-select form-select-lg"
-                                name="tipo_pago"
-                                id="tipo_pago">
-                                <option value="seña" selected>seña(30%)</option>
-                                <option value="pago_total">Pago total</option>
-                            </select>
-
+                    <div class="checkout_step-arrow">&rarr;</div>
+                    <div class="checkout_step" data-step="2">
+                        <div class="checkout_step-icon">
+                            <i class="bi bi-person"></i>
                         </div>
-                        <div class="d-flex justify-content-between mb-3">
-                            <span>Subtotal</span>
-                            <strong>$<?php echo number_format($subtotal, 2); ?></strong>
+                        <span class="checkout_step-text">Facturación</span>
+                    </div>
+                    <div class="checkout_step-arrow">&rarr;</div>
+                    <div class="checkout_step" data-step="3">
+                        <div class="checkout_step-icon">
+                            <i class="bi bi-credit-card"></i>
                         </div>
-                        <div class="d-flex justify-content-between mb-3">
-                            <span>Total</span>
-                            <strong id="total" class="text-primary-custom"></strong>
-                        </div>
-                        <button type="button" class="btn btn-primary-custom w-100" onclick="procesarPago()">Realizar pedido</button>
+                        <span class="checkout_step-text">Pago</span>
                     </div>
                 </div>
-            </div>
 
-            <div class="col-md-8 mb-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">Información de Domicilio</h5>
-                    </div>
-                    <!-- /.card-header -->
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <select class="form-select" id="direccionSelect" onchange="mostrarDireccion()">
-                                <?php foreach ($domicilios as $domicilio): ?>
-                                    <?php if ($domicilio['estado'] == 1): // Solo mostrar domicilios con estado 1 
-                                    ?>
-                                        <option
-                                            value="<?php echo $domicilio['id_domicilio']; ?>"
-                                            data-calle="<?php echo htmlspecialchars($domicilio['calle']); ?>"
-                                            data-numero="<?php echo htmlspecialchars($domicilio['numero']); ?>"
-                                            data-ciudad="<?php echo htmlspecialchars($domicilio['localidad']); ?>"
-                                            data-estado="<?php echo htmlspecialchars($domicilio['provincia']); ?>"
-                                            data-codigo-postal="<?php echo htmlspecialchars($domicilio['codigo_postal']); ?>"
-                                            <?php echo $domicilio['principal'] == 1 ? 'selected' : ''; ?>>
-                                            <?php echo htmlspecialchars($domicilio['tipo_domicilio']); ?>
-                                        </option>
-                                    <?php endif; ?>
+                <div id="step1" class="checkout_step-content">
+                    <h2><i class="bi bi-box-seam"></i> Resumen de productos</h2>
+                    <?php foreach ($cart as $index => $item): ?>
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0"><?php echo htmlspecialchars($item['nombre']); ?></h6>
+                                <span class="fragrance-toggle" onclick="toggleFragrances(<?php echo $index; ?>)">
+                                    Ver fragancias <i class="bi bi-chevron-down"></i>
+                                </span>
+                            </div>
+                            <ul id="checkout-fragancias-<?php echo $index; ?>" class="fragrance-list" style="display: none;">
+
+                                <?php foreach ($item['fragancias'] as $fragancia): ?>
+                                    <li>
+                                        <?php echo htmlspecialchars($fragancia['aroma']); ?>
+                                        (<?php echo $fragancia['cantidad']; ?>) - $<?php echo number_format($item['precio'] * $fragancia['cantidad'], 2); ?>
+                                    </li>
                                 <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div id="direccionInfo" class="mt-3" style="display: none;">
-                            <strong><i class="fas fa-map-marker-alt mr-1"></i> Dirección</strong>
-                            <p class="text-muted" id="direccionCalle"></p>
+                            </ul>
+                        </li>
+                    <?php endforeach; ?>
 
-                            <hr>
-
-                            <strong><i class="fas fa-city mr-1"></i> Ciudad</strong>
-                            <p class="text-muted" id="direccionCiudad"></p>
-
-                            <hr>
-
-                            <strong><i class="fas fa-map mr-1"></i> Provincia</strong>
-                            <p class="text-muted" id="direccionEstado"></p>
-
-                            <hr>
-
-                            <strong><i class="fas fa-mail-bulk mr-1"></i> Código Postal</strong>
-                            <p class="text-muted" id="direccionCodigoPostal"></p>
-                        </div>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <strong>Total</strong>
+                        <strong id="totalPrice"></strong>
                     </div>
                 </div>
 
+                <div id="step2" class="checkout_step-content d-none">
+                    <h2><i class="bi bi-person"></i> Información de facturación</h2>
+                    <form id="billingForm">
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label for="nombre" class="form-label">Nombre</label>
+                                <input type="text" class="form-control" id="nombre" placeholder="Ingrese su nombre" value="<?php echo $usuario["nombre"] ?>" required>
+                            </div>
+                            <div class="col">
+                                <label for="apellido" class="form-label">Apellido</label>
+                                <input type="text" class="form-control" id="apellido" placeholder="Ingrese su apellido" value="<?php echo $usuario["apellido"] ?>" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label for="dni" class="form-label">DNI</label>
+                                <input type="text" class="form-control" id="dni" placeholder="Ingrese su DNI" value="<?php echo $usuario["dni"] ?>" required>
+                            </div>
+                            <div class="col">
+                                <label for="phone" class="form-label">Teléfono</label>
+                                <input type="tel" class="form-control" id="phone" placeholder="Ingrese su número de teléfono" value="<?php echo $usuario["telefono"] ?>" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Correo electrónico</label>
+                            <input type="email" class="form-control" id="email" placeholder="Ingrese su mail" value="<?php echo $usuario["email"] ?>" required>
+                        </div>
+                        <hr>
+                        <h2><i class="bi bi-signpost"></i> Información de domicilios</h2>
 
+
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label for="province" class="form-label">Provincia</label>
+                                <input type="text" class="form-control" id="province" placeholder="Ingrese su provincia" required>
+                            </div>
+                            <div class="col">
+                                <label for="locality" class="form-label">Localidad</label>
+                                <input type="text" class="form-control" id="locality" placeholder="Ingrese su localidad" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label for="street" class="form-label">calle</label>
+                                <input type="text" class="form-control" id="street" placeholder="Calle Principal" required>
+                            </div>
+                            <div class="col">
+                                <label for="number" class="form-label">Número</label>
+                                <input type="text" class="form-control" id="number" placeholder="123" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label for="floor" class="form-label">Piso</label>
+                                <input type="text" class="form-control" id="floor" placeholder="Ej. 2" required>
+                            </div>
+                            <div class="col">
+                                <label for="department" class="form-label">Departamento</label>
+                                <input type="text" class="form-control" id="department" placeholder="Ej. B" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="postalCode" class="form-label">Código postal</label>
+                            <input type="text" class="form-control" id="postalCode" placeholder="28001" required>
+                        </div>
+                        <hr>
+                        <div class="mb-3">
+                            <label for="additionalInfo" class="form-label">Información adicional</label>
+                            <textarea class="form-control" id="additionalInfo" rows="3" placeholder="Ingrese información adicional (opcional)"></textarea>
+                        </div>
+                    </form>
+
+
+                </div>
+
+                <div id="step3" class="checkout_step-content d-none">
+                    <h2><i class="bi bi-credit-card"></i> Método de pago</h2>
+                    <form id="paymentForm">
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="transferencia" value="transferencia" checked>
+                                <label class="form-check-label" for="transferencia">
+                                    Transferencia bancaria
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="mercadoPago" value="mercadopago">
+                                <label class="form-check-label" for="mercadoPago">
+                                    Mercado Pago
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="pagoEnLocal" value="pagoenlocal">
+                                <label class="form-check-label" for="pagoEnLocal">
+                                    Pago en local
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Transferencia Bancaria -->
+                        <div id="transferenciaFields" class="payment-fields">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Cuenta Bancaria 1</h5>
+                                            <p class="card-text">Banco: Banco Ejemplo<br>Cuenta: 123456789<br>CBU: 000000310000123456789</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Cuenta Bancaria 2</h5>
+                                            <p class="card-text">Banco: Otro Banco<br>Cuenta: 987654321<br>CBU: 000000320000987654321</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Cuenta Bancaria 3</h5>
+                                            <p class="card-text">Banco: Banco Más<br>Cuenta: 555555555<br>CBU: 000000330000555555555</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="comprobanteTransferencia" class="form-label">Subir comprobante</label>
+                                <input type="file" class="form-control" id="comprobanteTransferencia">
+                            </div>
+                        </div>
+
+                        <!-- Mercado Pago -->
+                        <div id="mercadoPagoFields" class="payment-fields d-none">
+                            <div class="text-center mb-3">
+                                <button type="button" class="btn btn-primary">Pagar con Mercado Pago</button>
+                            </div>
+                            <div class="mb-3">
+                                <label for="comprobanteMercadoPago" class="form-label">Subir comprobante</label>
+                                <input type="file" class="form-control" id="comprobanteMercadoPago">
+                            </div>
+                        </div>
+
+                        <!-- Pago en Local -->
+                        <div id="pagoEnLocalFields" class="payment-fields d-none">
+                            <p>Puede realizar el pago en nuestra oficina local.</p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button id="prevBtn" class="btn btn-outline-custom" disabled>Anterior</button>
+                <button id="nextBtn" class="btn btn-primary-custom float-end">Siguiente</button>
             </div>
         </div>
     </div>
-    <?php
-    include './footer.php';
-    ?>
 
-    <script src="carrito.js"></script>
-    <script>
-        function mostrarDireccion() {
-            const select = document.getElementById('direccionSelect');
-            const selectedOption = select.options[select.selectedIndex];
-
-            // Extraer datos del atributo data
-            const calle = selectedOption.getAttribute('data-calle');
-            const numero = selectedOption.getAttribute('data-numero');
-            const ciudad = selectedOption.getAttribute('data-ciudad');
-            const estado = selectedOption.getAttribute('data-estado');
-            const codigoPostal = selectedOption.getAttribute('data-codigo-postal');
-
-            // Actualizar el contenido del DOM
-            document.getElementById('direccionCalle').textContent = `${calle || 'No disponible'} ${numero || ''}`;
-            document.getElementById('direccionCiudad').textContent = ciudad || 'No disponible';
-            document.getElementById('direccionEstado').textContent = estado || 'No disponible';
-            document.getElementById('direccionCodigoPostal').textContent = codigoPostal || 'No disponible';
-
-            // Mostrar la sección
-            document.getElementById('direccionInfo').style.display = 'block';
-        }
-
-        // Llamamos a la función al cargar para inicializar el estado
-        document.addEventListener('DOMContentLoaded', mostrarDireccion);
-
-        function toggleFragrances(productId) {
-            // Usamos el ID único generado con "checkout-"
-            const fragranceList = document.getElementById(`checkout-fragancias-${productId}`);
-
-            // Verificar si el elemento existe
-            if (!fragranceList) {
-                console.error(`No se encontró el elemento con ID checkout-fragancias-${productId}`);
-                return;
-            }
-
-            const toggleIcon = fragranceList.previousElementSibling.querySelector('i');
-
-            if (toggleIcon) {
-                if (fragranceList.style.display === 'none') {
-                    fragranceList.style.display = 'block';
-                    toggleIcon.classList.remove('bi-chevron-down');
-                    toggleIcon.classList.add('bi-chevron-up');
-                } else {
-                    fragranceList.style.display = 'none';
-                    toggleIcon.classList.remove('bi-chevron-up');
-                    toggleIcon.classList.add('bi-chevron-down');
-                }
-            } else {
-                console.warn('No se encontró el icono <i> asociado.');
-            }
-        }
-
-        function procesarPago() {
-            const idDomicilio = document.getElementById('direccionSelect').value;
-
-            if (!idDomicilio) {
-                alert('Por favor, selecciona una dirección.');
-                return;
-            }
-
-            fetch('procesar_pedido.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: new URLSearchParams({
-                        id_domicilio: idDomicilio
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Pedido realizado con éxito. ID del pedido: ' + data.id_pedido);
-                        cargarCarrito();
-                        window.location.href = 'gracias.php?id_pedido=' + data.id_pedido; // Redirigir a una página de agradecimiento
-                    } else {
-                        alert('Error: ' + (data.error || 'No se pudo realizar el pedido.'));
-                    }
-                })
-                .catch(error => {
-                    console.error('Error al procesar el pedido:', error);
-                    alert('Ocurrió un error al realizar el pedido.', error);
-                });
-        };
-
-
-        document.getElementById('tipo_pago').addEventListener('change', function() {
-            const tipoPago = this.value;
-            const totalElement = document.getElementById('total');
-            const subtotal = <?php echo $subtotal; ?>;
-            let total;
-
-            if (tipoPago === 'seña') {
-            total = (subtotal) * 0.30;
-            } else {
-            total = subtotal ;
-            }
-
-            totalElement.textContent = '$' + total.toFixed(2);
-        });
-
-        // Llamamos a la función al cargar para inicializar el estado
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('tipo_pago').dispatchEvent(new Event('change'));
-        });
-    </script>
+    <script src="checkout.js"></script>
 </body>
+<script>
+
+</script>
+
+</html>
