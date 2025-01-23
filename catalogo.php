@@ -1,5 +1,5 @@
-<?php  
-  include 'header.php';
+<?php
+include 'header.php';
 
 ?>
 
@@ -12,141 +12,60 @@
   <title>Catálogo</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
-    #modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      align-items: center;
-      justify-content: center;
-    }
-
-    #modal .modal-dialog {
-      max-width: 600px;
-    }
-
-    .product-card .card-img-top {
-      object-fit: cover;
-      /* Esto asegura que las imágenes mantengan la proporción, sin deformarse */
-      height: 200px;
-      /* Establecer una altura fija para las imágenes */
-    }
-
-    .product-card .card-body {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      height: 150px;
-      /* Esto asegura que el contenido se ajuste dentro de un alto fijo */
-    }
-
-    .product-card .card-footer {
-      margin-top: auto;
-      /* Esto asegura que el pie de la tarjeta siempre esté al final */
-    }
-
-    .card-body .card-text {
-      font-size: 14px;
-    }
-
-    .quick-view-btn {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background-color: rgba(0, 0, 0, 0.5);
-      color: white;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 3px;
-      cursor: pointer;
-    }
-
-    .quick-view-btn:hover {
-      background-color: rgba(0, 0, 0, 0.7);
-    }
-
-    /* Modal con imagen a la izquierda y texto a la derecha */
-    .modal-content .row {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .modal-content .col-md-4 {
-      max-width: 250px;
-      /* Imagen no tan grande */
-    }
-
-    .modal-content .col-md-8 {
-      max-width: 500px;
-      /* Espacio suficiente para el texto */
-    }
-
-    /* Para las fragancias, hacerlas deslizar si son muchas */
-    .fragancias-scroll {
-      max-width: 100%;
-      overflow-x: auto;
-      /* Desplazamiento horizontal si hay muchas fragancias */
-      white-space: nowrap;
-      /* Evita que las fragancias se ajusten a varias líneas */
-      margin-top: 10px;
-    }
-
-    .fragancias-scroll .list-inline-item {
-      margin-right: 15px;
-      /* Espacio entre cada fragancia */
-      font-size: 14px;
-    }
-
-    /* Mejorar la apariencia de la imagen */
-    .modal-content img {
-      object-fit: cover;
-      /* Asegura que la imagen no se deforme */
-      height: auto;
-      width: 100%;
-      /* Ajuste proporcional */
-    }
-
-    /* Asegura que el modal sea desplazable si el contenido es demasiado largo */
-    .modal-body {
-      max-height: 400px;
-      overflow-y: auto;
-    }
-
-    .fragancias-scroll ul {
-      padding: 0;
-      margin: 0;
-      list-style: none;
-    }
-
-    .fragancias-scroll ul li {
-      display: inline-block;
-      margin-right: 10px;
-    }
-
-    .img-fluid {
-      max-width: 100%;
-      height: auto;
-      border-radius: 10px;
-    }
-
     #filtros-container {
       position: sticky;
       top: 120px;
-      /* Distancia desde la parte superior de la pantalla */
-      height: fit-content;
-      /* Ajusta la altura al contenido */
-      background-color: #f8f9fa;
-      /* Fondo claro para distinguirlo */
-      padding: 15px;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      /* Sombra para darle un aspecto flotante */
+      /* Adjusted to ensure it sticks near the top */
+      max-height: calc(100vh - 40px);
+      /* Limit height to viewport */
+      overflow-y: auto;
+      /* Enable vertical scrolling */
       z-index: 1000;
-      /* Asegura que el filtro esté sobre otros elementos */
+    }
+
+    /* Optional: Add smooth scrolling and scrollbar styling */
+    #filtros-container {
+      scrollbar-width: thin;
+      /* For Firefox */
+      scrollbar-color: #888 #f1f1f1;
+      /* Thumb and track color */
+    }
+
+    #filtros-container::-webkit-scrollbar {
+      width: 8px;
+      /* Thin scrollbar for WebKit browsers */
+    }
+
+    #filtros-container::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    #filtros-container::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 4px;
+    }
+
+    #filtrosOffcanvas {
+      top: 120px;
+      /* Ajusta este valor según la altura de tu header */
+    }
+
+    .quick-view-btn {
+      background-color: var(--primary-color);
+      /* Fondo verde */
+      border: none;
+      /* Sin bordes */
+      color: white;
+      /* Color del ícono en blanco (puedes cambiarlo si quieres otro color) */
+      padding: 10px;
+      /* Espaciado alrededor del ícono, puedes ajustarlo */
+      border-radius: 5px;
+      /* Si quieres bordes redondeados, esto es opcional */
+    }
+
+    .quick-view-btn i {
+      font-size: 20px;
+      /* Tamaño del ícono, ajusta como lo necesites */
     }
   </style>
 </head>
@@ -156,36 +75,82 @@
     <div class="row">
       <!-- Filtros (1 columna a la izquierda) -->
       <aside class="col-lg-3 col-md-4 col-sm-12" id="filtros-container">
-        <h2 class="mb-3">Filtros <i class="fa-solid fa-filter"></i></h2>
-        <label for="categoria">Categoría:</label>
-        <select id="categoria" class="form-select mb-3">
-          <option value="">Todas</option>
-        </select>
+        <!-- Offcanvas for mobile devices -->
+        <div class="d-lg-block d-md-block d-sm-none d-none"> <!-- Always visible on larger screens -->
+          <div class="card shadow-sm p-3">
+            <!-- Existing filter content -->
+            <h2 class="mb-3">Filtros <i class="fa-solid fa-filter"></i></h2>
+            <label for="categoria" class="form-label">Categoría:</label>
+            <select id="categoria" class="form-select mb-3">
+              <option value="">Todas</option>
+            </select>
 
-        <label for="marca">Marca:</label>
-        <select id="marca" class="form-select mb-3">
-          <option value="">Todas</option>
-        </select>
+            <label for="marca" class="form-label">Marca:</label>
+            <select id="marca" class="form-select mb-3">
+              <option value="">Todas</option>
+            </select>
 
-        <label for="nombre">Buscar por nombre:</label>
-        <input type="text" id="nombre" class="form-control mb-3" placeholder="Escribe el nombre..." />
+            <label for="nombre" class="form-label">Buscar por nombre:</label>
+            <input type="text" id="nombre" class="form-control mb-3" placeholder="Escribe el nombre..." />
 
-        <label for="precioMin">Precio mínimo: <span id="valorPrecioMin">0</span></label>
-        <input type="range" id="precioMin" class="form-range mb-3" />
+            <label for="precioMin" class="form-label">Precio mínimo: <span id="valorPrecioMin">0</span></label>
+            <input type="range" id="precioMin" class="form-range mb-3" />
 
-        <label for="precioMax">Precio máximo: <span id="valorPrecioMax">10000</span></label>
-        <input type="range" id="precioMax" class="form-range mb-3" />
+            <label for="precioMax" class="form-label">Precio máximo: <span id="valorPrecioMax">10000</span></label>
+            <input type="range" id="precioMax" class="form-range mb-3" />
 
-        <button id="aplicarFiltro" class="btn btn-secondary-custom w-100 mb-3">Aplicar Filtro</button>
+            <button id="aplicarFiltro" class="btn btn-secondary w-100">Aplicar Filtro</button>
+          </div>
+        </div>
+
+        <!-- Offcanvas for small screens -->
+        <div class="d-lg-none d-md-none d-sm-block">
+          <button class="btn btn-secondary w-100 mb-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#filtrosOffcanvas" aria-controls="filtrosOffcanvas">
+            Abrir Filtros <i class="fa-solid fa-filter"></i>
+          </button>
+
+          <div class="offcanvas offcanvas-start" tabindex="-1" id="filtrosOffcanvas" aria-labelledby="filtrosOffcanvasLabel">
+            <div class="offcanvas-header">
+              <h5 class="offcanvas-title" id="filtrosOffcanvasLabel">Filtros</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+              <div class="card shadow-sm p-3">
+                <!-- Duplicate of filter content above -->
+                <label for="categoria-mobile" class="form-label">Categoría:</label>
+                <select id="categoria-mobile" class="form-select mb-3">
+                  <option value="">Todas</option>
+                </select>
+
+                <label for="marca-mobile" class="form-label">Marca:</label>
+                <select id="marca-mobile" class="form-select mb-3">
+                  <option value="">Todas</option>
+                </select>
+
+                <label for="nombre-mobile" class="form-label">Buscar por nombre:</label>
+                <input type="text" id="nombre-mobile" class="form-control mb-3" placeholder="Escribe el nombre..." />
+
+                <label for="precioMin-mobile" class="form-label">Precio mínimo: <span id="valorPrecioMin-mobile">0</span></label>
+                <input type="range" id="precioMin-mobile" class="form-range mb-3" />
+
+                <label for="precioMax-mobile" class="form-label">Precio máximo: <span id="valorPrecioMax-mobile">10000</span></label>
+                <input type="range" id="precioMax-mobile" class="form-range mb-3" />
+
+                <button id="aplicarFiltro-mobile" class="btn btn-secondary w-100">Aplicar Filtro</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </aside>
+
 
       <!-- Productos (4 columnas) -->
       <section class="col-lg-9 col-md-8 col-sm-12">
         <div id="opciones" class="mb-3 d-flex justify-content-between">
           <button id="ordenarPrecio" class="btn btn-secondary">Ordenar por precio</button>
-          <div>
-            <label for="productosPorPagina">Mostrar:</label>
-            <select id="productosPorPagina" class="form-select d-inline-block w-auto">
+          <div class="d-flex align-items-center">
+            <label for="productosPorPagina" class="me-2">Mostrar:</label>
+            <select id="productosPorPagina" class="form-select form-select-sm w-auto">
               <option value="12">12</option>
               <option value="24">24</option>
               <option value="48">48</option>
@@ -193,13 +158,15 @@
           </div>
         </div>
 
-        <div id="mensajeSinProductos" class="alert alert-warning" style="display: none">
+        <div id="mensajeSinProductos" class="alert alert-warning d-none">
           No se encontraron productos con las características seleccionadas.
         </div>
+
         <!-- Contenedor de productos con 4 columnas -->
         <div id="catalogo" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-3"></div>
+
         <div class="d-flex justify-content-center">
-          <button id="mostrarMas" class="btn btn-primary-custom btn-outline-primary w-10 m-3" style="display: none">Mostrar más</button>
+          <button id="mostrarMas" class="btn btn-outline-custom" style="display: none">Mostrar más</button>
         </div>
       </section>
     </div>
@@ -211,20 +178,20 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">Detalle del Producto</h5>
-          <button type="button" id="cerrar-modal" class="btn-close" aria-label="Close"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <!-- Contenido dinámico del modal -->
         </div>
         <div class="modal-footer">
-          <button type="button" id="cerrar-modal-footer" class="btn btn-secondary">Cerrar</button>
+          <button type="button" class="btn btn-secondariy" data-bs-dismiss="modal">Cerrar</button>
         </div>
       </div>
     </div>
   </div>
 
-  <?php 
-    include 'footer.php';
+  <?php
+  include 'footer.php';
   ?>
   <script src="catalogo.js"></script>
 </body>
