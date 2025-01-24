@@ -1,0 +1,1378 @@
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => transferencia
+)
+
+FILES Data:
+Array
+(
+    [comprobante] => Array
+        (
+            [name] => card1.jpg
+            [full_path] => card1.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\php8F1E.tmp
+            [error] => 0
+            [size] => 2675019
+        )
+
+)
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [delivery_method] => delivery
+    [provincia] => cordoba
+    [localidad] => almafuerte
+    [calle] => alem
+    [numero] => 972
+    [piso] => 
+    [departamento] => 
+    [codigo_postal] => 5854
+    [informacion_adicional] => casa de rejas negrras
+    [payment_method] => transferencia
+)
+
+FILES Data:
+Array
+(
+    [comprobante] => Array
+        (
+            [name] => card1.jpg
+            [full_path] => card1.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\php4CA3.tmp
+            [error] => 0
+            [size] => 2675019
+        )
+
+)
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => transferencia
+)
+
+FILES Data:
+Array
+(
+    [comprobante] => Array
+        (
+            [name] => card1.jpg
+            [full_path] => card1.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\php499C.tmp
+            [error] => 0
+            [size] => 2675019
+        )
+
+)
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => transferencia
+)
+
+FILES Data:
+Array
+(
+    [comprobante] => Array
+        (
+            [name] => card1.jpg
+            [full_path] => card1.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\php607C.tmp
+            [error] => 0
+            [size] => 2675019
+        )
+
+)
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => transferencia
+)
+
+FILES Data:
+Array
+(
+    [comprobante] => Array
+        (
+            [name] => card1.jpg
+            [full_path] => card1.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\php93E1.tmp
+            [error] => 0
+            [size] => 2675019
+        )
+
+)
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => transferencia
+)
+
+FILES Data:
+Array
+(
+    [comprobante] => Array
+        (
+            [name] => card1.jpg
+            [full_path] => card1.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\php7D57.tmp
+            [error] => 0
+            [size] => 2675019
+        )
+
+)
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => transferencia
+)
+
+FILES Data:
+Array
+(
+    [comprobante] => Array
+        (
+            [name] => card1.jpg
+            [full_path] => card1.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\php7833.tmp
+            [error] => 0
+            [size] => 2675019
+        )
+
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => transferencia
+)
+
+FILES Data:
+Array
+(
+    [comprobante] => Array
+        (
+            [name] => card1.jpg
+            [full_path] => card1.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\phpE6DF.tmp
+            [error] => 0
+            [size] => 2675019
+        )
+
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => transferencia
+)
+
+FILES Data:
+Array
+(
+    [comprobante] => Array
+        (
+            [name] => card1.jpg
+            [full_path] => card1.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\php24CF.tmp
+            [error] => 0
+            [size] => 2675019
+        )
+
+)
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => transferencia
+)
+
+FILES Data:
+Array
+(
+    [comprobante] => Array
+        (
+            [name] => card1.jpg
+            [full_path] => card1.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\php3332.tmp
+            [error] => 0
+            [size] => 2675019
+        )
+
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => transferencia
+)
+
+FILES Data:
+Array
+(
+    [comprobante] => Array
+        (
+            [name] => card1.jpg
+            [full_path] => card1.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\phpE05D.tmp
+            [error] => 0
+            [size] => 2675019
+        )
+
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => mercadopago
+)
+
+FILES Data:
+Array
+(
+    [comprobante] => Array
+        (
+            [name] => card1.jpg
+            [full_path] => card1.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\php4C63.tmp
+            [error] => 0
+            [size] => 2675019
+        )
+
+)
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => pagoenlocal
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => pagoenlocal
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => pagoenlocal
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => pagoenlocal
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => pagoenlocal
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => pagoenlocal
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)

@@ -4,6 +4,7 @@ include "./header.php";
 
 include './admin/config/sbd.php';
 
+
 if (!isset($_SESSION['usuario'])) {
     echo "<script>alert('No hay una sesión iniciada');</script>";
     var_dump($_SESSION);

@@ -4,6 +4,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const prevBtn = document.getElementById("prevBtn");
   const nextBtn = document.getElementById("nextBtn");
+  const pickupCards = document.querySelectorAll(".pickup-card");
+  pickupCards[0].setAttribute("data-local-id", "1"); // Centro
+  pickupCards[1].setAttribute("data-local-id", "2"); // Norte
+  pickupCards[2].setAttribute("data-local-id", "3"); // Sur
 
   // Validation rules for each field
   const validationRules = {
@@ -366,60 +370,7 @@ document.addEventListener("DOMContentLoaded", () => {
         updateSteps();
       } else {
         // Final submission
-        const formData = new FormData();
-
-        // Add user information
-        const userFields = ["nombre", "apellido", "dni", "phone", "email"];
-        userFields.forEach((field) => {
-          formData.append(field, document.getElementById(field).value);
-        });
-
-        // Add delivery information
-        const isPickup = document
-          .getElementById("btn-pickup")
-          .classList.contains("btn-secondary-custom");
-        formData.append("deliveryMethod", isPickup ? "pickup" : "delivery");
-
-        if (isPickup) {
-          const selectedPickup = document.querySelector(
-            ".pickup-card.selected"
-          );
-          formData.append(
-            "pickupLocation",
-            selectedPickup.querySelector(".card-title").textContent
-          );
-        } else {
-          const deliveryFields = [
-            "province",
-            "locality",
-            "street",
-            "number",
-            "postalCode",
-          ];
-          deliveryFields.forEach((field) => {
-            formData.append(field, document.getElementById(field).value);
-          });
-        }
-
-        // Add payment information
-        const paymentMethod = document.querySelector(
-          'input[name="paymentMethod"]:checked'
-        );
-        formData.append("paymentMethod", paymentMethod.value);
-
-        if (["transferencia", "mercadopago"].includes(paymentMethod.value)) {
-          const comprobanteId = `comprobante${
-            paymentMethod.value === "transferencia"
-              ? "Transferencia"
-              : "MercadoPago"
-          }`;
-          const comprobante = document.getElementById(comprobanteId).files[0];
-          formData.append("comprobante", comprobante);
-        }
-
-        // Here you would send the formData to your server
-        console.log("Submitting order...", formData);
-        alert("¡Compra finalizada con éxito!");
+        submitCheckoutForm();
       }
     }
   });
@@ -438,3 +389,90 @@ document.addEventListener("DOMContentLoaded", () => {
   window.selectPickupPoint = selectPickupPoint;
 });
 
+function submitCheckoutForm() {
+  const formData = new FormData();
+  // Add user information from session
+  const userFields = ["nombre", "apellido", "dni", "phone", "email"];
+  userFields.forEach((field) => {
+    formData.append(field, document.getElementById(field).value);
+  });
+
+  // Get delivery method and related information
+  const isPickup = document
+    .getElementById("btn-pickup")
+    .classList.contains("btn-secondary-custom");
+  formData.append("delivery_method", isPickup ? "pickup" : "delivery");
+
+  if (isPickup) {
+    const selectedPickup = document.querySelector(".pickup-card.selected");
+    const localId = selectedPickup.getAttribute("data-local-id");
+    formData.append("id_local", localId);
+  } else {
+    // Add delivery address information
+    const deliveryFields = {
+      province: "provincia",
+      locality: "localidad",
+      street: "calle",
+      number: "numero",
+      floor: "piso",
+      department: "departamento",
+      postalCode: "codigo_postal",
+      additionalInfo: "informacion_adicional",
+    };
+
+    Object.entries(deliveryFields).forEach(([fieldId, dbField]) => {
+      const value = document.getElementById(fieldId).value;
+      formData.append(dbField, value || ""); // Send empty string if value is null
+    });
+  }
+
+  // Add payment information
+  const paymentMethod = document.querySelector(
+    'input[name="paymentMethod"]:checked'
+  );
+  formData.append("payment_method", paymentMethod.value);
+
+  // Add payment proof if applicable
+  if (["transferencia", "mercadopago"].includes(paymentMethod.value)) {
+    const comprobanteId = `comprobante${
+      paymentMethod.value === "transferencia" ? "Transferencia" : "MercadoPago"
+    }`;
+    const comprobante = document.getElementById(comprobanteId).files[0];
+    if (comprobante) {
+      formData.append("comprobante", comprobante);
+    }
+  }
+
+  // Show loading state
+  const nextBtn = document.getElementById("nextBtn");
+  const originalText = nextBtn.textContent;
+  nextBtn.disabled = true;
+  nextBtn.textContent = "Procesando...";
+ 
+
+  // Send AJAX request
+  fetch("procesar_pedido.php", {
+    method: "POST",
+    body: formData,
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        // Clear cart and show success message
+        alert("¡Pedido realizado con éxito!");
+      } else {
+        // Show error message
+        alert("Error: " + data.message);
+        nextBtn.disabled = false;
+        nextBtn.textContent = originalText;
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert(
+        "Ha ocurrido un error al procesar el pedido. Por favor, inténtelo nuevamente."
+      );
+      nextBtn.disabled = false;
+      nextBtn.textContent = originalText;
+    });
+}

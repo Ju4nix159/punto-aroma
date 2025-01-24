@@ -2,7 +2,8 @@
     class Database
     {
         private $hostname = "localhost";
-        private $database = "punto_aroma_sbd";
+        /* private $database = "punto_aroma_sbd"; */
+        private $database = "prueba";
         private $username = "root";
         private $password = "";
         private $charset = "utf8";
