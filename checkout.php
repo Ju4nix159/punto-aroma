@@ -103,6 +103,7 @@ $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
                 <h1 class="card-title">Finalizar compra</h1>
                 <p class="card-text">Complete su pedido en 3 sencillos pasos</p>
             </div>
+
             <div class="card-body">
                 <div class="checkout_steps mb-4">
                     <div class="checkout_step active" data-step="1">
@@ -287,89 +288,110 @@ $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
                     </form>
 
 
+                </div
+
+                    <div id="step3" class="checkout_step-content d-none">
+                <div class="container mt-4">
+                    <!-- Título -->
+                    <h2 class="d-flex align-items-center">
+                        <i class="bi bi-credit-card me-2"></i> Método de pago
+                    </h2>
+
+                    <!-- Mensaje -->
+                    <div class="mt-3">
+                        <p class="bg-success text-white p-2 rounded">
+                            El precio a pagar es el 30% del valor del pedido
+                        </p>
+                    </div>
+
+                    <!-- Monto a pagar -->
+                    <div class="mt-3">
+                        <p class="fw-bold">
+
+                            Total a pagar: <span id="montoAPagar" class="text-success"><strong id="totalPrice">$<?php echo number_format(($total*0.3), 2); ?></strong></span>
+                        </p>
+                    </div>
                 </div>
 
-                <div id="step3" class="checkout_step-content d-none">
-                    <h2><i class="bi bi-credit-card"></i> Método de pago</h2>
-                    <div id="paymentForm">
+                <div id="paymentForm">
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="paymentMethod" id="transferencia" value="transferencia" checked>
+                            <label class="form-check-label" for="transferencia">
+                                Transferencia bancaria
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="paymentMethod" id="mercadoPago" value="mercadopago">
+                            <label class="form-check-label" for="mercadoPago">
+                                Mercado Pago
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="paymentMethod" id="pagoEnLocal" value="pagoenlocal">
+                            <label class="form-check-label" for="pagoEnLocal">
+                                Pago en local
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Transferencia Bancaria -->
+                    <div id="transferenciaFields" class="payment-fields">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Cuenta Bancaria 1</h5>
+                                        <p class="card-text">Banco: Banco Ejemplo<br>Cuenta: 123456789<br>CBU: 000000310000123456789</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Cuenta Bancaria 2</h5>
+                                        <p class="card-text">Banco: Otro Banco<br>Cuenta: 987654321<br>CBU: 000000320000987654321</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Cuenta Bancaria 3</h5>
+                                        <p class="card-text">Banco: Banco Más<br>Cuenta: 555555555<br>CBU: 000000330000555555555</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="mb-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="paymentMethod" id="transferencia" value="transferencia" checked>
-                                <label class="form-check-label" for="transferencia">
-                                    Transferencia bancaria
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="paymentMethod" id="mercadoPago" value="mercadopago">
-                                <label class="form-check-label" for="mercadoPago">
-                                    Mercado Pago
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="paymentMethod" id="pagoEnLocal" value="pagoenlocal">
-                                <label class="form-check-label" for="pagoEnLocal">
-                                    Pago en local
-                                </label>
-                            </div>
+                            <label for="comprobanteTransferencia" class="form-label">Subir comprobante</label>
+                            <input type="file" class="form-control" id="comprobanteTransferencia">
                         </div>
+                    </div>
 
-                        <!-- Transferencia Bancaria -->
-                        <div id="transferenciaFields" class="payment-fields">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="card mb-3">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Cuenta Bancaria 1</h5>
-                                            <p class="card-text">Banco: Banco Ejemplo<br>Cuenta: 123456789<br>CBU: 000000310000123456789</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="card mb-3">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Cuenta Bancaria 2</h5>
-                                            <p class="card-text">Banco: Otro Banco<br>Cuenta: 987654321<br>CBU: 000000320000987654321</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="card mb-3">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Cuenta Bancaria 3</h5>
-                                            <p class="card-text">Banco: Banco Más<br>Cuenta: 555555555<br>CBU: 000000330000555555555</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="comprobanteTransferencia" class="form-label">Subir comprobante</label>
-                                <input type="file" class="form-control" id="comprobanteTransferencia">
-                            </div>
+                    <!-- Mercado Pago -->
+                    <div id="mercadoPagoFields" class="payment-fields d-none">
+                        <div class="text-center mb-3">
+                            <div id="wallet_container"></div>
                         </div>
+                        <div class="mb-3">
+                            <label for="comprobanteMercadoPago" class="form-label">Subir comprobante</label>
+                            <input type="file" class="form-control" id="comprobanteMercadoPago">
+                        </div>
+                    </div>
 
-                        <!-- Mercado Pago -->
-                        <div id="mercadoPagoFields" class="payment-fields d-none">
-                            <div class="text-center mb-3">
-                                <div id="wallet_container"></div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="comprobanteMercadoPago" class="form-label">Subir comprobante</label>
-                                <input type="file" class="form-control" id="comprobanteMercadoPago">
-                            </div>
-                        </div>
-
-                        <!-- Pago en Local -->
-                        <div id="pagoEnLocalFields" class="payment-fields d-none">
-                            <p>Puede realizar el pago en nuestra oficina local.</p>
-                        </div>
+                    <!-- Pago en Local -->
+                    <div id="pagoEnLocalFields" class="payment-fields d-none">
+                        <p>Puede realizar el pago en nuestra oficina local.</p>
                     </div>
                 </div>
             </div>
-            <div class="card-footer">
-                <button id="prevBtn" class="btn btn-outline-custom" disabled>Anterior</button>
-                <button id="nextBtn" class="btn btn-primary-custom float-end">Siguiente</button>
-            </div>
         </div>
+        <div class="card-footer">
+            <button id="prevBtn" class="btn btn-outline-custom" disabled>Anterior</button>
+            <button id="nextBtn" class="btn btn-primary-custom float-end">Siguiente</button>
+        </div>
+    </div>
     </div>
 
     <script src="checkout.js"></script>
