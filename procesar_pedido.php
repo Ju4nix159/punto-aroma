@@ -15,6 +15,17 @@ try {
     $carrito = $_SESSION['cart'] ?? null;
     $delivery_method = $_POST['delivery_method'] ?? null;
 
+    $info_usuario = $con->prepare("SELECT iu.nombre, iu.apellido, iu.dni, iu.fecha_nacimiento, iu.telefono
+FROM usuarios u
+JOIN info_usuarios iu ON u.id_usuario = iu.id_usuario
+WHERE u.id_usuario = :id_usuario");
+    $info_usuario->bindParam(':id_usuario', $id_usuario, PDO::PARAM_INT);
+    $info_usuario->execute();
+    $info_usuario = $info_usuario->fetch(PDO::FETCH_ASSOC);
+    if (!$info_usuario) {
+        crearInfoUsuario($con, $_POST, $id_usuario);
+    }
+
     if (!$id_usuario || !$carrito || !$delivery_method) {
         if (!$id_usuario) {
             throw new Exception("ID de usuario no encontrado en la sesión.");
@@ -111,14 +122,14 @@ function procesarDomicilio($con, $data, $id_usuario)
         if (!$domicilio) {
             $stmt = $con->prepare("INSERT INTO domicilios (provincia, localidad, calle, numero, codigo_postal, piso, departamento, informacion_adicional) VALUES (LOWER(?), LOWER(?), LOWER(?), ?, ?, ?, ?, ?)");
             $stmt->execute([
-            $data['provincia'],
-            $data['localidad'],
-            $data['calle'],
-            $data['numero'],
-            $data['codigo_postal'],
-            $data['piso'] ?? null,
-            $data['departamento'] ?? null,
-            $data['informacion_adicional'] ?? ''
+                $data['provincia'],
+                $data['localidad'],
+                $data['calle'],
+                $data['numero'],
+                $data['codigo_postal'],
+                $data['piso'] ?? null,
+                $data['departamento'] ?? null,
+                $data['informacion_adicional'] ?? ''
             ]);
             $id_domicilio = $con->lastInsertId();
 
@@ -129,9 +140,9 @@ function procesarDomicilio($con, $data, $id_usuario)
         }
 
         return $id_domicilio;
-        } catch (Exception $e) {
+    } catch (Exception $e) {
         throw new Exception("Error al procesar el domicilio: " . $e->getMessage());
-        }
+    }
 }
 
 function crearPedido($con, $id_usuario, $total, $id_domicilio, $data, $delivery_method)
@@ -205,4 +216,15 @@ function procesarPago($con, $id_pedido, $data, $total)
     } catch (Exception $e) {
         throw new Exception("Error al procesar el pago: " . $e->getMessage());
     }
+}
+function crearInfoUsuario($con, $data, $id_usuario){
+    $stmt = $con->prepare("INSERT INTO info_usuarios (id_usuario, nombre, apellido, dni, fecha_nacimiento, telefono) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->execute([
+        $id_usuario,
+        $data['nombre'],
+        $data['apellido'],
+        $data['dni'],
+        $data['fechaNacimiento'],
+        $data['phone']
+    ]);
 }

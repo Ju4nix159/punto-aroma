@@ -1671,3 +1671,125 @@ FILES Data:
 Array
 (
 )
+POST Data:
+Array
+(
+    [nombre] => matias
+    [apellido] => carballo
+    [dni] => 12312312
+    [phone] => 3571311250
+    [email] => juanimelillo@gmail.com
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => pagoenlocal
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+    [nombre] => juan ignacio
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 1231231231
+    [email] => juanimelillo36@gmail.com
+    [fechaNacimiento] => 2025-01-15
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => pagoenlocal
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+    [nombre] => martin
+    [apellido] => barrionuevo
+    [dni] => 12312312
+    [phone] => 1231231231
+    [email] => juanimelillo2@gmail.com
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => pagoenlocal
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+    [nombre] => martin
+    [apellido] => barrionuevo
+    [dni] => 12312312
+    [phone] => 1231231231
+    [email] => juanimelillo2@gmail.com
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => pagoenlocal
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+    [nombre] => martin
+    [apellido] => barrionuevo
+    [dni] => 12312312
+    [phone] => 1231231231
+    [email] => juanimelillo2@gmail.com
+    [delivery_method] => pickup
+    [id_local] => 2
+    [payment_method] => pagoenlocal
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+    [nombre] => julio
+    [apellido] => rojas
+    [dni] => 12312312
+    [phone] => 1231231231
+    [email] => juanimelillo2@gmail.com
+    [fechaNacimiento] => 
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => pagoenlocal
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+    [nombre] => julio
+    [apellido] => rojas
+    [dni] => 12312312
+    [phone] => 1231231231
+    [email] => juanimelillo2@gmail.com
+    [fechaNacimiento] => 2000-06-05
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => pagoenlocal
+)
+
+FILES Data:
+Array
+(
+)

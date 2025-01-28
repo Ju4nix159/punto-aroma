@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
       errorMsg: "El DNI debe contener entre 6 y 9 dígitos",
     },
     phone: {
-      regex: /^\d{10}$/,
+      regex: /^\d{7,11}$/,
       errorMsg: "El teléfono debe contener 10 dígitos",
     },
     email: {
@@ -54,6 +54,36 @@ document.addEventListener("DOMContentLoaded", () => {
       errorMsg: "Ingrese un código postal válido",
     },
   };
+
+  function calcularEdad(fechaNacimiento) {
+    const hoy = new Date();
+    const fechaNac = new Date(fechaNacimiento);
+    let edad = hoy.getFullYear() - fechaNac.getFullYear();
+    const mes = hoy.getMonth() - fechaNac.getMonth();
+
+    if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNac.getDate())) {
+      edad--;
+    }
+
+    return edad;
+  }
+  function validarFechaNacimiento(fieldId) {
+    const field = document.getElementById(fieldId);
+    const fechaNacimiento = field.value.trim();
+
+    if (!fechaNacimiento) {
+      return showError(fieldId, "Este campo es requerido");
+    }
+
+    const edad = calcularEdad(fechaNacimiento);
+
+    if (edad < 18) {
+      return showError(fieldId, "Debes ser mayor de 18 años para continuar");
+    }
+
+    clearError(field);
+    return true;
+  }
 
   // Product summary functionality
   function toggleFragrances(productId) {
@@ -277,10 +307,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
       case 2:
         // Personal information validation
-        const personalFields = ["nombre", "apellido", "dni", "phone", "email"];
+        const personalFields = [
+          "nombre",
+          "apellido",
+          "dni",
+          "phone",
+          "email",
+          "fechaNacimiento",
+        ];
         for (const fieldId of personalFields) {
-          if (!validateField(fieldId)) {
-            return false;
+          if (fieldId === "fechaNacimiento") {
+            if (!validarFechaNacimiento(fieldId)) {
+              return false;
+            }
+          } else {
+            if (!validateField(fieldId)) {
+              return false;
+            }
           }
         }
 
@@ -392,7 +435,14 @@ document.addEventListener("DOMContentLoaded", () => {
 function submitCheckoutForm() {
   const formData = new FormData();
   // Add user information from session
-  const userFields = ["nombre", "apellido", "dni", "phone", "email"];
+  const userFields = [
+    "nombre",
+    "apellido",
+    "dni",
+    "phone",
+    "email",
+    "fechaNacimiento",
+  ];
   userFields.forEach((field) => {
     formData.append(field, document.getElementById(field).value);
   });

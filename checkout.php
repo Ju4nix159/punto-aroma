@@ -30,18 +30,31 @@ $sql_informacio_usuario = $con->prepare("SELECT
                     iu.dni, 
                     iu.fecha_nacimiento, 
                     iu.telefono, 
-                    s.nombre AS sexo, 
                     eu.nombre AS estado_usuario
                 FROM 
                     usuarios u
                     JOIN info_usuarios iu ON u.id_usuario = iu.id_usuario
-                    JOIN sexos s ON iu.id_sexo = s.id_sexo
                     JOIN estados_usuarios eu ON u.id_estado_usuario = eu.id_estado_usuario
                 WHERE 
                     u.id_usuario = :id_usuario;");
 $sql_informacio_usuario->bindParam(':id_usuario', $id_usuario, PDO::PARAM_INT);
 $sql_informacio_usuario->execute();
 $usuario = $sql_informacio_usuario->fetch(PDO::FETCH_ASSOC);
+
+
+if (!$usuario) {
+    $primer_pedido = true;
+    $usuario = [
+        "nombre" => "",
+        "apellido" => "",
+        "dni" => "",
+        "fecha_nacimiento" => "",
+        "telefono" => "",
+        "email" => ""
+    ];
+} else {
+    $primer_pedido = false;
+}
 
 
 $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
@@ -154,6 +167,11 @@ $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
                 <div id="step2" class="checkout_step-content d-none">
                     <h2><i class="bi bi-person"></i> Información de facturación</h2>
                     <form id="billingForm">
+                        <?php if ($primer_pedido) { ?>
+                            <div class="alert alert-info" role="alert">
+                                Como es su primer pedido, debe ingresar sus datos personales.
+                            </div>
+                        <?php } ?>
                         <div class="row mb-3">
                             <div class="col">
                                 <label for="nombre" class="form-label">Nombre</label>
@@ -174,9 +192,15 @@ $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
                                 <input type="tel" class="form-control" id="phone" name="phone" placeholder="Ingrese su número de teléfono" value="<?php echo $usuario["telefono"] ?>" required>
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Correo electrónico</label>
-                            <input type="email" class="form-control" id="email" name="email" placeholder="Ingrese su mail" value="<?php echo $usuario["email"] ?>" required>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label for="email" class="form-label">Correo electrónico</label>
+                                <input type="email" class="form-control" id="email" name="email" placeholder="Ingrese su mail" value="<?php echo $usuario["email"] ?>" required>
+                            </div>
+                            <div class="col">
+                                <label for="fechaNacimiento" class="form-label">Fecha de nacimiento</label>
+                                <input type="date" class="form-control" id="fechaNacimiento" name="fechaNacimiento" value="<?php echo $usuario["fecha_nacimiento"] ?>" required>
+                            </div>
                         </div>
                         <hr>
                         <div class="container mt-4">
@@ -350,7 +374,7 @@ $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
 
     <script src="checkout.js"></script>
     <script>
-    
+
     </script>
 </body>
 

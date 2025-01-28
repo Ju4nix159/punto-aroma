@@ -559,3 +559,12 @@ LEFT JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido
 LEFT JOIN domicilios d ON p.id_domicilio = d.id_domicilio 
 LEFT JOIN locales l ON p.id_local = l.id_local 
 WHERE p.id_pedido = :id_pedido;
+
+-- Query para obtener la información de un usuario por su id
+SELECT u.id_usuario, u.email, iu.nombre, iu.apellido, iu.dni, iu.fecha_nacimiento, iu.telefono, s.nombre AS sexo, p.nombre AS permiso, eu.nombre AS estado_usuario
+FROM usuarios u
+JOIN info_usuarios iu ON u.id_usuario = iu.id_usuario
+JOIN sexos s ON iu.id_sexo = s.id_sexo
+JOIN permisos p ON u.id_permiso = p.id_permiso
+JOIN estados_usuarios eu ON u.id_estado_usuario = eu.id_estado_usuario
+WHERE u.id_usuario = 1; -- Reemplaza 1 por el id del usuario deseado
