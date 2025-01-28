@@ -116,3 +116,4 @@
 [2025-01-24 01:06:00] Error al procesar el pago: Método de pago no válido.
 [2025-01-24 12:37:09] Error al procesar el pago: Método de pago no válido.
 [2025-01-24 13:43:14] Carrito vacío o no encontrado en la sesión.
+[2025-01-28 18:03:38] Método de entrega no especificado.

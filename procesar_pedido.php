@@ -13,7 +13,7 @@ file_put_contents('debug_formdata.txt', "\nFILES Data:\n" . print_r($_FILES, tru
 try {
     $id_usuario = $_SESSION['usuario'] ?? null;
     $carrito = $_SESSION['cart'] ?? null;
-    $delivery_method = "pickup";
+    $delivery_method = $_POST['delivery_method'] ?? null;
 
     if (!$id_usuario || !$carrito || !$delivery_method) {
         if (!$id_usuario) {
@@ -96,29 +96,29 @@ function procesarDomicilio($con, $data, $id_usuario)
             throw new Exception("Faltan datos obligatorios del domicilio.");
         }
 
-        $stmt = $con->prepare("SELECT id_domicilio FROM domicilios WHERE provincia = ? AND localidad = ? AND calle = ? AND numero = ? AND codigo_postal = ? AND piso = ? AND departamento = ?");
+        $stmt = $con->prepare("SELECT id_domicilio FROM domicilios WHERE LOWER(provincia) = LOWER(?) AND LOWER(localidad) = LOWER(?) AND LOWER(calle) = LOWER(?) AND numero = ? AND codigo_postal = ? AND (piso = ? OR piso IS NULL) AND (departamento = ? OR departamento IS NULL)");
         $stmt->execute([
             $data['provincia'],
             $data['localidad'],
             $data['calle'],
             $data['numero'],
             $data['codigo_postal'],
-            $data['piso'] ?? '',
-            $data['departamento'] ?? ''
+            $data['piso'] ?? null,
+            $data['departamento'] ?? null
         ]);
         $domicilio = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$domicilio) {
-            $stmt = $con->prepare("INSERT INTO domicilios (provincia, localidad, calle, numero, codigo_postal, piso, departamento, informacion_adicional) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt = $con->prepare("INSERT INTO domicilios (provincia, localidad, calle, numero, codigo_postal, piso, departamento, informacion_adicional) VALUES (LOWER(?), LOWER(?), LOWER(?), ?, ?, ?, ?, ?)");
             $stmt->execute([
-                $data['provincia'],
-                $data['localidad'],
-                $data['calle'],
-                $data['numero'],
-                $data['codigo_postal'],
-                $data['piso'] ?? '',
-                $data['departamento'] ?? '',
-                $data['informacion_adicional'] ?? ''
+            $data['provincia'],
+            $data['localidad'],
+            $data['calle'],
+            $data['numero'],
+            $data['codigo_postal'],
+            $data['piso'] ?? null,
+            $data['departamento'] ?? null,
+            $data['informacion_adicional'] ?? ''
             ]);
             $id_domicilio = $con->lastInsertId();
 
@@ -129,9 +129,9 @@ function procesarDomicilio($con, $data, $id_usuario)
         }
 
         return $id_domicilio;
-    } catch (Exception $e) {
+        } catch (Exception $e) {
         throw new Exception("Error al procesar el domicilio: " . $e->getMessage());
-    }
+        }
 }
 
 function crearPedido($con, $id_usuario, $total, $id_domicilio, $data, $delivery_method)

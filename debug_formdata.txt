@@ -1575,3 +1575,99 @@ FILES Data:
 Array
 (
 )
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [delivery_method] => delivery
+    [provincia] => cordoba
+    [localidad] => almafuerte
+    [calle] => alem
+    [numero] => 972
+    [piso] => 3
+    [departamento] => 456
+    [codigo_postal] => 1212
+    [informacion_adicional] => PRUEBA 4 SOBRE INSERTAR UN DOMICILIO
+    [payment_method] => pagoenlocal
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [delivery_method] => delivery
+    [provincia] => rio de los sauces
+    [localidad] => cufre
+    [calle] => san juna 
+    [numero] => 209
+    [piso] => 
+    [departamento] => 
+    [codigo_postal] => 50000
+    [informacion_adicional] => esta es la prueba de rio de los sauces
+    [payment_method] => pagoenlocal
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [delivery_method] => delivery
+    [provincia] => rio de los sauces
+    [localidad] => cufre
+    [calle] => san juna 
+    [numero] => 209
+    [piso] => 
+    [departamento] => 
+    [codigo_postal] => 123123
+    [informacion_adicional] => 12312312312312
+    [payment_method] => pagoenlocal
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [delivery_method] => delivery
+    [provincia] => rio de los sauces
+    [localidad] => cufre
+    [calle] => san juna 
+    [numero] => 209
+    [piso] => 
+    [departamento] => 
+    [codigo_postal] => 123123
+    [informacion_adicional] => 12312312312312
+    [payment_method] => pagoenlocal
+)
+
+FILES Data:
+Array
+(
+)
