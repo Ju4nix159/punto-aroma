@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
               <div class="card h-100 product-card">
                 <div class="img-container position-relative">
                   <img src="../pa/assets/productos/${producto.imagen_principal}" class="card-img-top" alt="${producto.nombre}">
-                  <button class="quick-view-btn" data-id="${producto.id_producto}">Vista rápida</button>
+                  <button class="quick-view-btn " data-id="${producto.id_producto}">Vista rápida</button>
                 </div>
                 <div class="card-body">
                   <h5 class="card-title">${producto.nombre}</h5>

@@ -15,11 +15,12 @@ $sql_productos->bindParam(':id_pedido', $id_pedido, PDO::PARAM_INT);
 $sql_productos->execute();
 $detalles = $sql_productos->fetchAll(PDO::FETCH_ASSOC);
 
-$sql_informacion_pedido = $con->prepare("SELECT p.envio, p.id_pedido, p.total, p.fecha, u.email, iu.nombre AS nombre_usuario, iu.apellido, iu.dni, iu.telefono, ep.nombre AS estado_pedido, ep.descripcion AS estado_pedido_descripcion, d.codigo_postal, d.provincia, d.localidad, d.calle, d.numero,d.barrio FROM pedidos p 
+$sql_informacion_pedido = $con->prepare("SELECT p.envio, p.id_pedido, p.total, p.fecha, u.email, iu.nombre AS nombre_usuario, iu.apellido, iu.dni, iu.telefono, ep.nombre AS estado_pedido, ep.descripcion AS estado_pedido_descripcion, d.codigo_postal, d.provincia, d.localidad, d.calle, d.numero,d.barrio, l.nombre AS nombre_local FROM pedidos p 
 LEFT JOIN usuarios u ON p.id_usuario = u.id_usuario 
 LEFT JOIN info_usuarios iu ON u.id_usuario = iu.id_usuario 
 LEFT JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido 
 LEFT JOIN domicilios d ON p.id_domicilio = d.id_domicilio 
+LEFT JOIN locales l ON p.id_local = l.id_local 
 WHERE p.id_pedido = :id_pedido;");
 $sql_informacion_pedido->bindParam(':id_pedido', $id_pedido, PDO::PARAM_INT);
 $sql_informacion_pedido->execute();
@@ -28,6 +29,14 @@ $pedido = $sql_informacion_pedido->fetch(PDO::FETCH_ASSOC);
 $sql_estados_pedidos = $con->prepare("SELECT * FROM estados_pedidos;");
 $sql_estados_pedidos->execute();
 $estados_pedidos = $sql_estados_pedidos->fetchAll(PDO::FETCH_ASSOC);
+
+$sql_pagos = $con->prepare("SELECT p.id_pago, p.id_pedido, p.id_metodo_pago, mp.nombre_metodo_pago, p.comprobante, p.monto, p.fecha, p.descripcion
+FROM pagos p
+JOIN metodos_pago mp ON p.id_metodo_pago = mp.id_metodo_pago
+WHERE p.id_pedido = :id_pedido;");
+$sql_pagos->bindParam(':id_pedido', $id_pedido, PDO::PARAM_INT);
+$sql_pagos->execute();
+$pagos = $sql_pagos->fetchAll(PDO::FETCH_ASSOC);
 
 
 
@@ -43,6 +52,25 @@ $estados_pedidos = $sql_estados_pedidos->fetchAll(PDO::FETCH_ASSOC);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
     <title>resuemn del pedido</title>
+    <style>
+        .botones-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .botones-container button {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .comprobantes-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
 </head>
 
 <body>
@@ -84,20 +112,25 @@ $estados_pedidos = $sql_estados_pedidos->fetchAll(PDO::FETCH_ASSOC);
                                             <h4>Información del Cliente</h4>
                                             <p><strong>Nombre:</strong><?php echo $pedido["nombre_usuario"] . " " . $pedido["apellido"] ?></p>
                                             <p><strong>Email:</strong> <?php echo $pedido["email"] ?></p>
-                                            <p><strong>Dirección de envío:</strong>
-                                                <?php echo  $pedido["provincia"] . ", " .
-                                                    $pedido["localidad"] . ", " .
-                                                    $pedido["barrio"] . ", " .
-                                                    $pedido["calle"] . " " .
-                                                    $pedido["numero"]
-                                                ?>
-                                            </p>
+                                            <p><strong>Número de telefono</strong> <?php echo $pedido["telefono"] ?></p>
+
                                         </div>
                                         <div class="col-md-6">
                                             <h4>Detalles del Pedido</h4>
-                                            <p><strong>Número de telefono</strong> <?php echo $pedido["telefono"] ?></p>
                                             <p><strong>Fecha:</strong> <?php echo $pedido["fecha"] ?></p>
                                             <p><strong>Estado:</strong> <span id="estado-actual"><?php echo htmlspecialchars($pedido["estado_pedido"]); ?></span></p>
+                                            <?php if ($pedido["nombre_local"] === null) { ?>
+                                                <p><strong>Dirección de envío:</strong>
+                                                    <?php echo  $pedido["provincia"] . ", " .
+                                                        $pedido["localidad"] . ", " .
+                                                        $pedido["barrio"] . ", " .
+                                                        $pedido["calle"] . " " .
+                                                        $pedido["numero"]
+                                                    ?>
+                                                </p>
+                                            <?php } else { ?>
+                                                <p><strong>Retiro en sucursal:</strong> <?php echo $pedido["nombre_local"]; ?></p>
+                                            <?php } ?>
 
                                         </div>
                                     </div>
@@ -179,55 +212,51 @@ $estados_pedidos = $sql_estados_pedidos->fetchAll(PDO::FETCH_ASSOC);
                             </div>
                             <!-- /.card -->
                         </div>
-                        <?php if (true) { ?>
-                            <div class="col-md-4">
-                                <div class="card card-warning">
-                                    <div class="card-header">
-                                        <h3 class="card-title">Información de Pago</h3>
-                                    </div>
-                                    <div class="card-body">
-                                        <strong><i class="fas fa-money-bill mr-1"></i> Método de Pago:</strong>
-                                        <p class="text-muted"><?php  ?></p>
-                                        <hr>
-                                        <strong><i class="fas fa-calendar-alt mr-1"></i> Fecha de Pago:</strong>
-                                        <p class="text-muted" id="fechaPago"><?php  ?></p>
-                                        <hr>
-                                        <strong><i class="fas fa-file-invoice mr-1"></i> Comprobante de Pago:</strong>
-                                        <div class="mt-2">
-                                            <img src="../assets/comprobantes/<?php  ?>/<?php  ?>" alt="Comprobante de Transferencia" class="img-fluid img-thumbnail" style="max-width: 100%;" id="imagenComprobante">
-                                        </div>
-                                        <button class="btn btn-sm btn-primary mt-2" onclick="mostrarComprobante()">
-                                            <i class="fas fa-eye"></i> Ver Comprobante
-                                        </button>
+                        <div class="col-md-4">
+                            <!-- Contenedor de botones -->
+                            <div class="card card-warning">
+                                <div class="card-header">
+                                    <h3 class="card-title">Acciones Rápidas</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="botones-container">
+                                        <button class="btn btn-primary">Botón 1</button>
+                                        <button class="btn btn-primary">Botón 2</button>
+                                        <button class="btn btn-primary">Botón 3</button>
+                                        <button class="btn btn-primary">Botón 4</button>
+                                        <button class="btn btn-primary">Botón 5</button>
+                                        <button class="btn btn-primary">Botón 6</button>
                                     </div>
                                 </div>
                             </div>
-                        <?php } ?>
-                        <?php if (true) { ?>
-                            <div class="col-md-4">
-                                <div class="card card-warning">
-                                    <div class="card-header">
-                                        <h3 class="card-title">Información de Pago</h3>
-                                    </div>
-                                    <div class="card-body">
-                                        <strong><i class="fas fa-money-bill mr-1"></i> Método de Pago:</strong>
-                                        <p class="text-muted"><?php  ?></p>
-                                        <hr>
-                                        <strong><i class="fas fa-calendar-alt mr-1"></i> Fecha de Pago:</strong>
-                                        <p class="text-muted" id="fechaPago"><?php  ?></p>
-                                        <hr>
-                                        <strong><i class="fas fa-file-invoice mr-1"></i> Comprobante de Pago:</strong>
-                                        <div class="mt-2">
-                                            <img src="../assets/comprobantes/<?php  ?>/<?php  ?>" alt="Comprobante de Transferencia" class="img-fluid img-thumbnail" style="max-width: 100%;" id="imagenComprobante">
-                                        </div>
-                                        <button class="btn btn-sm btn-primary mt-2" onclick="mostrarComprobante()">
-                                            <i class="fas fa-eye"></i> Ver Comprobante
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        <?php } ?>
+                        </div>
 
+                        <?php foreach ($pagos as $pago) { ?>
+                            <?php if ($pago['id_metodo_pago'] == 4 || $pago['id_metodo_pago'] == 1) { ?>
+                                <div class="col-md-4">
+                                    <div class="card card-warning">
+                                        <div class="card-header">
+                                            <h3 class="card-title">Información de Pago</h3>
+                                        </div>
+                                        <div class="card-body">
+                                            <strong><i class="fas fa-money-bill mr-1"></i> Método de Pago:</strong>
+                                            <p class="text-muted"><?php echo $pago['nombre_metodo_pago']; ?></p>
+                                            <hr>
+                                            <strong><i class="fas fa-calendar-alt mr-1"></i> Fecha de Pago:</strong>
+                                            <p class="text-muted" id="fechaPago"><?php echo $pago['fecha']; ?></p>
+                                            <hr>
+                                            <strong><i class="fas fa-file-invoice mr-1"></i> Comprobante de Pago:</strong>
+                                            <div class="mt-2">
+                                                <img src="../assets/comprobantes/<?php echo $pago['id_pedido']; ?>/<?php echo $pago['comprobante']; ?>" alt="Comprobante de Transferencia" class="img-fluid img-thumbnail" style="max-width: 100%;" id="imagenComprobante">
+                                            </div>
+                                            <button class="btn btn-sm btn-primary mt-2" onclick="mostrarComprobante()">
+                                                <i class="fas fa-eye"></i> Ver Comprobante
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php } ?>
+                        <?php } ?>
                         <!-- /.col -->
                     </div>
                     <!-- /.row -->

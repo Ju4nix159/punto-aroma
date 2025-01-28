@@ -6,9 +6,8 @@ include 'admin/config/sbd.php';
 // Iniciamos la verificación del usuario en sesión
 if (isset($_SESSION["usuario"])) {
     $id_usuario = $_SESSION["usuario"];
-    $sql_usuario = $con->prepare("  SELECT iu.nombre AS nombre_usuario, iu.apellido, iu.dni, iu.fecha_nacimiento, iu.telefono, s.nombre AS sexo
+    $sql_usuario = $con->prepare("  SELECT iu.nombre AS nombre_usuario, iu.apellido, iu.dni, iu.fecha_nacimiento, iu.telefono
                                     FROM info_usuarios iu
-                                    JOIN sexos s ON iu.id_sexo = s.id_sexo
                                     WHERE iu.id_usuario = :id_usuario;");
     $sql_usuario->bindParam(":id_usuario", $id_usuario);
     $sql_usuario->execute();
@@ -34,7 +33,6 @@ if (isset($_SESSION["usuario"])) {
         $dni = $usuario["dni"];
         $fecha_nacimiento = $usuario["fecha_nacimiento"];
         $telefono = $usuario["telefono"];
-        $sexo = $usuario["sexo"];
     }
 
     //sexos 

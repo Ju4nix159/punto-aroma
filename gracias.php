@@ -57,7 +57,7 @@ WHERE p.id_pedido = :id_pedido;");
                 </div>
                 <a href="panelUsuario.php" class="btn btn-primary-custom btn-lg">Ver estado del pedido</a>
                 <p class="mt-4">
-                    <a href="#" class="text-secondary-custom">Volver a la página de inicio</a>
+                    <a href="catalogo.php" class="text-secondary-custom">Volver al catalogo</a>
                 </p>
             </div>
         </div>

@@ -1,0 +1,120 @@
+[2025-01-23 23:42:17] Error al procesar el pago: Error al subir el comprobante.
+[2025-01-23 23:42:30] Error al procesar el pago: Error al subir el comprobante.
+[2025-01-23 23:43:30] Error al procesar el pago: Error al subir el comprobante.
+[2025-01-23 23:44:34] Error al procesar el pago: Error al subir el comprobante.
+[2025-01-23 23:47:08] Datos de sesión o del pedido incompletos.
+[2025-01-23 23:47:30] Datos de sesión o del pedido incompletos.
+[2025-01-23 23:47:32] Datos de sesión o del pedido incompletos.
+[2025-01-23 23:47:39] Datos de sesión o del pedido incompletos.
+[2025-01-23 23:49:04] Datos de sesión o del pedido incompletos.
+[2025-01-23 23:49:06] Datos de sesión o del pedido incompletos.
+[2025-01-23 23:49:07] Datos de sesión o del pedido incompletos.
+[2025-01-23 23:49:07] Datos de sesión o del pedido incompletos.
+[2025-01-23 23:49:07] Datos de sesión o del pedido incompletos.
+[2025-01-23 23:49:08] Datos de sesión o del pedido incompletos.
+[2025-01-23 23:49:08] Datos de sesión o del pedido incompletos.
+[2025-01-23 23:49:08] Datos de sesión o del pedido incompletos.
+[2025-01-23 23:49:09] Datos de sesión o del pedido incompletos.
+[2025-01-23 23:49:09] Datos de sesión o del pedido incompletos.
+[2025-01-23 23:49:09] Datos de sesión o del pedido incompletos.
+[2025-01-23 23:49:09] Datos de sesión o del pedido incompletos.
+[2025-01-23 23:49:09] Datos de sesión o del pedido incompletos.
+[2025-01-23 23:49:10] Datos de sesión o del pedido incompletos.
+[2025-01-23 23:49:10] Datos de sesión o del pedido incompletos.
+[2025-01-23 23:49:10] Datos de sesión o del pedido incompletos.
+[2025-01-23 23:49:11] Datos de sesión o del pedido incompletos.
+[2025-01-23 23:49:11] Datos de sesión o del pedido incompletos.
+[2025-01-23 23:49:11] Datos de sesión o del pedido incompletos.
+[2025-01-23 23:49:41] Datos de sesión o del pedido incompletos.
+[2025-01-23 23:50:59] Datos de sesión o del pedido incompletos.
+[2025-01-23 23:51:00] Datos de sesión o del pedido incompletos.
+[2025-01-23 23:51:03] Datos de sesión o del pedido incompletos.
+[2025-01-23 23:51:36] Error al procesar el pago: Error al subir el comprobante.
+[2025-01-23 23:51:43] Datos de sesión o del pedido incompletos.
+[2025-01-23 23:51:43] Datos de sesión o del pedido incompletos.
+[2025-01-23 23:51:44] Datos de sesión o del pedido incompletos.
+[2025-01-23 23:51:44] Datos de sesión o del pedido incompletos.
+[2025-01-23 23:51:45] Datos de sesión o del pedido incompletos.
+[2025-01-23 23:52:57] Error al procesar el pago: Error al subir el comprobante.
+[2025-01-23 23:54:06] Error al procesar el pago: Error al subir el comprobante.
+[2025-01-23 23:54:20] Método de entrega no especificado.
+[2025-01-23 23:54:33] Método de entrega no especificado.
+[2025-01-23 23:54:34] Método de entrega no especificado.
+[2025-01-23 23:55:43] Método de entrega no especificado.
+[2025-01-23 23:56:00] Método de entrega no especificado.
+[2025-01-23 23:56:01] Método de entrega no especificado.
+[2025-01-23 23:57:57] Método de entrega no especificado.
+[2025-01-23 23:58:07] Error al procesar el pago: Error al subir el comprobante.
+[2025-01-23 23:58:19] Método de entrega no especificado.
+[2025-01-23 23:59:05] Método de entrega no especificado.
+[2025-01-24 00:00:23] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 00:00:24] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 00:00:37] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 00:01:02] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 00:02:57] Error al procesar el pago: Error al subir el comprobante.
+[2025-01-24 00:04:51] Error al procesar el pago: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'metodo_pago' in 'field list'
+[2025-01-24 00:05:11] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 00:05:48] Error al procesar el pago: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'metodos_pago' in 'field list'
+[2025-01-24 00:09:21] Carrito vacío o no encontrado en la sesión.
+[2025-01-24 00:10:14] Carrito vacío o no encontrado en la sesión.
+[2025-01-24 00:10:14] Carrito vacío o no encontrado en la sesión.
+[2025-01-24 00:10:27] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 00:12:45] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 00:12:45] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 00:12:46] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 00:13:24] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 00:13:25] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 00:13:26] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 00:13:26] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 00:13:26] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 00:13:26] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 00:13:26] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 00:13:26] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 00:13:27] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 00:13:27] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 00:13:27] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 00:13:27] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 00:13:27] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 00:13:27] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 00:15:23] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 00:19:40] Carrito vacío o no encontrado en la sesión.
+[2025-01-24 00:19:55] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 00:19:59] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 00:20:00] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 00:20:00] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 00:20:02] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 00:20:02] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 00:20:03] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 00:20:04] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 00:20:05] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 00:20:06] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 00:20:19] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 00:26:41] Carrito vacío o no encontrado en la sesión.
+[2025-01-24 00:57:55] Carrito vacío o no encontrado en la sesión.
+[2025-01-24 01:00:50] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 01:01:12] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 01:01:14] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 01:01:15] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 01:01:15] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 01:02:02] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 01:02:03] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 01:02:03] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 01:02:04] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 01:02:04] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 01:02:05] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 01:02:05] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 01:02:05] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 01:02:06] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 01:02:07] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 01:02:31] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 01:05:25] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 01:05:58] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 01:05:58] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 01:05:59] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 01:05:59] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 01:05:59] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 01:06:00] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 12:37:09] Error al procesar el pago: Método de pago no válido.
+[2025-01-24 13:43:14] Carrito vacío o no encontrado en la sesión.
+[2025-01-28 18:03:38] Método de entrega no especificado.
+[2025-01-28 19:01:02] Carrito vacío o no encontrado en la sesión.
