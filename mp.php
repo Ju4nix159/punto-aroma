@@ -13,42 +13,32 @@ $backUrls = [
     "pending" => "http://localhost:8080/feedback"
 ];
 
+$productos = $_SESSION['cart'];
+
+$totalPedido = 0;
+
+// Calcular el total del pedido
+foreach ($productos as $item) {
+    foreach ($item['fragancias'] as $fragancia) {
+        $totalPedido += $item['precio'] * $fragancia['cantidad'];
+    }
+}
+
+// Calcular el 30% del total
+$montoReserva = $totalPedido * 0.3;
+
+// Crear la preferencia con un único ítem que representa el 30% del total
 $preference = $client->create([
     "items" => [
         [
-            "id" => "1234",
-            "title" => "Dummy Item",
-            "description" => "Multicolor Item",
+            "id" => "reserva-30", // ID único para la reserva
+            "title" => "Reserva del 30% del pedido",
+            "description" => "Pago del 30% como reserva del pedido total.",
             "quantity" => 1,
-            "unit_price" => 10.0
-        ],
-        [
-            "id" => "12345",
-            "title" => "Dummy Item2",
-            "quantity" => 1,
-            "unit_price" => 10.0
-        ],
-        [
-            "id" => "123456",
-            "title" => "Dummy Item3",
-            "quantity" => 2,
-            "unit_price" => 10.0
+            "unit_price" => $montoReserva
         ]
-    ],
-
-    "back_urls" => $backUrls,
-    "statement_descriptor" => "mi tienda",
-    "external_reference" => "cdp123",
-    /* "shipments" => [
-        "cost" => 100,
-        "mode" => "not_specified",
-        "local_pickup" => true,
-        "dimensions" => "30x30x30,500",
-        "default_shipping_method" => 73904
-    ],  este campo entraria cuando se hace el envio*/ 
-
+    ]
 ]);
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -59,30 +49,30 @@ $preference = $client->create([
 
 </head>
 
-    <script>
-        const mp = new MercadoPago('APP_USR-52d256c0-1c6e-4fcb-90fc-d88d5ee231f6', {
-            locale: 'es-AR'
-        });
-        const bricksBuilder = mp.bricks();
+<script>
+    const mp = new MercadoPago('APP_USR-52d256c0-1c6e-4fcb-90fc-d88d5ee231f6', {
+        locale: 'es-AR'
+    });
+    const bricksBuilder = mp.bricks();
 
-        mp.bricks().create("wallet", "wallet_container", {
-            initialization: {
-                preferenceId: "<?php echo $preference->id; ?>",
-                redirectMode: "modal",
+    mp.bricks().create("wallet", "wallet_container", {
+        initialization: {
+            preferenceId: "<?php echo $preference->id; ?>",
+            redirectMode: "modal",
 
+        },
+        customization: {
+            texts: {
+                action: 'Pagar',
+                valueProp: 'smart_option',
             },
-            customization: {
-                texts: {
-                    action : 'Pagar',
-                    valueProp: 'smart_option',
-                },
-                visual: {
-                    buttonBackground: 'lightblue',
-                    borderRadius: '5px',
-                }
-            },
-        });
-    </script>
+            visual: {
+                buttonBackground: 'lightblue',
+                borderRadius: '5px',
+            }
+        },
+    });
+</script>
 </body>
 
 </html>

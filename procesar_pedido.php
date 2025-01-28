@@ -205,13 +205,14 @@ function procesarPago($con, $id_pedido, $data, $total)
             }
             $comprobante_path = $upload_dir . $file_name;
         }
+        $pagoSeña = $total * 0.3;
 
         $stmt = $con->prepare("INSERT INTO pagos (id_pedido, id_metodo_pago, comprobante, monto, fecha) VALUES (?, ?, ?, ?, NOW())");
         $stmt->execute([
             $id_pedido,
             $payment_methods[$data['payment_method']],
             $comprobante_path,
-            $total
+            $pagoSeña
         ]);
     } catch (Exception $e) {
         throw new Exception("Error al procesar el pago: " . $e->getMessage());
