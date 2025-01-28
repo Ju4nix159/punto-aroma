@@ -448,7 +448,6 @@ function submitCheckoutForm() {
   const originalText = nextBtn.textContent;
   nextBtn.disabled = true;
   nextBtn.textContent = "Procesando...";
- 
 
   // Send AJAX request
   fetch("procesar_pedido.php", {
@@ -460,6 +459,8 @@ function submitCheckoutForm() {
       if (data.success) {
         // Clear cart and show success message
         alert("¡Pedido realizado con éxito!");
+        /* window.location.href = "index.php"; */
+        window.location.href = `gracias.php?id_pedido=${data.id_pedido}`;
       } else {
         // Show error message
         alert("Error: " + data.message);

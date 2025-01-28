@@ -1376,3 +1376,202 @@ FILES Data:
 Array
 (
 )
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => pagoenlocal
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => pagoenlocal
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => pagoenlocal
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => pagoenlocal
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => pagoenlocal
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => pagoenlocal
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => transferencia
+)
+
+FILES Data:
+Array
+(
+    [comprobante] => Array
+        (
+            [name] => botin 1.webp
+            [full_path] => botin 1.webp
+            [type] => image/webp
+            [tmp_name] => C:\xampp\tmp\phpC572.tmp
+            [error] => 0
+            [size] => 1247368
+        )
+
+)
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => mercadopago
+)
+
+FILES Data:
+Array
+(
+    [comprobante] => Array
+        (
+            [name] => botin 3.webp
+            [full_path] => botin 3.webp
+            [type] => image/webp
+            [tmp_name] => C:\xampp\tmp\php5D54.tmp
+            [error] => 0
+            [size] => 1606574
+        )
+
+)
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [delivery_method] => delivery
+    [provincia] => cordoba
+    [localidad] => almafuerte
+    [calle] => alem
+    [numero] => 972
+    [piso] => 3
+    [departamento] => 456
+    [codigo_postal] => 5854
+    [informacion_adicional] => hola ghola hola
+
+    [payment_method] => pagoenlocal
+)
+
+FILES Data:
+Array
+(
+)

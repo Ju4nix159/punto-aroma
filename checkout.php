@@ -3,7 +3,7 @@
 include "./header.php";
 
 include './admin/config/sbd.php';
-
+require "mp.php";
 
 if (!isset($_SESSION['usuario'])) {
     echo "<script>alert('No hay una sesión iniciada');</script>";
@@ -267,7 +267,7 @@ $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
 
                 <div id="step3" class="checkout_step-content d-none">
                     <h2><i class="bi bi-credit-card"></i> Método de pago</h2>
-                    <form id="paymentForm">
+                    <div id="paymentForm">
                         <div class="mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="paymentMethod" id="transferencia" value="transferencia" checked>
@@ -326,7 +326,7 @@ $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
                         <!-- Mercado Pago -->
                         <div id="mercadoPagoFields" class="payment-fields d-none">
                             <div class="text-center mb-3">
-                                <button type="button" class="btn btn-primary">Pagar con Mercado Pago</button>
+                                <div id="wallet_container"></div>
                             </div>
                             <div class="mb-3">
                                 <label for="comprobanteMercadoPago" class="form-label">Subir comprobante</label>
@@ -338,7 +338,7 @@ $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
                         <div id="pagoEnLocalFields" class="payment-fields d-none">
                             <p>Puede realizar el pago en nuestra oficina local.</p>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
             <div class="card-footer">
@@ -349,9 +349,10 @@ $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
     </div>
 
     <script src="checkout.js"></script>
+    <script>
+    
+    </script>
 </body>
-<script>
 
-</script>
 
 </html>
