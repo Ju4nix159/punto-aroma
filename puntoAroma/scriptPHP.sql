@@ -1,21 +1,21 @@
 CREATE TABLE banner(
-    id_banner INT PRIMARY KEY AUTO_INCREMENT,
-    nombre VARCHAR(100),
-    ruta VARCHAR(200),
-    descripcion VARCHAR(200),
-    id_pagina INT
-);
+     id_banner INT PRIMARY KEY AUTO_INCREMENT,
+        nombre VARCHAR(100),
+        ruta VARCHAR(200),
+        descripcion VARCHAR(200),
+        id_pagina INT
+    );
 
 
-CREATE TABLE categorias (
-    id_categoria INT PRIMARY KEY AUTO_INCREMENT,
-    nombre VARCHAR(100),
-    descripcion TEXT,
-    estado TINYINT DEFAULT 1,
-    destacado TINYINT DEFAULT 0
-);
+    CREATE TABLE categorias (
+        id_categoria INT PRIMARY KEY AUTO_INCREMENT,
+        nombre VARCHAR(100),
+        descripcion TEXT,
+        estado TINYINT DEFAULT 1,
+        destacado TINYINT DEFAULT 0
+    );
 
-CREATE TABLE marcas(
+    CREATE TABLE marcas(
     id_marca INT PRIMARY KEY AUTO_INCREMENT,
     nombre VARCHAR(100),
     estado TINYINT DEFAULT 1
@@ -544,3 +544,18 @@ SELECT p.nombre, p.descripcion, i.ruta AS imagen_principal
 FROM productos p
 JOIN imagenes i ON p.id_producto = i.id_producto
 WHERE p.id_producto = 1 AND i.principal = 1; -- Reemplaza 1 por el id del producto deseado
+
+
+-- Query para obtener los pagos hechos en un pedido con el id_metodo_pago y el nombre del metodo de pago
+SELECT p.id_pago, p.id_pedido, p.id_metodo_pago, mp.nombre_metodo_pago, p.comprobante, p.monto, p.fecha, p.descripcion
+FROM pagos p
+JOIN metodos_pago mp ON p.id_metodo_pago = mp.id_metodo_pago
+WHERE p.id_pedido = 1; -- Reemplaza 1 por el id del pedido deseado
+
+SELECT p.envio, p.id_pedido, p.total, p.fecha, u.email, iu.nombre AS nombre_usuario, iu.apellido, iu.dni, iu.telefono, ep.nombre AS estado_pedido, ep.descripcion AS estado_pedido_descripcion, d.codigo_postal, d.provincia, d.localidad, d.calle, d.numero,d.barrio, l.nombre FROM pedidos p 
+LEFT JOIN usuarios u ON p.id_usuario = u.id_usuario 
+LEFT JOIN info_usuarios iu ON u.id_usuario = iu.id_usuario 
+LEFT JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido 
+LEFT JOIN domicilios d ON p.id_domicilio = d.id_domicilio 
+LEFT JOIN locales l ON p.id_local = l.id_local 
+WHERE p.id_pedido = :id_pedido;
