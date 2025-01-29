@@ -15,7 +15,7 @@ $sql_productos->bindParam(':id_pedido', $id_pedido, PDO::PARAM_INT);
 $sql_productos->execute();
 $detalles = $sql_productos->fetchAll(PDO::FETCH_ASSOC);
 
-$sql_informacion_pedido = $con->prepare("SELECT p.envio, p.id_pedido, p.total, p.fecha, u.email, iu.nombre AS nombre_usuario, iu.apellido, iu.dni, iu.telefono, ep.nombre AS estado_pedido, ep.descripcion AS estado_pedido_descripcion, d.codigo_postal, d.provincia, d.localidad, d.calle, d.numero,d.barrio, l.nombre AS nombre_local FROM pedidos p 
+$sql_informacion_pedido = $con->prepare("SELECT p.estado_seña, p.envio, p.id_pedido, p.total, p.fecha, u.email, iu.nombre AS nombre_usuario, iu.apellido, iu.dni, iu.telefono, ep.nombre AS estado_pedido, ep.descripcion AS estado_pedido_descripcion, d.codigo_postal, d.provincia, d.localidad, d.calle, d.numero,d.barrio, l.nombre AS nombre_local FROM pedidos p 
 LEFT JOIN usuarios u ON p.id_usuario = u.id_usuario 
 LEFT JOIN info_usuarios iu ON u.id_usuario = iu.id_usuario 
 LEFT JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido 
@@ -118,6 +118,11 @@ $pagos = $sql_pagos->fetchAll(PDO::FETCH_ASSOC);
                                         <div class="col-md-6">
                                             <h4>Detalles del Pedido</h4>
                                             <p><strong>Fecha:</strong> <?php echo $pedido["fecha"] ?></p>
+                                            <?php if ($pedido["estado_seña"] == 1) { ?>
+                                                <p><strong>Seña:</strong> PAGADA</p>
+                                            <?php } else { ?>
+                                                <p><strong>Seña:</strong> NO PAGADA</p>
+                                            <?php } ?>
                                             <p><strong>Estado:</strong> <span id="estado-actual"><?php echo htmlspecialchars($pedido["estado_pedido"]); ?></span></p>
                                             <?php if ($pedido["nombre_local"] === null) { ?>
                                                 <p><strong>Dirección de envío:</strong>
@@ -220,8 +225,8 @@ $pagos = $sql_pagos->fetchAll(PDO::FETCH_ASSOC);
                                 </div>
                                 <div class="card-body">
                                     <div class="botones-container">
-                                        <button class="btn btn-primary">Botón 1</button>
-                                        <button class="btn btn-primary">Botón 2</button>
+                                        <button class="btn btn-success" onclick="cambiarEstadoSeña(<?php echo $id_pedido ?>,1)">estado seña pagado</button>
+                                        <button class="btn btn-danger" onclick="cambiarEstadoSeña(<?php echo $id_pedido ?>,0)">estado seña no pagado</button>
                                         <button class="btn btn-primary">Botón 3</button>
                                         <button class="btn btn-primary">Botón 4</button>
                                         <button class="btn btn-primary">Botón 5</button>
@@ -244,6 +249,9 @@ $pagos = $sql_pagos->fetchAll(PDO::FETCH_ASSOC);
                                             <hr>
                                             <strong><i class="fas fa-calendar-alt mr-1"></i> Fecha de Pago:</strong>
                                             <p class="text-muted" id="fechaPago"><?php echo $pago['fecha']; ?></p>
+                                            <hr>
+                                            <strong><i class="fas fa-calendar-alt mr-1"></i> Monto pagado:</strong>
+                                            <p class="text-muted" id="monto"><?php echo $pago['monto']; ?></p>
                                             <hr>
                                             <strong><i class="fas fa-file-invoice mr-1"></i> Comprobante de Pago:</strong>
                                             <div class="mt-2">
@@ -563,6 +571,32 @@ $pagos = $sql_pagos->fetchAll(PDO::FETCH_ASSOC);
         document.addEventListener("DOMContentLoaded", function() {
             calcularTotal(); // Llamar a la función para calcular el total al cargar la página
         });
+
+        function cambiarEstadoSeña(pedidoId, estado) {
+            // Crear un objeto FormData para enviar los datos
+            var formData = new FormData();
+            formData.append('pedido_id', pedidoId);
+            formData.append('estado_sena', estado);
+
+            // Enviar la solicitud AJAX
+            fetch('cambiar_estado_sena.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Si la respuesta es exitosa, actualizar la página
+                        location.reload();
+                    } else {
+                        // Si hay un error, mostrar un mensaje
+                        alert('Error al cambiar el estado de la seña');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
     </script>
 
 </body>

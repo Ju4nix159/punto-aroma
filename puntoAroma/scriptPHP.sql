@@ -568,3 +568,11 @@ JOIN sexos s ON iu.id_sexo = s.id_sexo
 JOIN permisos p ON u.id_permiso = p.id_permiso
 JOIN estados_usuarios eu ON u.id_estado_usuario = eu.id_estado_usuario
 WHERE u.id_usuario = 1; -- Reemplaza 1 por el id del usuario deseado
+
+/* mustra el nombre de los productos y sus variantes */ 
+SELECT p.nombre AS producto, v.nombre_variante AS variante, pp.precio, ep.nombre AS estado_producto, pp.cantidad
+FROM productos_pedido pp
+JOIN productos p ON pp.id_producto = p.id_producto
+JOIN variantes v ON pp.sku = v.sku
+JOIN estados_productos ep ON v.id_estado_producto = ep.id_estado_producto
+WHERE pp.id_pedido = 221; -- Reemplaza 1 por el id del pedido deseado

@@ -1849,3 +1849,59 @@ Array
         )
 
 )
+POST Data:
+Array
+(
+    [nombre] => julio
+    [apellido] => rojas
+    [dni] => 12312312
+    [phone] => 1231231231
+    [email] => juanimelillo2@gmail.com
+    [fechaNacimiento] => 2000-08-05
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => mercadopago
+)
+
+FILES Data:
+Array
+(
+    [comprobante] => Array
+        (
+            [name] => botin 4.webp
+            [full_path] => botin 4.webp
+            [type] => image/webp
+            [tmp_name] => C:\xampp\tmp\phpEC9B.tmp
+            [error] => 0
+            [size] => 1647988
+        )
+
+)
+POST Data:
+Array
+(
+    [nombre] => juan
+    [apellido] => melillo
+    [dni] => 12312312
+    [phone] => 12312312312
+    [email] => juanimelillo2@gmail.com
+    [fechaNacimiento] => 2000-06-05
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => mercadopago
+)
+
+FILES Data:
+Array
+(
+    [comprobante] => Array
+        (
+            [name] => IMG-20240822-WA0005.jpg
+            [full_path] => IMG-20240822-WA0005.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\php91CD.tmp
+            [error] => 0
+            [size] => 53698
+        )
+
+)

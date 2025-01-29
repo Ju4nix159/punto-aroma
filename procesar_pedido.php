@@ -194,31 +194,44 @@ function procesarPago($con, $id_pedido, $data, $total)
             throw new Exception("Método de pago no válido.");
         }
 
-        $comprobante_path = null;
         if (isset($_FILES['comprobante']) && $_FILES['comprobante']['error'] === UPLOAD_ERR_OK) {
-            $upload_dir = "./assets/comprobantes/";
+            // Definir la ruta donde se guardará el comprobante
+            $upload_dir = "./assets/comprobantes/" . $id_pedido . "/";
+
+            // Verificar si la carpeta existe, si no, crearla
+            if (!is_dir($upload_dir)) {
+                if (!mkdir($upload_dir, 0777, true)) {
+                    throw new Exception("No se pudo crear la carpeta para el comprobante.");
+                }
+            }
+
             $file_extension = pathinfo($_FILES['comprobante']['name'], PATHINFO_EXTENSION);
             $file_name = uniqid() . '.' . $file_extension;
 
+            // Mover el archivo a la carpeta correspondiente
             if (!move_uploaded_file($_FILES['comprobante']['tmp_name'], $upload_dir . $file_name)) {
                 throw new Exception("Error al subir el comprobante.");
             }
-            $comprobante_path = $upload_dir . $file_name;
         }
+
+        // Calcular el pago de la seña
         $pagoSeña = $total * 0.3;
 
+        // Preparar la consulta para insertar el pago
         $stmt = $con->prepare("INSERT INTO pagos (id_pedido, id_metodo_pago, comprobante, monto, fecha) VALUES (?, ?, ?, ?, NOW())");
         $stmt->execute([
             $id_pedido,
             $payment_methods[$data['payment_method']],
-            $comprobante_path,
+            $file_name,
             $pagoSeña
         ]);
     } catch (Exception $e) {
         throw new Exception("Error al procesar el pago: " . $e->getMessage());
     }
 }
-function crearInfoUsuario($con, $data, $id_usuario){
+
+function crearInfoUsuario($con, $data, $id_usuario)
+{
     $stmt = $con->prepare("INSERT INTO info_usuarios (id_usuario, nombre, apellido, dni, fecha_nacimiento, telefono) VALUES (?, ?, ?, ?, ?, ?)");
     $stmt->execute([
         $id_usuario,
