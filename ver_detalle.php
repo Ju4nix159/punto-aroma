@@ -38,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id_pedido'])) {
     }
 
     // Consulta para los detalles de los productos
-    $sql_detalle = $con->prepare("SELECT p.nombre AS producto, v.nombre_variante AS variante, pp.precio, ep.nombre AS estado_producto, pp.cantidad
+    $sql_detalle = $con->prepare("SELECT p.nombre AS producto, v.nombre_variante AS variante, pp.precio, pp.estado AS estado_producto, pp.cantidad
 FROM productos_pedido pp
 JOIN productos p ON pp.id_producto = p.id_producto
 JOIN variantes v ON pp.sku = v.sku

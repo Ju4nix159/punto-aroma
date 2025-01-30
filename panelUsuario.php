@@ -114,7 +114,7 @@ WHERE i.id_usuario = :id_usuario AND ud.estado = 1 ");
         }
 
         .status-procesado {
-            background-color: #ffc107;
+            background-color: #17a2b8;
         }
 
         .status-pendiente {
@@ -139,6 +139,13 @@ WHERE i.id_usuario = :id_usuario AND ud.estado = 1 ");
 
         .status-pagado {
             background-color: #28a745;
+        }
+
+        .status-señado{
+            background-color: #ffc107;
+        }
+        .status-noSeaño{
+            background-color: #f57c00;
         }
 
         .address-type {
