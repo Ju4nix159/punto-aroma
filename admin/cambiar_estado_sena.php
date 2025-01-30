@@ -20,9 +20,13 @@ if (!in_array($estado_sena, [0, 1])) {
 }
 
 try {
-    // Preparar la consulta SQL para actualizar el estado de la seña
-    $sql_cambiar_estado = $con->prepare("UPDATE pedidos SET estado_seña = :estado_sena WHERE id_pedido = :pedido_id");
+    // Determinar el nuevo estado del pedido basado en el estado de la seña
+    $estado_pedido = ($estado_sena == 1) ? 8 : 9;
+
+    // Preparar la consulta SQL para actualizar el estado de la seña y el estado del pedido
+    $sql_cambiar_estado = $con->prepare("UPDATE pedidos SET estado_seña = :estado_sena, id_estado_pedido = :id_estado_pedido WHERE id_pedido = :pedido_id");
     $sql_cambiar_estado->bindParam(':estado_sena', $estado_sena, PDO::PARAM_INT);
+    $sql_cambiar_estado->bindParam(':id_estado_pedido', $estado_pedido, PDO::PARAM_STR);
     $sql_cambiar_estado->bindParam(':pedido_id', $pedido_id, PDO::PARAM_INT);
 
     // Ejecutar la consulta

@@ -2,11 +2,19 @@
     class Database
     {
         private $hostname = "localhost";
-        /* private $database = "punto_aroma_sbd"; */
         private $database = "prueba";
         private $username = "root";
         private $password = "";
+
+        /* private $hostname = "127.0.0.1:3306";
+        private $database = "u836293947_ayb_sbd";
+        private $username = "u836293947_admin";
+        private $password = "Aybpruebas1"; */
+
+        
         private $charset = "utf8";
+
+
         
         
         function conectar()
