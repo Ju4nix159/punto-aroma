@@ -426,7 +426,7 @@ $marcas = $sql_marca->fetchAll(PDO::FETCH_ASSOC);
 
       try {
         // Enviar solicitud
-        const response = await fetch('añadir_fragancia.php', {
+        const response = await fetch('anadir_fragancia.php', {
           method: 'POST',
           body: formData,
         });
