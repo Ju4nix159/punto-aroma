@@ -357,15 +357,18 @@ $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
                             </div>
                             <div class="mb-3">
                                 <label for="comprobanteTransferencia" class="form-label">Subir comprobante</label>
-                                <input type="file" class="form-control" id="comprobanteTransferencia">
+                                <input type="file" class="form-control" id="comprobanteTransferencia" accept="image/*,.pdf">
+                                <small class="text-muted">Formatos permitidos: JPG, PNG, GIF, PDF. Tamaño máximo: 5MB.</small>
+                                <small class="text-danger" id="fileError" style="display: none;"></small>
                             </div>
+
                         </div>
 
                         <!-- Mercado Pago -->
                         <div id="mercadoPagoFields" class="payment-fields d-none">
                             <div class="text-center mb-3">
                                 <div id="wallet_container">
-                                    
+
                                 </div>
                             </div>
                             <div class="mb-3">
@@ -390,7 +393,32 @@ $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
 
     <script src="checkout.js"></script>
     <script>
+        document.getElementById('comprobanteTransferencia').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const maxSizeMB = 5; // Límite de tamaño en MB
+            const maxSizeBytes = maxSizeMB * 1024 * 1024; // Convertir a bytes
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'];
 
+            const errorElement = document.getElementById('fileError');
+            errorElement.style.display = 'none';
+            errorElement.textContent = '';
+
+            if (file) {
+                if (!allowedTypes.includes(file.type)) {
+                    errorElement.textContent = 'Solo se permiten archivos de imagen (JPG, PNG, GIF) o PDF.';
+                    errorElement.style.display = 'block';
+                    event.target.value = ''; // Resetear input
+                    return;
+                }
+
+                if (file.size > maxSizeBytes) {
+                    errorElement.textContent = `El archivo no debe superar los ${maxSizeMB}MB.`;
+                    errorElement.style.display = 'block';
+                    event.target.value = ''; // Resetear input
+                    return;
+                }
+            }
+        });
     </script>
 </body>
 
