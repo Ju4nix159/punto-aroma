@@ -196,14 +196,17 @@ function procesarPago($con, $id_pedido, $data, $total)
 
         $comprobante_path = null;
         if (isset($_FILES['comprobante']) && $_FILES['comprobante']['error'] === UPLOAD_ERR_OK) {
-            $upload_dir = "./assets/comprobantes/";
+            $upload_dir = "./assets/comprobantes/". $id_pedido . "/";
+            if (!is_dir($upload_dir)) {
+                mkdir($upload_dir, 0777, true);
+            }
             $file_extension = pathinfo($_FILES['comprobante']['name'], PATHINFO_EXTENSION);
             $file_name = uniqid() . '.' . $file_extension;
 
             if (!move_uploaded_file($_FILES['comprobante']['tmp_name'], $upload_dir . $file_name)) {
                 throw new Exception("Error al subir el comprobante.");
             }
-            $comprobante_path = $upload_dir . $file_name;
+            $comprobante_path =  $file_name;
         }
         $pagoSeña = $total * 0.3;
 
