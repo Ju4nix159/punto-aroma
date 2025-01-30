@@ -177,7 +177,7 @@ $marcas = $sql_marcas->fetchAll(PDO::FETCH_ASSOC);
             const data = new FormData();
             data.append('nombre', categoriaNombre);
 
-            fetch('añadir_marca.php', {
+            fetch('anadir_marca.php', {
                     method: 'POST',
                     body: data
                 })

@@ -248,7 +248,7 @@ function addToCart() {
   };
 
   var xhr = new XMLHttpRequest();
-  xhr.open("POST", "añadir_carrito.php", true);
+  xhr.open("POST", "anadir_carrito.php", true);
   xhr.setRequestHeader("Content-Type", "application/json");
 
   xhr.onreadystatechange = function () {

@@ -194,7 +194,7 @@ $categorias = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
             data.append('nombre', categoriaNombre);
             data.append('descripcion', categoriaDescripcion);
 
-            fetch('añadir_categoria.php', {
+            fetch('anadir_categoria.php', {
                     method: 'POST',
                     body: data
                 })
