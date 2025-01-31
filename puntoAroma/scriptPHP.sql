@@ -576,3 +576,9 @@ JOIN productos p ON pp.id_producto = p.id_producto
 JOIN variantes v ON pp.sku = v.sku
 JOIN estados_productos ep ON v.id_estado_producto = ep.id_estado_producto
 WHERE pp.id_pedido = 221; -- Reemplaza 1 por el id del pedido deseado
+
+-- Query para obtener los pagos de un pedido que tengan en la descripción "seña"
+SELECT p.id_pago, p.id_pedido, p.id_metodo_pago, mp.nombre_metodo_pago, p.comprobante, p.monto, p.fecha, p.descripcion
+FROM pagos p
+JOIN metodos_pago mp ON p.id_metodo_pago = mp.id_metodo_pago
+WHERE p.id_pedido = 1 AND p.descripcion LIKE '%seña%'; -- Reemplaza 1 por el id del pedido deseado

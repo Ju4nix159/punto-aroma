@@ -24,6 +24,14 @@ $sql_producto_pedido->bindParam(':id_pedido', $id_pedido, PDO::PARAM_INT);
 $sql_producto_pedido->execute();
 $productos = $sql_producto_pedido->fetchAll(PDO::FETCH_ASSOC);
 
+$sql_pago_seña = $con->prepare("SELECT p.id_pago, p.id_pedido, p.id_metodo_pago, mp.nombre_metodo_pago, p.comprobante, p.monto, p.fecha, p.descripcion
+FROM pagos p
+JOIN metodos_pago mp ON p.id_metodo_pago = mp.id_metodo_pago
+WHERE p.id_pedido = :id_pedido AND p.descripcion LIKE '%seña%';");
+$sql_pago_seña->bindParam(':id_pedido', $id_pedido, PDO::PARAM_INT);
+$sql_pago_seña->execute();
+$pago_seña = $sql_pago_seña->fetch(PDO::FETCH_ASSOC);
+$monto_seña = $pago_seña['monto'];
 // Inicializar totalProductos antes del foreach
 $totalProductos = 0;
 
@@ -41,7 +49,7 @@ $envio = $sql_envio->fetch(PDO::FETCH_ASSOC);
 // Evitar error si 'envio' no existe en la consulta
 $envioCosto = isset($envio['envio']) ? $envio['envio'] : 0;
 
-$total = $totalProductos + $envioCosto;
+$total = $totalProductos + $envioCosto - $monto_seña;
 // Crear la preferencia con un único ítem que representa el 30% del total
 $preference = $client->create([
     "items" => [
