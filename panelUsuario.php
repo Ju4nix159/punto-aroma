@@ -342,7 +342,7 @@ WHERE i.id_usuario = :id_usuario AND ud.estado = 1 ");
 
                                         <!-- Botón Pagar -->
                                         <?php if (in_array($pedido["estado_pedido"], ["procesado", "cambiado"])) { ?>
-                                            <a href="pagar_pedido.php?id_pedido=<?php echo $pedido['id_pedido']; ?>"
+                                            <a href="pago_total.php?id_pedido=<?php echo $pedido['id_pedido']; ?>"
                                                 class="btn btn-success btn-sm btn-pagar">
                                                 Pagar
                                             </a>
