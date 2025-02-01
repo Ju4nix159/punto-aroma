@@ -40,9 +40,10 @@ try {
     }
 
     // Registrar el pago en la base de datos
-    $sql_registrar_pago_trasferencia = $con->prepare("INSERT INTO pagos(id_pedido, comprobante) VALUES(:id_pedido, :comprobante);");
+    $sql_registrar_pago_trasferencia = $con->prepare("INSERT INTO pagos(id_pedido, comprobante,descripcion) VALUES(:id_pedido, :comprobante,:descripcion);");
     $sql_registrar_pago_trasferencia->bindParam(':id_pedido', $id_pedido);
     $sql_registrar_pago_trasferencia->bindParam(':comprobante', $nombre_comprobante);
+    $sql_registrar_pago_trasferencia->bindParam(':descripcion', "seña");
 
     if (!$sql_registrar_pago_trasferencia->execute()) {
         throw new Exception('Error al registrar el pago.');

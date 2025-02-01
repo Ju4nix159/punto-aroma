@@ -41,7 +41,7 @@ if (isset($_SESSION["usuario"])) {
     $sexos = $sql_sexos->fetchAll(PDO::FETCH_ASSOC);
 
 
-    $sql_pedido = $con->prepare("   SELECT p.id_pedido, p.total, p.fecha, ep.nombre AS estado_pedido, ep.id_estado_pedido
+    $sql_pedido = $con->prepare("   SELECT p.id_pedido, p.total, p.fecha, ep.nombre AS estado_pedido, ep.id_estado_pedido, p.envio, p.id_local
                                     FROM pedidos p
                                     JOIN usuarios u ON p.id_usuario = u.id_usuario
                                     JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido
@@ -326,6 +326,13 @@ WHERE i.id_usuario = :id_usuario AND ud.estado = 1 ");
                                         </div>
                                         <p>Fecha: <?php echo $pedido["fecha"] ?></p>
                                         <p>Total: <?php echo $pedido["total"] ?></p>
+                                        <?php
+                                        if (in_array($pedido["estado_pedido"], ["procesado", "cambiado", "señado"]) && empty($pedido["id_local"])) {
+                                            $envio = $pedido["envio"]; // Suponiendo que el costo de envío es 50
+                                            $totalConEnvio = $pedido["total"] + $envio;
+                                            echo "<p>Total + Envío: $totalConEnvio</p>";
+                                        }
+                                        ?>
                                         <button class="btn btn-primary-custom btn-sm me-2 btn-ver-detalle"
                                             data-id-pedido="<?php echo $pedido["id_pedido"] ?>"
                                             onclick="verDetallePedido(<?php echo $pedido['id_pedido']; ?>)">
@@ -341,8 +348,8 @@ WHERE i.id_usuario = :id_usuario AND ud.estado = 1 ");
                                         <?php } ?>
 
                                         <!-- Botón Pagar -->
-                                        <?php if (in_array($pedido["estado_pedido"], ["procesado", "cambiado"])) { ?>
-                                            <a href="pagar_pedido.php?id_pedido=<?php echo $pedido['id_pedido']; ?>"
+                                        <?php if (in_array($pedido["estado_pedido"], ["procesado", "cambiado"]) && $pedido["id_local"] == NULL ) { ?>
+                                            <a href="pago_total.php?id_pedido=<?php echo $pedido['id_pedido']; ?>"
                                                 class="btn btn-success btn-sm btn-pagar">
                                                 Pagar
                                             </a>
