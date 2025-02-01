@@ -60,10 +60,14 @@ $sql_pago_seña->execute();
 $pago_seña = $sql_pago_seña->fetch(PDO::FETCH_ASSOC);
 $monto_seña = $pago_seña['monto'];
 
-
-
+$sql_id_local = $con->prepare("SELECT  l.* FROM pedidos p JOIN locales l ON p.id_local = l.id_local  WHERE id_pedido = :id_pedido;");
+$sql_id_local->bindParam(':id_pedido', $id_pedido, PDO::PARAM_INT);
+$sql_id_local->execute();
+$id_local = $sql_id_local->fetch(PDO::FETCH_ASSOC);
 
 ?>
+
+
 
 
 <!DOCTYPE html>
@@ -178,12 +182,14 @@ $monto_seña = $pago_seña['monto'];
                         </tbody>
                         <tfoot>
                             <!-- Costo de Envío -->
-                            <tr>
-                                <td>Envío</td>
-                                <td colspan="2"></td>
-                                <td>$<?php echo number_format($info_pedido['costo_envio'], 2); ?></td>
-                                <td>$<?php echo number_format($info_pedido['costo_envio'], 2); ?></td>
-                            </tr>
+                            <?php if ($info_pedido) { ?>
+                                <tr>
+                                    <td>Envío</td>
+                                    <td colspan="2"></td>
+                                    <td>$<?php echo number_format($info_pedido['costo_envio'], 2); ?></td>
+                                    <td>$<?php echo number_format($info_pedido['costo_envio'], 2); ?></td>
+                                </tr>
+                            <?php } ?>
                             <!-- Monto de la seña -->
                             <tr>
                                 <td>Monto de la seña</td>
@@ -195,7 +201,7 @@ $monto_seña = $pago_seña['monto'];
                             <tr>
                                 <td><strong>Total restante</strong></td>
                                 <td colspan="2"></td>
-                                <td colspan="2"><strong>$<?php echo number_format(($total+$info_pedido["costo_envio"])-$monto_seña, 2); ?></strong></td>
+                                <td colspan="2"><strong>$<?php echo number_format(($total + ($info_pedido ? $info_pedido["costo_envio"] : 0)) - $monto_seña, 2); ?></strong></td>
                             </tr>
                         </tfoot>
                     </table>
@@ -238,48 +244,66 @@ $monto_seña = $pago_seña['monto'];
                         <hr>
                         <div class="container mt-4">
                             <!-- Selección del método de entrega -->
-                            <div id="deliveryForm" class="mt-4">
-                                <h4 class="mb-3">Información de domicilios</h4>
-                                <div class="row mb-3">
-                                    <div class="col">
-                                        <label for="province" class="form-label">Provincia</label>
-                                        <input disabled value="<?php echo $info_pedido["provincia"] ?>" type="text" class="form-control" id="province" name="province" placeholder="Ingrese su provincia" required>
+                            <?php if ($info_pedido) { ?>
+                                <div id="deliveryForm" class="mt-4">
+                                    <h4 class="mb-3">Información de domicilios</h4>
+                                    <div class="row mb-3">
+                                        <div class="col">
+                                            <label for="province" class="form-label">Provincia</label>
+                                            <input disabled value="<?php echo $info_pedido["provincia"] ?>" type="text" class="form-control" id="province" name="province" placeholder="Ingrese su provincia" required>
+                                        </div>
+                                        <div class="col">
+                                            <label for="locality" class="form-label">Localidad</label>
+                                            <input disabled value="<?php echo $info_pedido["localidad"] ?>" type="text" class="form-control" id="locality" name="locality" placeholder="Ingrese su localidad" required>
+                                        </div>
                                     </div>
-                                    <div class="col">
-                                        <label for="locality" class="form-label">Localidad</label>
-                                        <input disabled value="<?php echo $info_pedido["localidad"] ?>" type="text" class="form-control" id="locality" name="locality" placeholder="Ingrese su localidad" required>
+                                    <div class="row mb-3">
+                                        <div class="col">
+                                            <label for="street" class="form-label">Calle</label>
+                                            <input disabled value="<?php echo $info_pedido["calle"] ?>" type="text" class="form-control" id="street" name="street" placeholder="Calle Principal" required>
+                                        </div>
+                                        <div class="col">
+                                            <label for="number" class="form-label">Número</label>
+                                            <input disabled value="<?php echo $info_pedido["numero"] ?>" type="text" class="form-control" id="number" name="number" placeholder="123" required>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col">
+                                            <label for="floor" class="form-label">Piso</label>
+                                            <input disabled value="<?php echo !empty($info_pedido["piso"]) ? $info_pedido["piso"] : 'No aplica'; ?>" type="text" class="form-control" id="floor" name="floor" placeholder="Ej. 2" required>
+                                        </div>
+                                        <div class="col">
+                                            <label for="department" class="form-label">Departamento</label>
+                                            <input disabled value="<?php echo !empty($info_pedido["departamento"]) ? $info_pedido["departamento"] : 'No aplica'; ?>" type="text" class="form-control" id="department" name="department" placeholder="Ej. B" required>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="postalCode" class="form-label">Código postal</label>
+                                        <input disabled value="<?php echo $info_pedido["codigo_postal"] ?>" type="text" class="form-control" id="postalCode" name="postalCode" placeholder="28001" required>
+                                    </div>
+                                    <hr>
+                                    <div class="mb-3">
+                                        <label for="additionalInfo" class="form-label">Información adicional</label>
+                                        <textarea disabled value="<?php echo $info_pedido["informacion_adicional"] ?>" class="form-control" id="additionalInfo" name="additionalInfo" rows="3" placeholder="Ingrese información adicional (opcional)"></textarea>
                                     </div>
                                 </div>
-                                <div class="row mb-3">
-                                    <div class="col">
-                                        <label for="street" class="form-label">Calle</label>
-                                        <input disabled value="<?php echo $info_pedido["calle"] ?>" type="text" class="form-control" id="street" name="street" placeholder="Calle Principal" required>
+                            <?php } ?>
+                            <?php if ($id_local) { ?>
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Información del Local</h5>
+                                            <p class="card-text">
+                                                Pedido ID: <?php echo $id_pedido; ?><br>
+                                                Provincia: <?php echo $id_local["provincia"]; ?><br>
+                                                Localidad: <?php echo $id_local["localidad"]; ?><br>
+                                                Calle: <?php echo $id_local["calle"]; ?><br>
+                                                Número: <?php echo $id_local["numero"]; ?><br>
+                                                Código Postal: <?php echo $id_local["codigo_postal"]; ?><br>
+                                                Nombre: <?php echo $id_local["nombre"]; ?>
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div class="col">
-                                        <label for="number" class="form-label">Número</label>
-                                        <input disabled value="<?php echo $info_pedido["numero"] ?>" type="text" class="form-control" id="number" name="number" placeholder="123" required>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col">
-                                        <label for="floor" class="form-label">Piso</label>
-                                        <input disabled value="<?php echo !empty($info_pedido["piso"]) ? $info_pedido["piso"] : 'No aplica'; ?>" type="text" class="form-control" id="floor" name="floor" placeholder="Ej. 2" required>
-                                    </div>
-                                    <div class="col">
-                                        <label for="department" class="form-label">Departamento</label>
-                                        <input disabled value="<?php echo !empty($info_pedido["departamento"]) ? $info_pedido["departamento"] : 'No aplica'; ?>" type="text" class="form-control" id="department" name="department" placeholder="Ej. B" required>
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="postalCode" class="form-label">Código postal</label>
-                                    <input disabled value="<?php echo $info_pedido["codigo_postal"] ?>" type="text" class="form-control" id="postalCode" name="postalCode" placeholder="28001" required>
-                                </div>
-                                <hr>
-                                <div class="mb-3">
-                                    <label for="additionalInfo" class="form-label">Información adicional</label>
-                                    <textarea disabled value="<?php echo $info_pedido["informacion_adicional"] ?>" class="form-control" id="additionalInfo" name="additionalInfo" rows="3" placeholder="Ingrese información adicional (opcional)"></textarea>
-                                </div>
-                            </div>
+                            <?php } ?>
                         </div>
                     </div>
                 </div>
@@ -295,8 +319,16 @@ $monto_seña = $pago_seña['monto'];
                     </div>
                     <div class="mt-3">
                         <p class="fw-bold">
-                            Total a pagar: <span id="montoAPagar" class="text-success"><strong id="totalPrice">$<?php echo number_format((($total + $info_pedido["costo_envio"])-$monto_seña), 2); ?></strong></span>
-                            <input type="hidden" name="monto" id="monto" value="<?php echo number_format((($total+$info_pedido["costo_envio"])- $monto_seña), 2); ?>">
+                            Total a pagar: 
+                            <span id="montoAPagar" class="text-success">
+                                <strong id="totalPrice">
+                                    $<?php 
+                                        $costo_envio = isset($info_pedido["costo_envio"]) ? $info_pedido["costo_envio"] : 0;
+                                        echo number_format((($total + $costo_envio) - $monto_seña), 2); 
+                                    ?>
+                                </strong>
+                            </span>
+                            <input type="hidden" name="monto" id="monto" value="<?php echo number_format((($total + $costo_envio) - $monto_seña), 2); ?>">
                         </p>
                     </div>
                     <div id="paymentForm">
