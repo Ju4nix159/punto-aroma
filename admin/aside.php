@@ -108,7 +108,7 @@
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a href="añadir_producto.php" class="nav-link">
+                  <a href="anadir_producto.php" class="nav-link">
                     <i class="fas fa-plus"></i>
                     <p>añadir producto</p>
                   </a>

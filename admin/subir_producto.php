@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ':id_producto' => $id_producto,
                     ':id_tipo_precio' => 1,
                     ':precio' => $precio_minorista,
-                    ':cantidad_minima' => null // No aplica para precio minorista
+                    ':cantidad_minima' => 1 // No aplica para precio minorista
                 ]);
             }
 

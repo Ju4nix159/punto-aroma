@@ -51,7 +51,7 @@ $banners = $sql_banner->fetchAll(PDO::FETCH_ASSOC);
                         $enlace = $banner['id_pagina'];
                     ?>
                         <div class="carousel-item <?php echo $first ? 'active' : ''; ?>">
-                            <img src="<?php echo htmlspecialchars($imagen); ?>" class="d-block w-100" alt="<?php echo htmlspecialchars($titulo); ?>">
+                            <img src="<?php echo htmlspecialchars($imagen); ?>" class="d-block w-100 img-fluid" alt="<?php echo htmlspecialchars($titulo); ?>" style="max-height: 500px; object-fit: cover;">
                             <div class="carousel-caption d-none d-md-block">
                                 <h3><?php echo htmlspecialchars($titulo); ?></h3>
                                 <p><?php echo htmlspecialchars($descripcion); ?></p>

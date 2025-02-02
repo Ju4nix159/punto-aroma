@@ -582,3 +582,11 @@ SELECT p.id_pago, p.id_pedido, p.id_metodo_pago, mp.nombre_metodo_pago, p.compro
 FROM pagos p
 JOIN metodos_pago mp ON p.id_metodo_pago = mp.id_metodo_pago
 WHERE p.id_pedido = 1 AND p.descripcion LIKE '%seña%'; -- Reemplaza 1 por el id del pedido deseado
+
+-- Query para obtener todos los precios con la cantidad mínima de un producto
+SELECT p.nombre AS producto, tp.nombre AS tipo_precio, vtp.precio, vtp.cantidad_minima
+FROM variantes_tipo_precio vtp
+JOIN productos p ON vtp.id_producto = p.id_producto
+JOIN tipos_precios tp ON vtp.id_tipo_precio = tp.id_tipo_precio
+WHERE p.id_producto = 29;
+
