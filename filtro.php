@@ -28,7 +28,7 @@ try {
         $sql_filtro->execute();
 
     } else {
-        $sql_filtro = $con->prepare("SELECT p.id_pedido, p.total, p.fecha, ep.nombre AS estado_pedido
+        $sql_filtro = $con->prepare("SELECT p.id_pedido, p.total, p.fecha, ep.nombre AS estado_pedido, p.id_local
 FROM pedidos p
 JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido
 WHERE p.id_estado_pedido = :estado and p.id_usuario = :id_usuario;");

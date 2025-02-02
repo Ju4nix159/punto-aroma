@@ -847,7 +847,7 @@ WHERE i.id_usuario = :id_usuario AND ud.estado = 1 ");
                             : ""
                     }
                     ${
-                        ["procesado", "cambiado"].includes(pedido.estado_pedido)
+                        ["procesado", "cambiado"].includes(pedido.estado_pedido) && pedido.id_local == null
                             ? `<a href="pagar_pedido.php?id_pedido=${pedido.id_pedido}" 
                                 class="btn btn-success btn-sm btn-pagar">
                                 Pagar
