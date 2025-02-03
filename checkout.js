@@ -265,7 +265,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ];
       const form = document.getElementById("billingForm");
 
-      // Temporalmente remover el required de los campos ocultos
+
       const hiddenInputs = deliveryForm.querySelectorAll("input[required]");
       hiddenInputs.forEach((input) => {
         if (deliveryFields.includes(input.id)) {

@@ -8,7 +8,7 @@ if (!isset($_SESSION['cart'])) {
 $data = json_decode(file_get_contents("php://input"), true);
 $action = $data['action'];
 $productId = $data['productId'];
-$fraganciaAroma = isset($data['fraganciaAroma']) ? $data['fraganciaAroma'] : null;
+$fraganciaAroma = $data['fraganciaAroma'] ?? null;
 
 function actualizarSesionCarrito($productoIndex) {
     // Si no quedan fragancias, elimina el producto
@@ -73,4 +73,4 @@ switch ($action) {
         echo json_encode(["success" => false, "message" => "Acción no válida"]);
         break;
 }
-?>
+

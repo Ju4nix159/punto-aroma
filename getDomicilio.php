@@ -1,7 +1,7 @@
 <?php
 session_start();
 // Conexión a la base de datos
-include '/admin/config/sbd.php';
+include './admin/config/sbd.php';
 $id_domicilio = $_GET['id'];
 $id_usuario = $_SESSION['usuario'];
 $query = "SELECT 

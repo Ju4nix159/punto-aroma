@@ -1,4 +1,5 @@
 <?php
+/** @noinspection ALL */
 include './admin/config/sbd.php';
 
 header('Content-Type: application/json');
@@ -94,4 +95,4 @@ try {
     $con->rollBack();
     echo json_encode(['success' => false, 'message' => 'Error al insertar en la base de datos: ' . $e->getMessage()]);
 }
-?>
+

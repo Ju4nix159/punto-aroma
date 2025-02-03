@@ -65,12 +65,11 @@ if (isset($input['producto'])) {
                 $item['fragancias'] = $fraganciasExistentes;
 
                 echo json_encode(["success" => true, "message" => "Producto actualizado en el carrito con las nuevas fragancias"]);
-                return;
             } else {
                 // Si las fragancias son las mismas, no hacemos nada
                 echo json_encode(["success" => false, "message" => "El producto ya está en el carrito con las mismas fragancias"]);
-                return;
             }
+            return;
         }
     }
 
@@ -84,4 +83,3 @@ if (isset($input['producto'])) {
     // Responde con un mensaje de error si no se recibe el producto
     echo json_encode(["success" => false, "message" => "Error: no se recibió el producto"]);
 }
-?>

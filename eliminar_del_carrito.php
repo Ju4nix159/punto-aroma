@@ -8,4 +8,3 @@ if (isset($data['sku']) && isset($_SESSION['carrito'][$data['sku']])) {
 } else {
     echo json_encode(['success' => false]);
 }
-?>

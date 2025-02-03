@@ -1,5 +1,5 @@
 <?php
-include '../admin/config/sbd.php';
+include './admin/config/sbd.php';
 
 // Recibe los parámetros de consulta
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;

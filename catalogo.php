@@ -50,19 +50,6 @@ include 'header.php';
       /* Ajusta este valor según la altura de tu header */
     }
 
-    .quick-view-btn {
-      background-color: var(--primary-color);
-      /* Fondo verde */
-      border: none;
-      /* Sin bordes */
-      color: white;
-      /* Color del ícono en blanco (puedes cambiarlo si quieres otro color) */
-      padding: 10px;
-      /* Espaciado alrededor del ícono, puedes ajustarlo */
-      border-radius: 5px;
-      /* Si quieres bordes redondeados, esto es opcional */
-    }
-
     .quick-view-btn i {
       font-size: 20px;
       /* Tamaño del ícono, ajusta como lo necesites */
