@@ -32,6 +32,8 @@ include 'header.php';
                 </form>
                 <div class="text-center mt-3">
                     <a href="#" class="text-decoration-none text-primary-custom">¿Olvidaste tu contraseña?</a>
+                    <span class="mx-2">|</span>
+                    <a href="./registro.php" class="text-decoration-none text-primary-custom">Registrarte</a>
                 </div>
             </div>
         </div>

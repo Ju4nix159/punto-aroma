@@ -1,17 +1,11 @@
 <?php
 
-include "./header.php";
 
+
+include "./header.php";
 include './admin/config/sbd.php';
 require "mp.php";
 
-if (!isset($_SESSION['usuario'])) {
-    echo "<script>alert('No hay una sesión iniciada');</script>";
-    var_dump($_SESSION);
-    exit;
-} else {
-    $id_usuario = $_SESSION['usuario'];
-}
 
 $sql_domicilios = $con->prepare("SELECT d.*, ud.tipo_domicilio, ud.principal,ud.estado
 FROM domicilios d

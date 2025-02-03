@@ -20,8 +20,13 @@
                     <h4 class="text-primary-custom" id="cart-total">$0.00</h4>
                 </div>
                 <div class="d-grid gap-2 mt-4">
-                    <a href="checkout.php" class="btn btn-primary-custom" id="checkout-button">Proceder al pago</a>
-                    <button class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">Seguir comprando</button>
+                    <?php if (isset($_SESSION['usuario'])): ?>
+                        <a href="checkout.php" class="btn btn-primary-custom" id="checkout-button">Proceder al pago</a>
+                        <button class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">Seguir comprando</button>
+                    <?php else: ?>
+                        <a href="iniciarSesion.php" class="btn btn-primary-custom" id="login-button">Iniciar sesión</a>
+                    <p class="mt-3">Para gestionar su pedido, debe iniciar sesión o crear una cuenta.</p>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

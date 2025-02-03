@@ -33,6 +33,7 @@ include 'header.php';
                         <label class="form-check-label" for="agreeTerms">Acepto los términos y condiciones</label>
                     </div>
                     <button type="submit" class="btn btn-primary-custom w-100" name="registrar_usuario" >Registrarse</button>
+                    <p class="mt-3 text-center">¿Ya tienes una cuenta? <a href="iniciarSesion.php" class="text-primary-custom">Inicia sesión aquí</a></p>
                 </form>
             </div>
         </div>
