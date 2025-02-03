@@ -41,7 +41,7 @@ if (isset($_SESSION["usuario"])) {
     $sexos = $sql_sexos->fetchAll(PDO::FETCH_ASSOC);
 
 
-    $sql_pedido = $con->prepare("   SELECT p.id_pedido, p.total, p.fecha, ep.nombre AS estado_pedido, ep.id_estado_pedido, p.envio, p.id_local
+    $sql_pedido = $con->prepare("   SELECT p.id_pedido, p.total, p.fecha, ep.nombre AS estado_pedido, ep.id_estado_pedido, p.envio, p.id_local, p.estado_seña
                                     FROM pedidos p
                                     JOIN usuarios u ON p.id_usuario = u.id_usuario
                                     JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido
@@ -399,7 +399,7 @@ WHERE i.id_usuario = :id_usuario AND ud.estado = 1 ");
                                         <?php } ?>
 
                                         <!-- Botón Pagar -->
-                                        <?php if (in_array($pedido["estado_pedido"], ["procesado", "cambiado"]) && $pedido["id_local"] == NULL) { ?>
+                                        <?php if (in_array($pedido["estado_pedido"], ["procesado", "cambiado"]) && $pedido["estado_seña"] == 1) { ?>
                                             <a href="pago_total.php?id_pedido=<?php echo $pedido['id_pedido']; ?>"
                                                 class="btn btn-success btn-sm btn-pagar">
                                                 Pagar
@@ -899,8 +899,8 @@ WHERE i.id_usuario = :id_usuario AND ud.estado = 1 ");
                             : ""
                     }
                     ${
-                        ["procesado", "cambiado"].includes(pedido.estado_pedido) && pedido.id_local == null
-                            ? `<a href="pagar_pedido.php?id_pedido=${pedido.id_pedido}" 
+                        ["procesado", "cambiado"].includes(pedido.estado_pedido) /* && pedido.id_local == null */
+                            ? `<a href="pago_total.php?id_pedido=${pedido.id_pedido}" 
                                 class="btn btn-success btn-sm btn-pagar">
                                 Pagar
                             </a>`

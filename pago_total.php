@@ -289,20 +289,20 @@ $id_local = $sql_id_local->fetch(PDO::FETCH_ASSOC);
                                 </div>
                             <?php } ?>
                             <?php if ($id_local) { ?>
-                                    <div class="card mb-3">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Información del Local</h5>
-                                            <p class="card-text">
-                                                Pedido ID: <?php echo $id_pedido; ?><br>
-                                                Provincia: <?php echo $id_local["provincia"]; ?><br>
-                                                Localidad: <?php echo $id_local["localidad"]; ?><br>
-                                                Calle: <?php echo $id_local["calle"]; ?><br>
-                                                Número: <?php echo $id_local["numero"]; ?><br>
-                                                Código Postal: <?php echo $id_local["codigo_postal"]; ?><br>
-                                                Nombre: <?php echo $id_local["nombre"]; ?>
-                                            </p>
-                                        </div>
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Información del Local</h5>
+                                        <p class="card-text">
+                                            Pedido ID: <?php echo $id_pedido; ?><br>
+                                            Provincia: <?php echo $id_local["provincia"]; ?><br>
+                                            Localidad: <?php echo $id_local["localidad"]; ?><br>
+                                            Calle: <?php echo $id_local["calle"]; ?><br>
+                                            Número: <?php echo $id_local["numero"]; ?><br>
+                                            Código Postal: <?php echo $id_local["codigo_postal"]; ?><br>
+                                            Nombre: <?php echo $id_local["nombre"]; ?>
+                                        </p>
                                     </div>
+                                </div>
                             <?php } ?>
                         </div>
                     </div>
@@ -319,13 +319,13 @@ $id_local = $sql_id_local->fetch(PDO::FETCH_ASSOC);
                     </div>
                     <div class="mt-3">
                         <p class="fw-bold">
-                            Total a pagar: 
+                            Total a pagar:
                             <span id="montoAPagar" class="text-success">
                                 <strong id="totalPrice">
-                                    $<?php 
+                                    $<?php
                                         $costo_envio = isset($info_pedido["costo_envio"]) ? $info_pedido["costo_envio"] : 0;
-                                        echo number_format((($total + $costo_envio) - $monto_seña), 2); 
-                                    ?>
+                                        echo number_format((($total + $costo_envio) - $monto_seña), 2);
+                                        ?>
                                 </strong>
                             </span>
                             <input type="hidden" name="monto" id="monto" value="<?php echo number_format((($total + $costo_envio) - $monto_seña), 2); ?>">
@@ -345,12 +345,14 @@ $id_local = $sql_id_local->fetch(PDO::FETCH_ASSOC);
                                     Mercado Pago
                                 </label>
                             </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="paymentMethod" id="pagoEnLocal" value="pagoenlocal">
-                                <label class="form-check-label" for="pagoEnLocal">
-                                    Pago en local
-                                </label>
-                            </div>
+                            <?php if ($info_pedido) { ?>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="paymentMethod" id="pagoEnLocal" value="pagoenlocal">
+                                    <label class="form-check-label" for="pagoEnLocal">
+                                        Pago en local
+                                    </label>
+                                </div>
+                            <?php } ?>
                         </div>
 
                         <!-- Transferencia Bancaria -->
@@ -399,7 +401,9 @@ $id_local = $sql_id_local->fetch(PDO::FETCH_ASSOC);
                             </div>
                             <div class="mb-3">
                                 <label for="comprobanteMercadoPago" class="form-label">Subir comprobante</label>
-                                <input type="file" class="form-control" id="comprobanteMercadoPago">
+                                <input type="file" class="form-control" id="comprobanteMercadoPago" accept="image/*,.pdf">
+                                <small class="text-muted">Formatos permitidos: JPG, PNG, GIF, PDF. Tamaño máximo: 5MB.</small>
+                                <small class="text-danger" id="fileError" style="display: none;"></small>
                             </div>
                         </div>
 
