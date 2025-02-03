@@ -1,10 +1,14 @@
 <?php
 
 
-
 include "./header.php";
+
 include './admin/config/sbd.php';
 require "mp.php";
+
+if (isset($_SESSION['usuario'])) {
+    $id_usuario = $_SESSION['usuario'];
+}
 
 
 $sql_domicilios = $con->prepare("SELECT d.*, ud.tipo_domicilio, ud.principal,ud.estado
