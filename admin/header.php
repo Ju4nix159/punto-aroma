@@ -42,7 +42,7 @@ if (!isset($_SESSION['usuario'])) {
   <!-- Bootstrap 3.3.7 -->
   <!-- <link rel="stylesheet" href="../admin/css/bootstrap.min.css"> -->
 
-  <link rel="icon" type="image/svg+xml" sizes="32x32" href="/assets/logoos/ayb-logo-sinfondo.svg">
+  <link rel="icon" type="image/svg+xml" sizes="32x32" href="../assets/logoos/ayb-logo-sinfondo.svg">
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">

@@ -33,13 +33,13 @@
                             Para acceder a esta sección, es necesario iniciar sesión en tu cuenta de Punto Aroma.
                         </p>
                         <div class="d-flex justify-content-center">
-                            <a href="/pa/iniciarSesion.php" class="btn btn-primary-custom">
+                            <a href="./iniciarSesion.php" class="btn btn-primary-custom">
                                 Iniciar Sesión
                             </a>
                         </div>
                         <hr class="my-4">
                         <p class="text-center mb-0">
-                            ¿No tienes una cuenta? <a href="/pa/registro.php" class="text-primary-custom">Regístrate aquí</a>
+                            ¿No tienes una cuenta? <a href="./registro.php" class="text-primary-custom">Regístrate aquí</a>
                         </p>
                     </div>
                 </div>
