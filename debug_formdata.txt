@@ -135,3 +135,84 @@ Array
         )
 
 )
+POST Data:
+Array
+(
+    [nombre] => juantres
+    [apellido] => melillo
+    [dni] => 12312312
+    [phone] => 12312312312
+    [email] => juanimelillo4@gmail.com
+    [fechaNacimiento] => 0200-06-05
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => transferencia
+)
+
+FILES Data:
+Array
+(
+    [comprobante] => Array
+        (
+            [name] => i1.jpg
+            [full_path] => i1.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\phpD431.tmp
+            [error] => 0
+            [size] => 47028
+        )
+
+)
+POST Data:
+Array
+(
+    [nombre] => juantres
+    [apellido] => melillo
+    [dni] => 12312312
+    [phone] => 12312312312
+    [email] => juanimelillo4@gmail.com
+    [fechaNacimiento] => 0200-06-05
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => pagoenlocal
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+    [nombre] => juantres
+    [apellido] => melillo
+    [dni] => 12312312
+    [phone] => 12312312312
+    [email] => juanimelillo4@gmail.com
+    [fechaNacimiento] => 0200-06-05
+    [delivery_method] => delivery
+    [provincia] => chubut 
+    [localidad] => rawson
+    [calle] => buenos aires
+    [numero] => 342
+    [piso] => 2
+    [departamento] => b
+    [codigo_postal] => 12121
+    [informacion_adicional] => 1212121
+    [payment_method] => transferencia
+)
+
+FILES Data:
+Array
+(
+    [comprobante] => Array
+        (
+            [name] => i3.jpg
+            [full_path] => i3.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\phpBB37.tmp
+            [error] => 0
+            [size] => 87292
+        )
+
+)

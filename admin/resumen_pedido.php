@@ -189,12 +189,21 @@ $pagos = $sql_pagos->fetchAll(PDO::FETCH_ASSOC);
                                             <tr>
                                                 <td>Costo de Envío</td>
                                                 <td>
-                                                    <input
-                                                        type="number"
-                                                        id="costoEnvio"
-                                                        class="form-control"
-                                                        value="<?php echo $pedido["envio"] ?>"
-                                                        oninput="calcularTotal()"> <!-- Llamar a la función cuando el valor cambie -->
+                                                    <?php if ($pedido["nombre_local"] === null) { ?>
+                                                        <input
+                                                            type="number"
+                                                            id="costoEnvio"
+                                                            class="form-control"
+                                                            value="<?php echo $pedido["envio"] ?>"
+                                                            oninput="calcularTotal()"> <!-- Llamar a la función cuando el valor cambie -->
+                                                    <?php } else { ?>
+                                                        <input
+                                                            type="number"
+                                                            id="costoEnvio"
+                                                            class="form-control"
+                                                            value="0"
+                                                            readonly> <!-- No permitir cambios si se retira en sucursal -->
+                                                    <?php } ?>
                                                 </td>
                                             </tr>
                                         </tfoot>

@@ -20,65 +20,130 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id_pedido'])) {
     // Construir el HTML del resumen del pedido
     $detallePedidoHtml = "";
     if ($resumen) {
-        $detallePedidoHtml .= "<h4>Resumen del Pedido</h4>";
-        $detallePedidoHtml .= "<p><strong>ID Pedido:</strong> " . htmlspecialchars($resumen['id_pedido']) . "</p>";
-        $detallePedidoHtml .= "<p><strong>Fecha:</strong> " . htmlspecialchars($resumen['fecha']) . "</p>";
-        $detallePedidoHtml .= "<p><strong>Total pedido:</strong> $" . number_format($resumen['total'], 2) . "</p>";
-        $detallePedidoHtml .= "<p><strong>Cliente:</strong> " . htmlspecialchars($resumen['nombre_usuario'] . ' ' . $resumen['apellido']) . "</p>";
-        $detallePedidoHtml .= "<p><strong>Email:</strong> " . htmlspecialchars($resumen['email']) . "</p>";
-
+        $detallePedidoHtml .= "<div class='row g-4 mb-4'>
+            <div class='col-md-6'>
+                <h6 class='info-label mb-3'>Información del Pedido</h6>
+                <div class='row g-2'>
+                    <div class='col-6'><span class='fw-medium'>ID Pedido:</span></div>
+                    <div class='col-6'>" . htmlspecialchars($resumen['id_pedido']) . "</div>
+                    <div class='col-6'><span class='fw-medium'>Fecha:</span></div>
+                    <div class='col-6'>" . htmlspecialchars($resumen['fecha']) . "</div>
+                    <div class='col-6'><span class='fw-medium'>Total:</span></div>
+                    <div class='col-6'>$" . number_format($resumen['total'], 2) . "</div>
+                </div>
+            </div>
+            <div class='col-md-6'>
+                <h6 class='info-label mb-3'>Información del Cliente</h6>
+                <div class='mb-2'><span class='fw-medium'>Cliente: </span>" . htmlspecialchars($resumen['nombre_usuario'] . ' ' . $resumen['apellido']) . "</div>
+                <div class='mb-2'><span class='fw-medium'>Email: </span>" . htmlspecialchars($resumen['email']) . "</div>
+                <div class='mb-2'><span class='fw-medium'>Dirección: </span>";
         if (!empty($resumen['sucursal'])) {
-            $detallePedidoHtml .= "<p><strong>Sucursal:</strong> " . htmlspecialchars($resumen['sucursal']) . "</p>";
+            $detallePedidoHtml .= htmlspecialchars($resumen['sucursal']);
         } else {
-            $detallePedidoHtml .= "<p><strong>Dirección:</strong> " . htmlspecialchars($resumen['calle'] . ' ' . $resumen['numero'] . ', ' . $resumen['localidad'] . ', ' . $resumen['provincia']) . "</p>";
+            $detallePedidoHtml .= htmlspecialchars($resumen['calle'] . ' ' . $resumen['numero'] . ', ' . $resumen['localidad'] . ', ' . $resumen['provincia']);
         }
-        $detallePedidoHtml .= "<p><strong>Estado del Pedido:</strong> " . htmlspecialchars($resumen['estado_pedido'] . ' - ' . $resumen['estado_pedido_descripcion']) . "</p>";
+        $detallePedidoHtml .= "</div>
+            </div>
+        </div>";
+
+        // Consulta para obtener los pagos del pedido
+        $sql_pagos = $con->prepare("SELECT * FROM pagos WHERE id_pedido = :id_pedido");
+        $sql_pagos->bindParam(':id_pedido', $id_pedido, PDO::PARAM_INT);
+        $sql_pagos->execute();
+        $pagos = $sql_pagos->fetchAll(PDO::FETCH_ASSOC);
+
+        // Calcular el total pagado y la seña
+        $totalPagado = 0;
+        $seniaPagada = 0;
+
+        foreach ($pagos as $pago) {
+            if ($pago['comprobante'] !== null) {
+            $totalPagado += $pago['monto'];
+            if (strpos(strtolower($pago['descripcion']), 'seña') !== false) {
+                $seniaPagada += $pago['monto'];
+            }
+            }
+        }
+
+        // Calcular el saldo pendiente
+        $saldoPendiente = $resumen['total'] - $totalPagado;
+
+        // Mostrar la información de pago
+        $detallePedidoHtml .= "<div class='payment-info mb-4'>
+            <h6 class='info-label mb-3'>Información de Pago</h6>
+            <div class='row g-2'>
+                <div class='col-6 col-md-3'>
+                    <span class='fw-medium'>Total:</span>
+                </div>
+                <div class='col-6 col-md-3'>
+                    $" . number_format($resumen['total'], 2) . "
+                </div>
+                <div class='col-6 col-md-3'>
+                    <span class='fw-medium'>Seña pagada:</span>
+                </div>
+                <div class='col-6 col-md-3'>
+                    $" . number_format($seniaPagada, 2) . "
+                </div>
+                <div class='col-6 col-md-3'>
+                    <span class='fw-medium'>Saldo pendiente:</span>
+                </div>
+                <div class='col-6 col-md-3'>
+                    <span class='text-danger fw-bold'>$" . number_format($saldoPendiente, 2) . "</span>
+                </div>
+            </div>
+        </div>";
+
+        // Consulta para los detalles de los productos
+        $sql_detalle = $con->prepare("SELECT p.nombre AS producto, v.nombre_variante AS variante, pp.precio, pp.estado AS estado_producto, pp.cantidad
+        FROM productos_pedido pp
+        JOIN productos p ON pp.id_producto = p.id_producto
+        JOIN variantes v ON pp.sku = v.sku
+        JOIN estados_productos ep ON v.id_estado_producto = ep.id_estado_producto
+        WHERE pp.id_pedido = :id_pedido");
+        $sql_detalle->bindParam(':id_pedido', $id_pedido, PDO::PARAM_INT);
+        $sql_detalle->execute();
+        $detalles = $sql_detalle->fetchAll(PDO::FETCH_ASSOC);
+
+        // Construir el HTML de los detalles de los productos
+        if (!empty($detalles)) {
+            $detallePedidoHtml .= "<div class='mb-4'>
+                <h6 class='info-label mb-3'>Detalles de los Productos</h6>
+                <div class='table-responsive'>
+                    <table class='table'>
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Variante</th>
+                                <th>Cantidad</th>
+                                <th>Precio</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>";
+            foreach ($detalles as $row) {
+                $class = ($row['estado_producto'] == 0) ? "class='text-decoration-line-through'" : "";
+                $detallePedidoHtml .= "<tr $class>
+                    <td>" . $row['producto'] . "</td>
+                    <td>" . $row['variante'] . "</td>
+                    <td>" . intval($row['cantidad']) . "</td>
+                    <td>$" . number_format($row['precio'], 2) . "</td>
+                    <td><span class='badge badge-disponible'>" . ($row['estado_producto'] == 1 ? 'Disponible' : 'No disponible') . "</span></td>
+                </tr>";
+            }
+            $detallePedidoHtml .= "</tbody></table></div></div>";
+        } else {
+            $detallePedidoHtml .= "<p>No se encontraron detalles de los productos para este pedido.</p>";
+        }
+
+        // Mostrar el total final (saldo pendiente)
+        $detallePedidoHtml .= "<div class='d-flex justify-content-end border-top pt-3'>
+            <div class='text-end'>
+                <span class='fw-medium me-3'>Total a pagar:</span>
+                <span class='total-amount'>$" . number_format($saldoPendiente, 2) . "</span>
+            </div>
+        </div>";
     } else {
         $detallePedidoHtml .= "<p>No se encontró información del resumen del pedido.</p>";
-    }
-
-    // Consulta para los detalles de los productos
-    $sql_detalle = $con->prepare("SELECT p.nombre AS producto, v.nombre_variante AS variante, pp.precio, pp.estado AS estado_producto, pp.cantidad
-FROM productos_pedido pp
-JOIN productos p ON pp.id_producto = p.id_producto
-JOIN variantes v ON pp.sku = v.sku
-JOIN estados_productos ep ON v.id_estado_producto = ep.id_estado_producto
-WHERE pp.id_pedido = :id_pedido");
-    $sql_detalle->bindParam(':id_pedido', $id_pedido, PDO::PARAM_INT);
-    $sql_detalle->execute();
-    $detalles = $sql_detalle->fetchAll(PDO::FETCH_ASSOC);
-
-    // Construir el HTML de los detalles de los productos
-    if (!empty($detalles)) {
-        $detallePedidoHtml .= "<h4>Detalles de los Productos</h4>";
-        $detallePedidoHtml .= "<table class='table'>";
-        $detallePedidoHtml .= "<thead>
-        <tr>
-        <th>Producto</th>
-        <th>Variante</th>
-        <th>Cantidad</th>
-        <th>Precio</th>
-        <th>Estado</th>
-        </tr>
-        </thead>
-        <tbody>";
-
-        foreach ($detalles as $row) {
-            // Si el estado es 0, agrega una clase para tachar la fila
-            $class = ($row['estado_producto'] == 0) ? "class='text-decoration-line-through'" : "";
-
-            $detallePedidoHtml .= "<tr $class>";
-            $detallePedidoHtml .= "<td>" . $row['producto'] . "</td>";
-            $detallePedidoHtml .= "<td>" . $row['variante'] . "</td>";
-            $detallePedidoHtml .= "<td>" . intval($row['cantidad']) . "</td>";
-            $detallePedidoHtml .= "<td>" . number_format($row['precio'], 2) . "</td>";
-            $detallePedidoHtml .= "<td>" . $row['estado_producto']."</td>";
-            $detallePedidoHtml .= "</tr>";
-        }
-
-        $detallePedidoHtml .= "</tbody></table>";
-    } else {
-        $detallePedidoHtml .= "<p>No se encontraron detalles de los productos para este pedido.</p>";
     }
 
     echo $detallePedidoHtml; // Enviar respuesta

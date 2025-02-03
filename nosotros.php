@@ -102,13 +102,23 @@ include 'header.php';
         <!-- Sección de Visítanos -->
         <section id="visit-us" class="py-5 bg-light">
             <div class="container">
-                <h2 class="text-center mb-5 text-primary-custom">Visítanos en Nuestro Local</h2>
-                <div class="row justify-content-center">
-                    <div class="col-lg-8">
+                <h2 class="text-center mb-5 text-primary-custom">Visítanos en Nuestros Locales</h2>
+                <div class="row">
+                    <div class="col-lg-6 mb-4">
                         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d914.4958900926504!2d-64.11918995487365!3d-32.180088467034786!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95cd6f91a3a46489%3A0xcace4a13644961f3!2sPunto%20Aroma!5e0!3m2!1ses-419!2sar!4v1734578085950!5m2!1ses-419!2sar" width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        <p class="text-center mt-2">Rio Tercero, Córdoba</p>
+                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d357.87941185599533!2d-64.17954273491353!3d-31.421235264604327!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9432998fc93d068d%3A0x6e0b3cd36d2f9d9d!2sSaphirus%20C%C3%B3rdoba%20-%20Punto%20Aroma!5e0!3m2!1ses-419!2sar!4v1738613035753!5m2!1ses-419!2sar" width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        <p class="text-center mt-2">Córdoba Capital</p>
                     </div>
                 </div>
-            </div>
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3529.3499059677174!2d-64.25507209999999!3d-27.7989985!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x943b52086525a7b3%3A0x75340fe11efcc1d2!2sSaphirus%20%22Santiago%20Del%20Estero%22!5e0!3m2!1ses-419!2sar!4v1738613134447!5m2!1ses-419!2sar" width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        <p class="text-center mt-2">Santiago del Estero</p>
+                    </div>
+                </div>
         </section>
 
         <section id="mision-vision" class="py-5">

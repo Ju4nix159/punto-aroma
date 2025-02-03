@@ -141,10 +141,11 @@ WHERE i.id_usuario = :id_usuario AND ud.estado = 1 ");
             background-color: #28a745;
         }
 
-        .status-señado{
+        .status-señado {
             background-color: #ffc107;
         }
-        .status-noSeaño{
+
+        .status-noSeaño {
             background-color: #f57c00;
         }
 
@@ -184,6 +185,56 @@ WHERE i.id_usuario = :id_usuario AND ud.estado = 1 ");
         .form-select:focus {
             border-color: var(--primary-color);
             box-shadow: 0 0 0 0.2rem rgba(131, 175, 55, 0.25);
+        }
+
+        .badge.badge-disponible {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge.badge-pendiente {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge.badge-cambiado {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .modal-body {
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .info-label {
+            color: #6b7280;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .table th {
+            font-weight: 500;
+            color: #6b7280;
+        }
+
+        .total-amount {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .payment-info {
+            background-color: #f3f4f6;
+            border-radius: 0.375rem;
+            padding: 1rem;
+        }
+
+        /* Estilo para centrar el botón */
+        .button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
     </style>
 </head>
@@ -276,7 +327,7 @@ WHERE i.id_usuario = :id_usuario AND ud.estado = 1 ");
                                         <label for="telefono" class="form-label">Teléfono</label>
                                         <input placeholder="Ingrese su telefono" type="tel" class="form-control" id="telefono" name="telefono" value="<?php echo $telefono ?>" required>
                                     </div>
-                                    
+
                                 </div>
                                 <div class="text-center mt-4">
                                     <button type="button" class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#confirmUpdateInfoModal">Guardar cambios</button>
@@ -348,7 +399,7 @@ WHERE i.id_usuario = :id_usuario AND ud.estado = 1 ");
                                         <?php } ?>
 
                                         <!-- Botón Pagar -->
-                                        <?php if (in_array($pedido["estado_pedido"], ["procesado", "cambiado"]) && $pedido["id_local"] == NULL ) { ?>
+                                        <?php if (in_array($pedido["estado_pedido"], ["procesado", "cambiado"]) && $pedido["id_local"] == NULL) { ?>
                                             <a href="pago_total.php?id_pedido=<?php echo $pedido['id_pedido']; ?>"
                                                 class="btn btn-success btn-sm btn-pagar">
                                                 Pagar
@@ -511,6 +562,7 @@ WHERE i.id_usuario = :id_usuario AND ud.estado = 1 ");
 
 
     <script src="app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         function cancelarPedido(id_pedido) {
             fetch('./admin/procesarsbd.php', {

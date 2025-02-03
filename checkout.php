@@ -317,12 +317,13 @@ $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
                                     Mercado Pago
                                 </label>
                             </div>
-                            <div class="form-check">
+                            <div class="form-check d-none">
                                 <input class="form-check-input" type="radio" name="paymentMethod" id="pagoEnLocal" value="pagoenlocal">
                                 <label class="form-check-label" for="pagoEnLocal">
                                     Pago en local
                                 </label>
                             </div>
+
                         </div>
 
                         <!-- Transferencia Bancaria -->
@@ -371,7 +372,9 @@ $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
                             </div>
                             <div class="mb-3">
                                 <label for="comprobanteMercadoPago" class="form-label">Subir comprobante</label>
-                                <input type="file" class="form-control" id="comprobanteMercadoPago">
+                                <input type="file" class="form-control" id="comprobanteMercadoPago" accept="image/*,.pdf">
+                                <small class="text-muted">Formatos permitidos: JPG, PNG, GIF, PDF. Tamaño máximo: 5MB.</small>
+                                <small class="text-danger" id="fileError" style="display: none;"></small>
                             </div>
                         </div>
 

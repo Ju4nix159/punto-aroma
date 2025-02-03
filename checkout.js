@@ -117,7 +117,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnDelivery = document.getElementById("btn-delivery");
     const pickupOptions = document.getElementById("pickupOptions");
     const deliveryForm = document.getElementById("deliveryForm");
-
+    const pagoEnLocalOption = document
+      .getElementById("pagoEnLocal")
+      .closest(".form-check"); // Contenedor del input de pago en local
     // Clear previous errors
     document
       .querySelectorAll(".is-invalid")
@@ -131,6 +133,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       pickupOptions.classList.remove("d-none");
       deliveryForm.classList.add("d-none");
+
+      // Mostrar la opción de "Pago en local"
+      if (pagoEnLocalOption) {
+        pagoEnLocalOption.classList.remove("d-none");
+      }
 
       // Remover temporalmente el required de los campos de envío
       deliveryForm.querySelectorAll("input[required]").forEach((input) => {
@@ -153,6 +160,9 @@ document.addEventListener("DOMContentLoaded", () => {
       deliveryForm.classList.remove("d-none");
       pickupOptions.classList.add("d-none");
 
+      if (pagoEnLocalOption) {
+        pagoEnLocalOption.classList.add("d-none");
+      }
       // Restaurar el required a los campos de envío
       deliveryForm.querySelectorAll("input").forEach((input) => {
         if (
