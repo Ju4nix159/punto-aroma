@@ -38,7 +38,10 @@ $sql_pagos->bindParam(':id_pedido', $id_pedido, PDO::PARAM_INT);
 $sql_pagos->execute();
 $pagos = $sql_pagos->fetchAll(PDO::FETCH_ASSOC);
 
-
+// Ordenar el array $detalles por el campo "producto_nombre"
+usort($detalles, function ($a, $b) {
+    return strcmp($a["producto_nombre"], $b["producto_nombre"]);
+});
 
 ?>
 
@@ -207,8 +210,6 @@ $pagos = $sql_pagos->fetchAll(PDO::FETCH_ASSOC);
                                                 </td>
                                             </tr>
                                         </tfoot>
-
-
                                     </table>
                                     <div class="text-right">
                                         <h4>Total: $<span id="orderTotal"></span></h4>
@@ -236,7 +237,7 @@ $pagos = $sql_pagos->fetchAll(PDO::FETCH_ASSOC);
                                     <div class="botones-container">
                                         <button class="btn btn-success" onclick="cambiarEstadoSeña(<?php echo $id_pedido ?>,1)">estado seña pagado</button>
                                         <button class="btn btn-danger" onclick="cambiarEstadoSeña(<?php echo $id_pedido ?>,0)">estado seña no pagado</button>
-                                        <button class="btn btn-primary">Botón 3</button>
+                                        <button class="btn btn-warning" onclick="imprimirResumenPedido()">Imprimir Resumen</button>
                                         <button class="btn btn-primary">Botón 4</button>
                                         <button class="btn btn-primary">Botón 5</button>
                                         <button class="btn btn-primary">Botón 6</button>
@@ -318,6 +319,7 @@ $pagos = $sql_pagos->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </div>
     </div>
+    <script src="imprimir.js"></script>
     <script>
         document.getElementById('guardarCambioEstado').addEventListener('click', function() {
             const form = document.getElementById('formCambiarEstado');
@@ -606,6 +608,7 @@ $pagos = $sql_pagos->fetchAll(PDO::FETCH_ASSOC);
                     console.error('Error:', error);
                 });
         }
+    
     </script>
 
 </body>
