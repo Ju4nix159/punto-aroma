@@ -197,14 +197,16 @@ document.addEventListener("DOMContentLoaded", () => {
     cargarProductos(paginaActual);
   });
 
-  nombreFiltro.addEventListener("input", () => {
-    const valor = nombreFiltro.value.trim();
-    if (valor.length >= 3 || valor.length === 0) {
-      nombreSeleccionado = valor;
-      paginaActual = 1;
-      cargarProductos(paginaActual);
-    }
-  });
+ nombreFiltro.addEventListener("input", () => {
+  const valor = nombreFiltro.value.trim();
+  if (valor.length >= 3 || valor.length === 0) {
+    nombreSeleccionado = valor;
+    paginaActual = 1;
+    cargarProductos(paginaActual);
+  } else {
+    nombreSeleccionado = ""; // Asegura que se resetee cuando hay menos de 3 caracteres
+  }
+});
 
   precioMinFiltro.addEventListener("input", () => {
     valorPrecioMin.textContent = precioMinFiltro.value;
