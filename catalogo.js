@@ -1,9 +1,13 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // Main elements
   const catalogo = document.getElementById("catalogo");
   const mostrarMas = document.getElementById("mostrarMas");
   const ordenarPrecio = document.getElementById("ordenarPrecio");
   const productosPorPaginaSelect =
     document.getElementById("productosPorPagina");
+  const mensajeSinProductos = document.getElementById("mensajeSinProductos");
+
+  // Desktop filter elements
   const categoriaFiltro = document.getElementById("categoria");
   const marcaFiltro = document.getElementById("marca");
   const nombreFiltro = document.getElementById("nombre");
@@ -12,8 +16,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const valorPrecioMin = document.getElementById("valorPrecioMin");
   const valorPrecioMax = document.getElementById("valorPrecioMax");
   const aplicarFiltro = document.getElementById("aplicarFiltro");
-  const mensajeSinProductos = document.getElementById("mensajeSinProductos");
 
+  // Mobile filter elements
+  const categoriaFiltroMobile = document.getElementById("categoria-mobile");
+  const marcaFiltroMobile = document.getElementById("marca-mobile");
+  const nombreFiltroMobile = document.getElementById("nombre-mobile");
+  const precioMinFiltroMobile = document.getElementById("precioMin-mobile");
+  const precioMaxFiltroMobile = document.getElementById("precioMax-mobile");
+  const valorPrecioMinMobile = document.getElementById("valorPrecioMin-mobile");
+  const valorPrecioMaxMobile = document.getElementById("valorPrecioMax-mobile");
+  const aplicarFiltroMobile = document.getElementById("aplicarFiltro-mobile");
+
+  // State variables
   let paginaActual = 1;
   let categoriaSeleccionada = "";
   let marcaSeleccionada = "";
@@ -22,39 +36,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let precioMaxSeleccionado = 10000;
   let ordenarDescendente = false;
   let productosPorPagina = 12;
-
-  const cargarFiltros = () => {
-    fetch("get_catalogo.php")
-      .then((response) => response.json())
-      .then((data) => {
-        categoriaFiltro.innerHTML = '<option value="">Todas</option>';
-        data.categorias.forEach((categoria) => {
-          const option = document.createElement("option");
-          option.value = categoria.nombre;
-          option.textContent = categoria.nombre;
-          categoriaFiltro.appendChild(option);
-        });
-
-        marcaFiltro.innerHTML = '<option value="">Todas</option>';
-        data.marcas.forEach((marca) => {
-          const option = document.createElement("option");
-          option.value = marca.nombre;
-          option.textContent = marca.nombre;
-          marcaFiltro.appendChild(option);
-        });
-
-        precioMinFiltro.min = data.precioMin;
-        precioMinFiltro.max = data.precioMax;
-        precioMaxFiltro.min = data.precioMin;
-        precioMaxFiltro.max = data.precioMax;
-
-        precioMinFiltro.value = data.precioMin;
-        precioMaxFiltro.value = data.precioMax;
-
-        valorPrecioMin.textContent = data.precioMin;
-        valorPrecioMax.textContent = data.precioMax;
-      });
-  };
 
   const cargarProductos = (pagina) => {
     const url = `get_catalogo.php?pagina=${pagina}&categoria=${encodeURIComponent(
@@ -79,17 +60,17 @@ document.addEventListener("DOMContentLoaded", () => {
           mensajeSinProductos.style.display = "none";
           data.productos.forEach((producto) => {
             const div = document.createElement("div");
-            div.classList.add("col-12", "col-sm-6", "col-md-4", "col-lg-3"); // Aseguramos que cada tarjeta ocupe un tamaño proporcional
+            div.classList.add("col-12", "col-sm-6", "col-md-4", "col-lg-3");
             div.innerHTML = `
               <div class="card h-100 product-card">
                 <div class="img-container position-relative">
                   <img src="./assets/productos/${producto.imagen_principal}" class="card-img-top" alt="${producto.nombre}">
-                  <button class="quick-view-btn " data-id="${producto.id_producto}">Vista rápida</button>
+                  <button class="quick-view-btn" data-id="${producto.id_producto}">Vista rápida</button>
                 </div>
                 <div class="card-body">
                   <h5 class="card-title">${producto.nombre}</h5>
                   <p class="card-text"><small class="text-muted">Categoría: ${producto.categoria}</small></p>
-                  <p class="card-text"><small class="text-muted">Categoría: ${producto.marca}</small></p>
+                  <p class="card-text"><small class="text-muted">Marca: ${producto.marca}</small></p>
                   <p class="card-text"><strong>$${producto.precio_minorista}</strong></p>
                 </div>
                 <div class="card-footer">
@@ -100,7 +81,6 @@ document.addEventListener("DOMContentLoaded", () => {
             catalogo.appendChild(div);
           });
 
-          // Agregar evento a los botones de "Vista rápida"
           document.querySelectorAll(".quick-view-btn").forEach((boton) => {
             boton.addEventListener("click", (e) => {
               const idProducto = e.target.dataset.id;
@@ -114,7 +94,66 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   };
 
-  // Abrir el modal
+  const cargarFiltros = () => {
+    fetch("get_catalogo.php")
+      .then((response) => response.json())
+      .then((data) => {
+        // Desktop filters
+        categoriaFiltro.innerHTML = '<option value="">Todas</option>';
+        marcaFiltro.innerHTML = '<option value="">Todas</option>';
+
+        data.categorias.forEach((categoria) => {
+          const option = document.createElement("option");
+          option.value = categoria.nombre;
+          option.textContent = categoria.nombre;
+          categoriaFiltro.appendChild(option);
+
+          const optionMobile = option.cloneNode(true);
+          categoriaFiltroMobile?.appendChild(optionMobile);
+        });
+
+        data.marcas.forEach((marca) => {
+          const option = document.createElement("option");
+          option.value = marca.nombre;
+          option.textContent = marca.nombre;
+          marcaFiltro.appendChild(option);
+
+          const optionMobile = option.cloneNode(true);
+          marcaFiltroMobile?.appendChild(optionMobile);
+        });
+
+        const setInitialPriceRange = (min, max) => {
+          [precioMinFiltro, precioMinFiltroMobile].forEach((element) => {
+            if (element) {
+              element.min = min;
+              element.max = max;
+              element.value = min;
+            }
+          });
+
+          [precioMaxFiltro, precioMaxFiltroMobile].forEach((element) => {
+            if (element) {
+              element.min = min;
+              element.max = max;
+              element.value = max;
+            }
+          });
+
+          [valorPrecioMin, valorPrecioMinMobile].forEach((element) => {
+            if (element) element.textContent = min;
+          });
+
+          [valorPrecioMax, valorPrecioMaxMobile].forEach((element) => {
+            if (element) element.textContent = max;
+          });
+        };
+
+        setInitialPriceRange(data.precioMin, data.precioMax);
+        precioMinSeleccionado = data.precioMin;
+        precioMaxSeleccionado = data.precioMax;
+      });
+  };
+
   const abrirModal = (idProducto) => {
     const url = `get_frangancias.php?id_producto=${idProducto}`;
     fetch(url)
@@ -146,76 +185,114 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
         </div>
       `;
-        // Usar Bootstrap para mostrar el modal
         const bootstrapModal = new bootstrap.Modal(modal);
         bootstrapModal.show();
       });
   };
 
-  // Cerrar modal
-  document.getElementById("modal").addEventListener("click", (event) => {
-    if (event.target.id === "modal") {
-      const bootstrapModal = bootstrap.Modal.getInstance(event.currentTarget);
-      bootstrapModal.hide();
-    }
-  });
-
-  // Asociar eventos a los botones de cierre
-  document
-    .querySelectorAll("#cerrar-modal, #cerrar-modal-footer")
-    .forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const modal = document.getElementById("modal");
-        const bootstrapModal = bootstrap.Modal.getInstance(modal);
-        bootstrapModal.hide();
+  // Event Listeners
+  const setupEventListeners = () => {
+    // Desktop filter events
+    if (aplicarFiltro) {
+      aplicarFiltro.addEventListener("click", () => {
+        categoriaSeleccionada = categoriaFiltro.value;
+        marcaSeleccionada = marcaFiltro.value;
+        precioMinSeleccionado = parseInt(precioMinFiltro.value);
+        precioMaxSeleccionado = parseInt(precioMaxFiltro.value);
+        paginaActual = 1;
+        cargarProductos(paginaActual);
       });
+    }
+
+    // Mobile filter events
+    if (aplicarFiltroMobile) {
+      aplicarFiltroMobile.addEventListener("click", () => {
+        categoriaSeleccionada = categoriaFiltroMobile.value;
+        marcaSeleccionada = marcaFiltroMobile.value;
+        precioMinSeleccionado = parseInt(precioMinFiltroMobile.value);
+        precioMaxSeleccionado = parseInt(precioMaxFiltroMobile.value);
+        paginaActual = 1;
+
+        const offcanvas = document.getElementById("filtrosOffcanvas");
+        if (offcanvas) {
+          const bsOffcanvas = bootstrap.Offcanvas.getInstance(offcanvas);
+          bsOffcanvas?.hide();
+        }
+
+        cargarProductos(paginaActual);
+      });
+    }
+
+    // Price range events
+    [
+      { input: precioMinFiltro, display: valorPrecioMin },
+      { input: precioMaxFiltro, display: valorPrecioMax },
+      { input: precioMinFiltroMobile, display: valorPrecioMinMobile },
+      { input: precioMaxFiltroMobile, display: valorPrecioMaxMobile },
+    ].forEach(({ input, display }) => {
+      if (input && display) {
+        input.addEventListener("input", () => {
+          display.textContent = input.value;
+        });
+      }
     });
 
-  mostrarMas.addEventListener("click", () => {
-    paginaActual++;
-    cargarProductos(paginaActual);
-  });
+    // Name filter events
+    [nombreFiltro, nombreFiltroMobile].forEach((input) => {
+      if (input) {
+        input.addEventListener("input", () => {
+          const valor = input.value.trim();
+          if (valor.length >= 3 || valor.length === 0) {
+            nombreSeleccionado = valor;
+            paginaActual = 1;
+            cargarProductos(paginaActual);
+          }
+        });
+      }
+    });
 
-  ordenarPrecio.addEventListener("click", () => {
-    ordenarDescendente = !ordenarDescendente;
-    paginaActual = 1;
-    cargarProductos(paginaActual);
-  });
+    // Modal events
+    const modal = document.getElementById("modal");
+    if (modal) {
+      modal.addEventListener("click", (event) => {
+        if (event.target === modal) {
+          const bootstrapModal = bootstrap.Modal.getInstance(modal);
+          bootstrapModal?.hide();
+        }
+      });
+    }
 
-  productosPorPaginaSelect.addEventListener("change", () => {
-    productosPorPagina = parseInt(productosPorPaginaSelect.value);
-    paginaActual = 1;
-    cargarProductos(paginaActual);
-  });
+    document
+      .querySelectorAll("#cerrar-modal, #cerrar-modal-footer")
+      .forEach((btn) => {
+        btn?.addEventListener("click", () => {
+          const modal = document.getElementById("modal");
+          const bootstrapModal = bootstrap.Modal.getInstance(modal);
+          bootstrapModal?.hide();
+        });
+      });
 
-  aplicarFiltro.addEventListener("click", () => {
-    categoriaSeleccionada = categoriaFiltro.value;
-    marcaSeleccionada = marcaFiltro.value;
-    precioMinSeleccionado = parseInt(precioMinFiltro.value);
-    precioMaxSeleccionado = parseInt(precioMaxFiltro.value);
-    paginaActual = 1;
-    cargarProductos(paginaActual);
-  });
+    // Other events
+    mostrarMas?.addEventListener("click", () => {
+      paginaActual++;
+      cargarProductos(paginaActual);
+    });
 
- nombreFiltro.addEventListener("input", () => {
-  const valor = nombreFiltro.value.trim();
-  if (valor.length >= 3 || valor.length === 0) {
-    nombreSeleccionado = valor;
-    paginaActual = 1;
-    cargarProductos(paginaActual);
-  } else {
-    nombreSeleccionado = ""; // Asegura que se resetee cuando hay menos de 3 caracteres
-  }
-});
+    ordenarPrecio?.addEventListener("click", () => {
+      ordenarDescendente = !ordenarDescendente;
+      paginaActual = 1;
+      cargarProductos(paginaActual);
+    });
 
-  precioMinFiltro.addEventListener("input", () => {
-    valorPrecioMin.textContent = precioMinFiltro.value;
-  });
+    productosPorPaginaSelect?.addEventListener("change", () => {
+      productosPorPagina = parseInt(productosPorPaginaSelect.value);
+      paginaActual = 1;
+      cargarProductos(paginaActual);
+    });
+  };
 
-  precioMaxFiltro.addEventListener("input", () => {
-    valorPrecioMax.textContent = precioMaxFiltro.value;
-  });
-
+  // Initialize
   cargarFiltros();
+  setupEventListeners();
   cargarProductos(paginaActual);
 });

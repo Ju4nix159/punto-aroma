@@ -35,7 +35,9 @@ section[id] {
     /* Centra horizontalmente el contenido */
 }
 
-
+.offcanvas {
+    z-index: 1052;
+}
 
 .bg-primary-light {
     background-color: rgba(131, 175, 55, 0.1);
@@ -85,13 +87,6 @@ section[id] {
     color: white;
     transform: scale(1.05);
 }
-
-
-
-.offcanvas {
-    z-index: 1052;
-}
-
 
 .product-gallery {
     display: grid;

@@ -44,7 +44,7 @@
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     }
 
-    
+   
 
     /* Aseguramos que el offcanvas ocupe toda la altura y comience desde arriba */
     .offcanvas-start {
@@ -270,7 +270,6 @@
 
   <?php include 'footer.php'; ?>
   <script src="catalogo.js"></script>
-  <script src="filtrosMobile.js"></script>
 </body>
 
 </html>
