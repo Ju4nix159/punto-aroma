@@ -44,9 +44,7 @@
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     }
 
-    .offcanvas {
-      z-index: 1052;
-    }
+    
 
     /* Aseguramos que el offcanvas ocupe toda la altura y comience desde arriba */
     .offcanvas-start {
