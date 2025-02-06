@@ -1,70 +1,74 @@
 <?php
+include './config/sbd.php';
 
-include './config/sbd.php'; // Archivo que contiene la conexión PDO
-
-// Verificar método POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        // Obtener datos enviados por POST
+        // Get basic product data
         $nombre = $_POST['nombre'];
         $categoria = $_POST['categoria'];
         $marca = $_POST['marca'];
         $precio_minorista = $_POST['precio_minorista'];
-        $precio_mayorista = $_POST['precio_mayorista'];
-        $cantidad_minima = $_POST['cantidad_minima'];
         $destacado = $_POST['destacado'];
         $descripcion = $_POST['descripcion'];
+        $precios_mayoristas = json_decode($_POST['precios_mayoristas'], true);
 
-        // Preparar consulta SQL para insertar en la tabla productos
-        $sql_insertar_producto = $con->prepare("INSERT INTO productos (nombre, descripcion, id_categoria,id_marca, destacado)
-                                                VALUES (:nombre_producto, :descripcion_producto, :id_categoria, :id_marca , :destacado);");
-        $sql_insertar_producto->bindparam(':nombre_producto', $nombre, PDO::PARAM_STR);
-        $sql_insertar_producto->bindparam(':descripcion_producto', $descripcion, PDO::PARAM_STR);
-        $sql_insertar_producto->bindparam(':id_categoria', $categoria, PDO::PARAM_INT);
-        $sql_insertar_producto->bindparam(':id_marca', $marca, PDO::PARAM_INT);
-        $sql_insertar_producto->bindparam(':destacado', $destacado, PDO::PARAM_INT);
+        // Begin transaction
+        $con->beginTransaction();
 
-        // Ejecutar consulta
-        $sql_insertar_producto->execute();
+        // Insert product
+        $sql_insertar_producto = $con->prepare("
+            INSERT INTO productos (nombre, descripcion, id_categoria, id_marca, destacado)
+            VALUES (:nombre_producto, :descripcion_producto, :id_categoria, :id_marca, :destacado)
+        ");
 
-        // Confirmar éxito y obtener el último ID insertado
-        if ($sql_insertar_producto->rowCount() > 0) {
-            $id_producto = $con->lastInsertId(); // Obtener el ID del producto recién insertado
+        $sql_insertar_producto->execute([
+            ':nombre_producto' => $nombre,
+            ':descripcion_producto' => $descripcion,
+            ':id_categoria' => $categoria,
+            ':id_marca' => $marca,
+            ':destacado' => $destacado
+        ]);
 
-            // Preparar consulta SQL para insertar precios en variantes_tipo_precio
-            $sql_insertar_precios = $con->prepare("INSERT INTO variantes_tipo_precio (id_producto, id_tipo_precio, precio, cantidad_minima) 
-                                                    VALUES (:id_producto, :id_tipo_precio, :precio, :cantidad_minima);");
+        $id_producto = $con->lastInsertId();
 
-            // Inserción para precio minorista (id_tipo_precio = 1)
-            if (!empty($precio_minorista) && $precio_minorista > 0) {
-                $sql_insertar_precios->execute([
-                    ':id_producto' => $id_producto,
-                    ':id_tipo_precio' => 1,
-                    ':precio' => $precio_minorista,
-                    ':cantidad_minima' => 1 // No aplica para precio minorista
-                ]);
-            }
+        // Insert retail price if exists
+        if (!empty($precio_minorista) && $precio_minorista > 0) {
+            $sql_insertar_precio = $con->prepare("
+                INSERT INTO variantes_tipo_precio (id_producto, id_tipo_precio, precio, cantidad_minima)
+                VALUES (:id_producto, 1, :precio, 1)
+            ");
 
-            // Inserción para precio mayorista (id_tipo_precio = 2)
-            if (!empty($precio_mayorista) && $precio_mayorista > 0) {
-                $sql_insertar_precios->execute([
-                    ':id_producto' => $id_producto,
-                    ':id_tipo_precio' => 2,
-                    ':precio' => $precio_mayorista,
-                    ':cantidad_minima' => $cantidad_minima // Aplica solo para mayorista
-                ]);
-            }
-
-            // Confirmar éxito
-            echo json_encode(['success' => true, 'id_producto' => $id_producto]);
-        } else {
-            echo json_encode(['success' => false, 'message' => 'No se realizaron cambios o ID no encontrado.']);
+            $sql_insertar_precio->execute([
+                ':id_producto' => $id_producto,
+                ':precio' => $precio_minorista
+            ]);
         }
+
+        // Insert wholesale prices
+        if (!empty($precios_mayoristas)) {
+            $sql_insertar_precio = $con->prepare("
+                INSERT INTO variantes_tipo_precio (id_producto, id_tipo_precio, precio, cantidad_minima)
+                VALUES (:id_producto, 2, :precio, :cantidad_minima)
+            ");
+
+            foreach ($precios_mayoristas as $precio_mayorista) {
+                $sql_insertar_precio->execute([
+                    ':id_producto' => $id_producto,
+                    ':precio' => $precio_mayorista['precio'],
+                    ':cantidad_minima' => $precio_mayorista['cantidad_minima']
+                ]);
+            }
+        }
+
+        // Commit transaction
+        $con->commit();
+
+        echo json_encode(['success' => true, 'id_producto' => $id_producto]);
     } catch (PDOException $e) {
-        // Manejar errores
+        // Rollback on error
+        $con->rollBack();
         echo json_encode(['success' => false, 'message' => 'Error en la base de datos: ' . $e->getMessage()]);
     }
 } else {
-    // Respuesta para métodos no permitidos
     echo json_encode(['success' => false, 'message' => 'Método no permitido.']);
 }

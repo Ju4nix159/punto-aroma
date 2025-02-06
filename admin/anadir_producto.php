@@ -104,18 +104,32 @@ $marcas = $sql_marcas->fetchAll(PDO::FETCH_ASSOC);
 
                                     <hr>
 
-                                    
+
 
                                     <strong><i class="fas fa-dollar-sign mr-1"></i> Precio Minorista</strong>
                                     <input type="number" id="precio_minorista-input" class="form-control" value="0" min="0" required>
 
                                     <hr>
 
-                                    <strong><i class="fas fa-warehouse mr-1"></i> Precio Mayorista</strong>
-                                    <div class="d-flex align-items-center">
-                                        <input type="number" id="precio_mayorista-input" class="form-control" value="0" min="0" placeholder="Precio" required>
-                                        <input type="number" id="cantidad_minima-input" class="form-control ml-2" value="1" min="1" placeholder="Cantidad mínima" required>
+                                    <strong><i class="fas fa-warehouse mr-1"></i> Precios Mayoristas</strong>
+                                    <div id="precios-mayoristas-container">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <input type="number" class="form-control precio-mayorista" value="0" min="0" placeholder="Precio" required>
+                                            <input type="number" class="form-control ml-2 cantidad-minima" value="1" min="1" placeholder="Cantidad mínima" required>
+                                            <button type="button" class="btn btn-danger ml-2 eliminar-precio" onclick="eliminarPrecio(this)" style="display: none;">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
                                     </div>
+
+                                    <div class="form-check mb-3">
+                                        <input type="checkbox" class="form-check-input" id="agregar-mas-precios">
+                                        <label class="form-check-label" for="agregar-mas-precios">Agregar más precios mayoristas</label>
+                                    </div>
+
+                                    <button type="button" id="btn-agregar-precio" class="btn btn-secondary mb-3" style="display: none;">
+                                        <i class="fas fa-plus"></i> Agregar otro precio
+                                    </button>
 
                                     <hr>
 
@@ -161,14 +175,37 @@ $marcas = $sql_marcas->fetchAll(PDO::FETCH_ASSOC);
 
 
     <script>
+        document.getElementById('agregar-mas-precios').addEventListener('change', function() {
+            const btnAgregar = document.getElementById('btn-agregar-precio');
+            const primeraFila = document.querySelector('.eliminar-precio');
+            btnAgregar.style.display = this.checked ? 'block' : 'none';
+            primeraFila.style.display = this.checked ? 'block' : 'none';
+        });
+
+        document.getElementById('btn-agregar-precio').addEventListener('click', function() {
+            const container = document.getElementById('precios-mayoristas-container');
+            const nuevaFila = document.createElement('div');
+            nuevaFila.className = 'd-flex align-items-center mb-2';
+            nuevaFila.innerHTML = `
+        <input type="number" class="form-control precio-mayorista" value="0" min="0" placeholder="Precio" required>
+        <input type="number" class="form-control ml-2 cantidad-minima" value="1" min="1" placeholder="Cantidad mínima" required>
+        <button type="button" class="btn btn-danger ml-2 eliminar-precio" onclick="eliminarPrecio(this)">
+            <i class="fas fa-trash"></i>
+        </button>
+    `;
+            container.appendChild(nuevaFila);
+        });
+
+        function eliminarPrecio(button) {
+            button.closest('.d-flex').remove();
+        }
+
         function añadir_producto() {
             // Obtener todos los campos para añadir un producto
             const nombre = document.getElementById('nombre-input').value;
             const categoria = document.getElementById('categoria-input').value;
             const marca = document.getElementById('marca-input').value;
             const precio_minorista = parseFloat(document.getElementById('precio_minorista-input').value) || 0;
-            const precio_mayorista = parseFloat(document.getElementById('precio_mayorista-input').value) || 0;
-            const cantidad_minima = parseInt(document.getElementById('cantidad_minima-input').value) || 1;
             const destacado = document.getElementById('destacado-input').value;
             const descripcion = document.getElementById('descripcion-input').value;
 
@@ -178,16 +215,40 @@ $marcas = $sql_marcas->fetchAll(PDO::FETCH_ASSOC);
                 return;
             }
 
-            // Validar precios y cantidad mínima
-            if (precio_mayorista > 0 && cantidad_minima <= 1) {
-                alert('Si el precio por mayor es mayor que 0, la cantidad mínima debe ser mayor a 1.');
-                return;
+            const preciosMayoristas = [];
+            const filasPrecio = document.querySelectorAll('#precios-mayoristas-container .d-flex');
+
+            filasPrecio.forEach(fila => {
+                const precio = parseFloat(fila.querySelector('.precio-mayorista').value) || 0;
+                const cantidad = parseInt(fila.querySelector('.cantidad-minima').value) || 1;
+
+                if (precio > 0 && cantidad > 1) {
+                    preciosMayoristas.push({
+                        precio: precio,
+                        cantidad_minima: cantidad
+                    });
+                }
+            });
+            if (preciosMayoristas.length > 0) {
+                // Check if quantities are in ascending order
+                for (let i = 1; i < preciosMayoristas.length; i++) {
+                    if (preciosMayoristas[i].cantidad_minima <= preciosMayoristas[i - 1].cantidad_minima) {
+                        alert('Las cantidades mínimas deben ser ascendentes.');
+                        return;
+                    }
+                    if (preciosMayoristas[i].precio >= preciosMayoristas[i - 1].precio) {
+                        alert('Los precios mayoristas deben ser descendentes.');
+                        return;
+                    }
+                }
+
+                // Check against retail price
+                if (precio_minorista > 0 && preciosMayoristas[0].precio >= precio_minorista) {
+                    alert('Los precios mayoristas deben ser menores que el precio minorista.');
+                    return;
+                }
             }
 
-            if (precio_minorista > 0 && precio_mayorista > 0 && precio_mayorista >= precio_minorista) {
-                alert('El precio por mayor debe ser menor que el precio por menor si el precio por menor es distinto de 0.');
-                return;
-            }
 
             // Crear el FormData
             const formData = new FormData();
@@ -195,8 +256,7 @@ $marcas = $sql_marcas->fetchAll(PDO::FETCH_ASSOC);
             formData.append('categoria', categoria);
             formData.append('marca', marca);
             formData.append('precio_minorista', precio_minorista);
-            formData.append('precio_mayorista', precio_mayorista);
-            formData.append('cantidad_minima', cantidad_minima);
+            formData.append('precios_mayoristas', JSON.stringify(preciosMayoristas));
             formData.append('destacado', destacado);
             formData.append('descripcion', descripcion);
 
