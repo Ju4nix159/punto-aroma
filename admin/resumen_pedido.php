@@ -484,47 +484,54 @@ usort($detalles, function ($a, $b) {
 
             // Recolectar el estado actual de los productos visibles en la tabla
             productTableBody.querySelectorAll('tr').forEach((row) => {
-                const sku = row.dataset.sku;
-                const estado = row.classList.contains('line-through') ? 0 : 1; // Si está tachado, estado = 0
-                productos.push({
-                    sku,
-                    estado
-                });
+            const sku = row.dataset.sku;
+            const estado = row.classList.contains('line-through') ? 0 : 1; // Si está tachado, estado = 0
+            productos.push({
+                sku,
+                estado
+            });
             });
 
             // Determinar el estado del pedido
             const hayCambiados = productos.some((producto) => producto.estado === 0);
             const nuevoEstado = hayCambiados ? 'Cambiado' : 'Procesado'; // Decidir el estado
-            const envio = document.getElementById('costoEnvio').value;
+            const envio = parseFloat(document.getElementById('costoEnvio').value);
+
+            // Comprobar si es envío a domicilio y el costo de envío es distinto de 0
+            const esEnvioDomicilio = <?php echo json_encode($pedido["nombre_local"] === null); ?>;
+            if (esEnvioDomicilio && envio === 0) {
+            alert('El costo de envío no puede ser 0 para envíos a domicilio.');
+            return;
+            }
 
             // Enviar datos al servidor
             fetch('./confirmar_pedido.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        id_pedido: idPedido,
-                        productos,
-                        nuevo_estado: nuevoEstado,
-                        envio: envio
-                    }),
-                })
-                .then((response) => response.json())
-                .then((data) => {
-                    if (data.success) {
-                        alert(`El pedido ha sido confirmado con estado: ${nuevoEstado}`);
-                        // Opcional: Redirigir o actualizar la página
-                        location.reload();
-                        location.href = './pedidos.php';
-                    } else {
-                        alert(data.error || 'Hubo un error al confirmar el pedido.');
-                    }
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                    alert('No se pudo confirmar el pedido.');
-                });
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                id_pedido: idPedido,
+                productos,
+                nuevo_estado: nuevoEstado,
+                envio: envio
+                }),
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.success) {
+                alert(`El pedido ha sido confirmado con estado: ${nuevoEstado}`);
+                // Opcional: Redirigir o actualizar la página
+                location.reload();
+                location.href = './pedidos.php';
+                } else {
+                alert(data.error || 'Hubo un error al confirmar el pedido.');
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('No se pudo confirmar el pedido.');
+            });
         });
 
         function mostrarComprobante() {
