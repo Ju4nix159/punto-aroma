@@ -258,8 +258,8 @@ $banners = $sql_banner->fetchAll(PDO::FETCH_ASSOC);
     </button>
     <?php
     // Variables dinámicas
-    $numero = "3571311240";
-    $mensaje = "Quiero hacer una compra";
+    $numero = "3517550374";
+    $mensaje = "Hola, buenos dias. Quiero realizar una compra por la pagina web Aroma y Bienestar";
 
     // Codificar el mensaje para URL
     $mensajeCodificado = urlencode($mensaje);

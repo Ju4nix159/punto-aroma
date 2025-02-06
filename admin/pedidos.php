@@ -11,10 +11,6 @@ JOIN estados_pedidos ep ON p.id_estado_pedido = ep.id_estado_pedido;");
 $sql_pedidos->execute();
 $pedidos = $sql_pedidos->fetchAll(PDO::FETCH_ASSOC);
 
-
-
-
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -80,8 +76,9 @@ $pedidos = $sql_pedidos->fetchAll(PDO::FETCH_ASSOC);
                                                         </span>
                                                     </td>
                                                     <td>
-                                                        <a href="resumen_pedido.php?id_pedido=<?php echo $pedido["id_pedido"]?>" type="button" class="btn bg-blue btn-flat margin"><i class="fas fa-eye"></i></a>
-
+                                                    <td>
+                                                        <a href="resumen_pedido.php?id_pedido=<?php echo $pedido["id_pedido"] ?>" type="button" class="btn bg-blue btn-flat margin"><i class="fas fa-eye"></i></a>
+                                                        <button onclick="printOrder(<?php echo $pedido['id_pedido'] ?>)" type="button" class="btn bg-green btn-flat margin"><i class="fas fa-print"></i></button>
                                                     </td>
                                                 </tr>
                                             <?php } ?>
@@ -109,6 +106,14 @@ $pedidos = $sql_pedidos->fetchAll(PDO::FETCH_ASSOC);
         </div> <!-- /.content-wrapper -->
     </div><!-- ./wrapper -->
     <script>
+        function printOrder(orderId) {
+            // Open the print template in a new window
+            let printWindow = window.open('print_order.php?id_pedido=' + orderId, '_blank');
+            // Automatically trigger print when the page loads
+            printWindow.onload = function() {
+                printWindow.print();
+            };
+        }
         $(function() {
             $("#pedidos").DataTable({
                 "responsive": true,
