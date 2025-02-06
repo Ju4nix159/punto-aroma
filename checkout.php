@@ -220,20 +220,8 @@ $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
                                 <div class="d-flex justify-content-center gap-3">
                                     <div class="card border-dark pickup-card" onclick="selectPickupPoint(this)" style="width: 18rem;">
                                         <div class="card-body">
-                                            <h5 class="card-title">Sucursal Centro</h5>
-                                            <p class="card-text">Av. Principal 123<br>Horario: 9:00 - 18:00</p>
-                                        </div>
-                                    </div>
-                                    <div class="card border-dark pickup-card" onclick="selectPickupPoint(this)" style="width: 18rem;">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Sucursal Norte</h5>
-                                            <p class="card-text">Calle Norte 456<br>Horario: 9:00 - 18:00</p>
-                                        </div>
-                                    </div>
-                                    <div class="card border-dark pickup-card" onclick="selectPickupPoint(this)" style="width: 18rem;">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Sucursal Sur</h5>
-                                            <p class="card-text">Av. Sur 789<br>Horario: 9:00 - 18:00</p>
+                                            <h5 class="card-title">PUNTO AROMA - RIO TERCERO</h5>
+                                            <p class="card-text">Esperanza 1572 <br>Horario: 9:00 - 18:00</p>
                                         </div>
                                     </div>
                                 </div>
