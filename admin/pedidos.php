@@ -18,12 +18,10 @@ $pedidos = $sql_pedidos->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Pedidos</title>
 </head>
 
 <body>
-
-
     <div class="wrapper">
         <div class="content-wrapper">
             <section class="content-header">
@@ -76,7 +74,6 @@ $pedidos = $sql_pedidos->fetchAll(PDO::FETCH_ASSOC);
                                                         </span>
                                                     </td>
                                                     <td>
-                                                    <td>
                                                         <a href="resumen_pedido.php?id_pedido=<?php echo $pedido["id_pedido"] ?>" type="button" class="btn bg-blue btn-flat margin"><i class="fas fa-eye"></i></a>
                                                         <button onclick="printOrder(<?php echo $pedido['id_pedido'] ?>)" type="button" class="btn bg-green btn-flat margin"><i class="fas fa-print"></i></button>
                                                     </td>
@@ -106,6 +103,32 @@ $pedidos = $sql_pedidos->fetchAll(PDO::FETCH_ASSOC);
         </div> <!-- /.content-wrapper -->
     </div><!-- ./wrapper -->
     <script>
+        $(document).ready(function() {
+            $("#pedidos").DataTable({
+                "responsive": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "pageLength": 10,
+                "language": {
+                    "search": "Buscar:",
+                    "lengthMenu": "Mostrar _MENU_ registros por página",
+                    "zeroRecords": "No se encontraron resultados",
+                    "info": "Mostrando página _PAGE_ de _PAGES_",
+                    "infoEmpty": "No hay registros disponibles",
+                    "infoFiltered": "(filtrado de _MAX_ registros totales)",
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Último",
+                        "next": "Siguiente",
+                        "previous": "Anterior"
+                    }
+                }
+            });
+        });
+
         function printOrder(orderId) {
             // Open the print template in a new window
             let printWindow = window.open('print_order.php?id_pedido=' + orderId, '_blank');
@@ -114,23 +137,6 @@ $pedidos = $sql_pedidos->fetchAll(PDO::FETCH_ASSOC);
                 printWindow.print();
             };
         }
-        $(function() {
-            $("#pedidos").DataTable({
-                "responsive": true,
-                "lengthChange": false,
-                "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#pedidos_wrapper .col-md-6:eq(0)');
-            $('#example2').DataTable({
-                "paging": true,
-                "lengthChange": false,
-                "searching": false,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-            });
-        });
     </script>
 </body>
 
