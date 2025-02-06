@@ -102,6 +102,7 @@ $pedidos = $sql_pedidos->fetchAll(PDO::FETCH_ASSOC);
             <!-- Main content -->
         </div> <!-- /.content-wrapper -->
     </div><!-- ./wrapper -->
+    <script src="imprimir.js"></script>
     <script>
         $(document).ready(function() {
             $("#pedidos").DataTable({
@@ -129,14 +130,7 @@ $pedidos = $sql_pedidos->fetchAll(PDO::FETCH_ASSOC);
             });
         });
 
-        function printOrder(orderId) {
-            // Open the print template in a new window
-            let printWindow = window.open('print_order.php?id_pedido=' + orderId, '_blank');
-            // Automatically trigger print when the page loads
-            printWindow.onload = function() {
-                printWindow.print();
-            };
-        }
+        
     </script>
 </body>
 

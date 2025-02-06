@@ -237,7 +237,7 @@ usort($detalles, function ($a, $b) {
                                     <div class="botones-container">
                                         <button class="btn btn-success" onclick="cambiarEstadoSeña(<?php echo $id_pedido ?>,1)">estado seña pagado</button>
                                         <button class="btn btn-danger" onclick="cambiarEstadoSeña(<?php echo $id_pedido ?>,0)">estado seña no pagado</button>
-                                        <button class="btn btn-warning" onclick="imprimirResumenPedido()">Imprimir Resumen</button>
+                                        <button onclick="printOrder(<?php echo $pedido['id_pedido'] ?>)" type="button" class="btn bg-green btn-flat margin"><i class="fas fa-print"></i></button>
                                         <button class="btn btn-primary">Botón 4</button>
                                         <button class="btn btn-primary">Botón 5</button>
                                         <button class="btn btn-primary">Botón 6</button>
