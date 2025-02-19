@@ -82,6 +82,7 @@ CREATE TABLE productos (
     descripcion TEXT,
     id_categoria INT,
     id_marca INT,
+    id_submarca INT,
     destacado TINYINT DEFAULT 0,
     estado TINYINT DEFAULT 1,
     unico TINYINT DEFAULT 0,
@@ -92,6 +93,7 @@ CREATE TABLE productos (
     decuento DECIMAL(10, 2) DEFAULT 0,
     CONSTRAINT FK_productos_id_categoria_END FOREIGN KEY (id_categoria) REFERENCES categorias(id_categoria),
     CONSTRAINT FK_productos_id_marca_END FOREIGN KEY (id_marca) REFERENCES marcas(id_marca)
+    CONSTRAINT FK_productos_id_submarca_END FOREIGN KEY (id_submarca) REFERENCES marcas(id_marca)
 );
 
 -- Tabla de usuarios
@@ -186,6 +188,7 @@ CREATE TABLE variantes (
     id_estado_producto INT DEFAULT 1,
     aroma VARCHAR(100),
     color VARCHAR(100),
+    titulo VARCHAR(100),
     stock INT,
     CONSTRAINT PK_variante_sku_END PRIMARY KEY (sku),
     CONSTRAINT FK_variante_id_producto_END          FOREIGN KEY (id_producto)           REFERENCES productos(id_producto),
