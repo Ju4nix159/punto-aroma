@@ -12,7 +12,7 @@ if (!$idProducto) {
 
 try {
     // Consulta de producto
-    $sqlProducto = "SELECT p.nombre, p.descripcion, i.ruta AS imagen_principal
+    $sqlProducto = "SELECT p.nombre, p.descripcion, i.nombre AS imagen_principal
                     FROM productos p
                     JOIN imagenes i ON p.id_producto = i.id_producto
                     WHERE p.id_producto = :id_producto AND i.principal = 1";

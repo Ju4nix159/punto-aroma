@@ -2,7 +2,7 @@
 include 'header.php';
 include 'admin/config/sbd.php';
 
-$sql_destacados = $con->prepare("SELECT p.id_producto, p.nombre, i.ruta AS imagen_principal
+$sql_destacados = $con->prepare("SELECT p.id_producto, p.nombre, i.nombre AS imagen_principal
 FROM productos p
 JOIN variantes_tipo_precio vtp ON p.id_producto = vtp.id_producto
 JOIN categorias c ON p.id_categoria = c.id_categoria

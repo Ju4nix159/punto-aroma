@@ -102,7 +102,7 @@
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a href="#" class="nav-link">
+                  <a href="subir_excel.php" class="nav-link">
                     <i class="fas fa-upload"></i>
                     <p>subir prodctos</p>
                   </a>

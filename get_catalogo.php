@@ -16,7 +16,7 @@ $offset = ($pagina - 1) * $productosPorPagina;
 
 // Construir consulta dinámica
 $query = "SELECT p.id_producto, p.nombre, p.descripcion, c.nombre AS categoria, 
-                 vtp.precio AS precio_minorista, i.ruta AS imagen_principal, m.nombre AS marca
+                 vtp.precio AS precio_minorista, i.nombre AS imagen_principal, m.nombre AS marca
           FROM productos p
           JOIN variantes_tipo_precio vtp ON p.id_producto = vtp.id_producto
           JOIN categorias c ON p.id_categoria = c.id_categoria

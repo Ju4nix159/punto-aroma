@@ -14,7 +14,7 @@ $sql_resume_producto = $con->prepare(" SELECT
             p.estado,
             c.nombre AS categoria, 
             p.destacado, 
-            i.ruta AS imagen_principal,
+            i.nombre AS imagen_principal,
             c.id_categoria,
             m.nombre AS marca,
             m.id_marca,
@@ -34,7 +34,7 @@ $sql_resume_producto = $con->prepare(" SELECT
             p.descripcion, 
             c.nombre, 
             p.destacado, 
-            i.ruta;");
+            i.nombre;");
 $sql_resume_producto->bindParam(':id_producto', $id_producto);
 $sql_resume_producto->execute();
 $resumen = $sql_resume_producto->fetch(PDO::FETCH_ASSOC);
@@ -49,7 +49,7 @@ $sql_variante->bindParam(':id_producto', $id_producto);
 $sql_variante->execute();
 $variantes = $sql_variante->fetchAll(PDO::FETCH_ASSOC);
 
-$imagen = $con->prepare("SELECT p.id_producto, i.ruta AS imagen_principal
+$imagen = $con->prepare("SELECT p.id_producto, i.nombre AS imagen_principal
             FROM productos p
             LEFT JOIN imagenes i ON p.id_producto = i.id_producto AND i.principal = 1
             WHERE p.id_producto = :id_producto;");

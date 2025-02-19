@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
             div.innerHTML = `
               <div class="card h-100 product-card">
                 <div class="img-container position-relative">
-                  <img src="./assets/productos/${producto.imagen_principal}" class="card-img-top" alt="${producto.nombre}">
+                  <img src="./assets/productos/imagen/${producto.id_producto}/${producto.imagen_principal}" class="card-img-top" alt="${producto.nombre}">
                   <button class="quick-view-btn" data-id="${producto.id_producto}">Vista rápida</button>
                 </div>
                 <div class="card-body">
@@ -163,13 +163,12 @@ document.addEventListener("DOMContentLoaded", () => {
         modal.querySelector(".modal-body").innerHTML = `
         <div class="row g-4">
           <div class="col-12 col-md-4">
-            <img src="./assets/productos/${data.imagen_principal}" alt="${
+            <img src="./assets/productos/imagen/${idProducto}/${data.imagen_principal}" alt="${
           data.nombre
         }" class="img-fluid rounded">
           </div>
           <div class="col-12 col-md-8">
             <h3>${data.nombre}</h3>
-            <p>${data.descripcion}</p>
             <h4>Fragancias disponibles:</h4>
             <div class="fragancias-scroll">
               <ul class="list-inline">

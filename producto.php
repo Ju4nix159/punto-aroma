@@ -4,7 +4,7 @@ include 'admin/config/sbd.php';
 
 if (isset($_GET['id_producto'])) {
     $id_producto = intval($_GET['id_producto']);
-    $sql_producto = $con->prepare(' SELECT p.id_producto, p.nombre, p.descripcion, vtp.precio AS precio, i.ruta AS imagen_principal
+    $sql_producto = $con->prepare(' SELECT p.id_producto, p.nombre, p.descripcion, vtp.precio AS precio, i.nombre AS imagen_principal
                                     FROM productos p
                                     JOIN variantes_tipo_precio vtp ON p.id_producto = vtp.id_producto
                                     LEFT JOIN imagenes i ON p.id_producto = i.id_producto AND i.principal = 1
@@ -92,14 +92,13 @@ WHERE p.id_producto = :id_producto;");
             <div class="row">
                 <div class="col-md-6">
                     <div class="product-gall">
-                        <img src="./assets/productos<?php echo $info_producto["imagen_principal"] ?>" alt="<?php echo $info_producto["nombre"] ?>" class="gall-main-image" id="main-image">
-                        <button class="gall-nav prev" onclick="changeImage(-1)">&lt;</button>
-                        <button class="gall-nav next" onclick="changeImage(1)">&gt;</button>
-                        <div class="gall-thumbnails">
-                            <?php foreach ($imagenes as $imagen) { ?>
-                                <img src="./assets/productos<?php echo $imagen['ruta']; ?>" alt="Thumbnail <?php echo $imagen['id_imagen']; ?>" class="gall-thumbnail" onclick="setMainImage(this.src)">
-                            <?php } ?>
-                        </div>
+                        <?php
+                        $image_path = './assets/productos/imagen/'. $id_producto ."/". ($info_producto["imagen_principal"] ? $info_producto["imagen_principal"] : '/otrasimagenes/noimagen.jpeg');
+                        if (!file_exists($image_path)) {
+                            $image_path = './assets/productos/otrasimagenes/noimagen.jpeg';
+                        }
+                        ?>
+                        <img src="<?php echo $image_path; ?>" alt="<?php echo $info_producto["nombre"] ?>" class="gall-main-image" id="main-image">
                     </div>
                 </div>
                 <div class="col-md-6">
