@@ -51,17 +51,14 @@ function processImages($con)
     }
 
     /* 
-    iluminarte
-    sagradamadre
-    vishnu
-
+    
     saphirus
     ambar
     milano
     shiny
 
      */
-    $sourceDir = '../productos/vishnu/';
+    $sourceDir = '../productos/shiny/';
     $processedCount = 0;
     $errorCount = 0;
 
@@ -218,7 +215,9 @@ function processExcelData($file, $con)
 
         $tipos_precios = [
             ['Minorista', 'Precio para ventas al por menor'],
-            ['Mayorista', 'Precio para ventas al por mayor']
+            ['Mayorista 6', 'Precio para ventas al por mayor 6 unidades'],
+            ['Mayorista 48', 'Precio para ventas al por mayor 48 unidades'],
+            ['Mayorista 120', 'Precio para ventas al por mayor 120 unidades']
         ];
 
         foreach ($tipos_precios as $tipo) {
@@ -230,16 +229,29 @@ function processExcelData($file, $con)
 
         echo "<h3>Tipos de precios verificados.</h3>";
 
-        $id_mayorista = $con->query("SELECT id_tipo_precio FROM tipos_precios WHERE LOWER(nombre) = 'mayorista'")->fetchColumn();
         $id_minorista = $con->query("SELECT id_tipo_precio FROM tipos_precios WHERE LOWER(nombre) = 'minorista'")->fetchColumn();
+        $id_mayorista_6 = $con->query("SELECT id_tipo_precio FROM tipos_precios WHERE LOWER(nombre) = 'mayorista 6'")->fetchColumn();
+        $id_mayorista_48 = $con->query("SELECT id_tipo_precio FROM tipos_precios WHERE LOWER(nombre) = 'mayorista 48'")->fetchColumn();
+        $id_mayorista_120 = $con->query("SELECT id_tipo_precio FROM tipos_precios WHERE LOWER(nombre) = 'mayorista 120'")->fetchColumn();
 
-        if (!$id_mayorista || !$id_minorista) {
+
+        if (!$id_minorista || !$id_mayorista_6 || !$id_mayorista_48 || !$id_mayorista_120) {
             throw new Exception("No se pudieron obtener los IDs de tipos de precios");
         }
 
         echo "<table border='1' cellpadding='5' cellspacing='0'>
-                <tr><th>ID Precio Mayorista</th><th>ID Precio Minorista</th></tr>
-                <tr><td>$id_mayorista</td><td>$id_minorista</td></tr>
+                <tr>
+                    <th>ID Precio Minorista</th>
+                    <th>ID Precio Mayorista 6</th>
+                    <th>ID Precio Mayorista 48</th>
+                    <th>ID Precio Mayorista 120</th>
+                </tr>
+                <tr>
+                    <td>$id_minorista</td>
+                    <td>$id_mayorista_6</td>
+                    <td>$id_mayorista_48</td>
+                    <td>$id_mayorista_120</td>
+                </tr>
               </table>";
 
         echo "<h3>Procesando productos...</h3>";
@@ -249,14 +261,17 @@ function processExcelData($file, $con)
                     <th>Código</th>
                     <th>Nombre</th>
                     <th>Marca</th>
+                    <th>Submarca</th>
                     <th>Categoría</th>
-                    <th>Precio Mayorista</th>
                     <th>Precio Minorista</th>
+                    <th>Precio Mayorista 6</th>
+                    <th>Precio Mayorista 48</th>
+                    <th>Precio Mayorista 120</th>
                     <th>Imagen</th>
                 </tr>";
 
         foreach ($rows as $row) {
-            if (count($row) < 9) {
+            if (count($row) < 12) {
                 throw new Exception("Fila con datos insuficientes. Se requieren al menos 9 columnas.");
             }
 
@@ -264,11 +279,14 @@ function processExcelData($file, $con)
             $nombre = $row[1];
             $atributo = $row[2];
             $valor = $row[3];
-            $precio_mayorista = floatval($row[4]);
-            $precio_minorista = floatval($row[5]);
-            $imagen = $row[6];
-            $marca = $row[7];
-            $categoria = $row[8];
+            $precio_minorista = floatval($row[4]);
+            $precio_mayorista_6 = floatval($row[5]);
+            $precio_mayorista_48 = floatval($row[6]);
+            $precio_mayorista_120 = floatval($row[7]);
+            $marca = $row[8];
+            $submarca = $row[9];
+            $imagen = $row[10];
+            $categoria = $row[11];
 
 
             // Validaciones de datos
@@ -276,7 +294,10 @@ function processExcelData($file, $con)
                 throw new Exception("Código y nombre de producto son obligatorios");
             }
 
-            if ($precio_mayorista <= 0 || $precio_minorista <= 0) {
+            if (
+                $precio_minorista <= 0 || $precio_mayorista_6 <= 0 ||
+                $precio_mayorista_48 <= 0 || $precio_mayorista_120 <= 0
+            ) {
                 throw new Exception("Los precios deben ser valores positivos mayores a cero");
             }
 
@@ -291,6 +312,24 @@ function processExcelData($file, $con)
                     throw new Exception("Error al insertar la marca '$marca'.");
                 }
                 $id_marca = $con->lastInsertId();
+            }
+
+            // **Buscar y/o insertar submarca**
+            $id_submarca = null; // Valor por defecto si no hay submarca
+            if (!empty($submarca)) {
+                // Verificar si la submarca ya existe en la tabla marcas
+                $stmt = $con->prepare("SELECT id_marca FROM marcas WHERE LOWER(nombre) = LOWER(?)");
+                $stmt->execute([$submarca]);
+                $id_submarca = $stmt->fetchColumn();
+
+                if (!$id_submarca) {
+                    // Si no existe, la insertamos como una nueva marca
+                    $stmt = $con->prepare("INSERT INTO marcas (nombre) VALUES (?)");
+                    if (!$stmt->execute([$submarca])) {
+                        throw new Exception("Error al insertar la submarca '$submarca'.");
+                    }
+                    $id_submarca = $con->lastInsertId();
+                }
             }
 
             // **Buscar y/o insertar categoría**
@@ -309,10 +348,13 @@ function processExcelData($file, $con)
             if (!isset($groupedProducts[$codigo])) {
                 $groupedProducts[$codigo] = [
                     'nombre' => $nombre,
-                    'precio_mayorista' => $precio_mayorista,
                     'precio_minorista' => $precio_minorista,
+                    'precio_mayorista_6' => $precio_mayorista_6,
+                    'precio_mayorista_48' => $precio_mayorista_48,
+                    'precio_mayorista_120' => $precio_mayorista_120,
                     'imagen' => $imagen,
                     'id_marca' => $id_marca,
+                    'id_submarca' => $id_submarca,
                     'id_categoria' => $id_categoria,
                     'variantes' => []
                 ];
@@ -327,9 +369,12 @@ function processExcelData($file, $con)
                     <td>$codigo</td>
                     <td>$nombre</td>
                     <td>$marca</td>
+                    <td>$submarca</td>
                     <td>$categoria</td>
-                    <td>$precio_mayorista</td>
                     <td>$precio_minorista</td>
+                    <td>$precio_mayorista_6</td>
+                    <td>$precio_mayorista_48</td>
+                    <td>$precio_mayorista_120</td>
                     <td>$imagen</td>
                   </tr>";
         }
@@ -349,8 +394,8 @@ function processExcelData($file, $con)
                 $id_producto = $stmt->fetchColumn();
 
                 if (!$id_producto) {
-                    $stmt = $con->prepare("INSERT INTO productos (nombre, id_marca, id_categoria) VALUES (?, ?, ?)");
-                    if (!$stmt->execute([$producto['nombre'], $producto['id_marca'], $producto['id_categoria']])) {
+                    $stmt = $con->prepare("INSERT INTO productos (nombre, id_marca, id_submarca, id_categoria) VALUES (?, ?, ?, ?)");
+                    if (!$stmt->execute([$producto['nombre'], $id_marca, $id_submarca, $producto['id_categoria']])) {
                         throw new Exception("Error al insertar el producto '{$producto['nombre']}'");
                     }
                     $id_producto = $con->lastInsertId();
@@ -358,17 +403,25 @@ function processExcelData($file, $con)
 
                 // Insertar precios
                 $stmt = $con->prepare("INSERT INTO variantes_tipo_precio (id_producto, id_tipo_precio, precio, cantidad_minima) 
-                                      VALUES (?, ?, ?, ?), (?, ?, ?, ?)
-                                      ON DUPLICATE KEY UPDATE precio = VALUES(precio)");
+                      VALUES 
+                      (?, ?, ?, 1),
+                      (?, ?, ?, 6),
+                      (?, ?, ?, 48),
+                      (?, ?, ?, 120)
+                      ON DUPLICATE KEY UPDATE precio = VALUES(precio)");
                 if (!$stmt->execute([
-                    $id_producto,
-                    $id_mayorista,
-                    $producto['precio_mayorista'],
-                    6,
                     $id_producto,
                     $id_minorista,
                     $producto['precio_minorista'],
-                    1
+                    $id_producto,
+                    $id_mayorista_6,
+                    $producto['precio_mayorista_6'],
+                    $id_producto,
+                    $id_mayorista_48,
+                    $producto['precio_mayorista_48'],
+                    $id_producto,
+                    $id_mayorista_120,
+                    $producto['precio_mayorista_120']
                 ])) {
                     throw new Exception("Error al insertar los precios para el producto '{$producto['nombre']}'");
                 }
