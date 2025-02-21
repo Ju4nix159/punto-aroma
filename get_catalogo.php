@@ -4,9 +4,9 @@ include './admin/config/sbd.php';
 header('Content-Type: application/json');
 
 $pagina = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
-$categoria = isset($_GET['categoria']) ? trim($_GET['categoria']) : '';
-$marca = isset($_GET['marca']) ? trim($_GET['marca']) : '';
-$nombre = isset($_GET['nombre']) ? trim($_GET['nombre']) : '';
+$categoria = isset($_GET['categoria']) ? strtolower(trim($_GET['categoria'])) : '';
+$marca = isset($_GET['marca']) ? strtolower(trim($_GET['marca'])) : '';
+$nombre = isset($_GET['nombre']) ? strtolower(trim($_GET['nombre'])) : '';
 $precioMin = isset($_GET['precioMin']) ? (int)$_GET['precioMin'] : 0;
 $precioMax = isset($_GET['precioMax']) ? (int)$_GET['precioMax'] : 10000;
 $productosPorPagina = isset($_GET['productosPorPagina']) ? (int)$_GET['productosPorPagina'] : 12;
@@ -22,22 +22,22 @@ $query = "SELECT p.id_producto, p.nombre, p.descripcion, c.nombre AS categoria,
           JOIN categorias c ON p.id_categoria = c.id_categoria
           JOIN marcas m ON p.id_marca = m.id_marca
           LEFT JOIN imagenes i ON p.id_producto = i.id_producto AND i.principal = 1
-          WHERE vtp.id_tipo_precio = 1";
+          WHERE vtp.id_tipo_precio = 2";
 
 // Aplicar filtros
 $params = [];
 if ($categoria !== '') {
-    $query .= " AND c.nombre = :categoria";
+    $query .= " AND LOWER(c.nombre) = :categoria";
     $params[':categoria'] = $categoria;
 }
 
 if ($marca !== '') {
-    $query .= " AND m.nombre = :marca";
+    $query .= " AND LOWER(m.nombre) = :marca";
     $params[':marca'] = $marca;
 }
 
 if ($nombre !== '') {
-    $query .= " AND p.nombre LIKE :nombre";
+    $query .= " AND LOWER(p.nombre) LIKE :nombre";
     $params[':nombre'] = '%' . $nombre . '%';
 }
 
@@ -76,21 +76,21 @@ $totalQuery = "SELECT COUNT(*) AS total
                JOIN variantes_tipo_precio vtp ON p.id_producto = vtp.id_producto
                JOIN categorias c ON p.id_categoria = c.id_categoria
                JOIN marcas m ON p.id_marca = m.id_marca
-               WHERE vtp.id_tipo_precio = 1";
+               WHERE vtp.id_tipo_precio = 2";
 
 $totalParams = [];
 if ($categoria !== '') {
-    $totalQuery .= " AND c.nombre = :categoria";
+    $totalQuery .= " AND LOWER(c.nombre) = :categoria";
     $totalParams[':categoria'] = $categoria;
 }
 
 if ($marca !== '') {
-    $totalQuery .= " AND m.nombre = :marca";
+    $totalQuery .= " AND LOWER(m.nombre) = :marca";
     $totalParams[':marca'] = $marca;
 }
 
 if ($nombre !== '') {
-    $totalQuery .= " AND p.nombre LIKE :nombre";
+    $totalQuery .= " AND LOWER(p.nombre) LIKE :nombre";
     $totalParams[':nombre'] = '%' . $nombre . '%';
 }
 
@@ -124,7 +124,7 @@ $marcas = $marcasQuery->fetchAll(PDO::FETCH_ASSOC);
 $precioQuery = $con->prepare("SELECT MIN(vtp.precio) AS precioMin, MAX(vtp.precio) AS precioMax
                               FROM variantes_tipo_precio vtp
                               JOIN productos p ON vtp.id_producto = p.id_producto
-                              WHERE vtp.id_tipo_precio = 1");
+                              WHERE vtp.id_tipo_precio = 2");
 $precioQuery->execute();
 $precios = $precioQuery->fetch(PDO::FETCH_ASSOC);
 

@@ -4,14 +4,40 @@ include 'admin/config/sbd.php';
 
 if (isset($_GET['id_producto'])) {
     $id_producto = intval($_GET['id_producto']);
-    $sql_producto = $con->prepare(' SELECT p.id_producto, p.nombre, p.descripcion, vtp.precio AS precio, i.nombre AS imagen_principal
+    $sql_producto = $con->prepare(' SELECT p.id_producto, p.nombre, p.descripcion, vtp.precio AS precio, i.nombre AS imagen_principal, m.nombre as marca
                                     FROM productos p
                                     JOIN variantes_tipo_precio vtp ON p.id_producto = vtp.id_producto
                                     LEFT JOIN imagenes i ON p.id_producto = i.id_producto AND i.principal = 1
-                                    WHERE p.id_producto = :id_producto AND vtp.id_tipo_precio = 1;');
+                                    LEFT JOIN marcas m on p.id_marca = m.id_marca 
+                                    WHERE p.id_producto = :id_producto AND vtp.id_tipo_precio = 2');
     $sql_producto->bindParam(':id_producto', $id_producto, PDO::PARAM_INT);
     $sql_producto->execute();
     $info_producto = $sql_producto->fetch(PDO::FETCH_ASSOC);
+
+    if (strtolower($info_producto["marca"]) == "saphirus") {
+        $sql_precios = $con->prepare("SELECT vtp.precio, vtp.cantidad_minima, tp.nombre as tipo_precio 
+        FROM variantes_tipo_precio vtp 
+        JOIN tipos_precios tp ON vtp.id_tipo_precio = tp.id_tipo_precio 
+        WHERE vtp.id_producto = :id_producto");
+        $sql_precios->bindParam(":id_producto", $id_producto, PDO::PARAM_INT);
+        $sql_precios->execute();
+        $precios = $sql_precios->fetchAll(PDO::FETCH_ASSOC);
+
+        $categorias = [
+            "6 productos" => null,
+            "48 productos" => null,
+            "120 productos" => null
+        ];
+        foreach ($precios as $precio) {
+            if (strtolower($precio["cantidad_minima"]) == 6) {
+                $categorias["6 productos"] = $precio["precio"];
+            } elseif (strtolower($precio["cantidad_minima"]) == 48) {
+                $categorias["48 productos"] = $precio["precio"];
+            } elseif (strtolower($precio["cantidad_minima"]) == 120) {
+                $categorias["120 productos"] = $precio["precio"];
+            }
+        }
+    }
     $sql_variantes = $con->prepare("SELECT DISTINCT v.aroma , v.sku, v.nombre_variante, v.color, v.id_estado_producto
 FROM productos p
     JOIN variantes v ON p.id_producto = v.id_producto
@@ -28,6 +54,8 @@ WHERE p.id_producto = :id_producto;");
     $sql_imagenes->execute();
     $imagenes = $sql_imagenes->fetchAll(PDO::FETCH_ASSOC);
 };
+
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -35,6 +63,17 @@ WHERE p.id_producto = :id_producto;");
 <head>
     <title>Resumen del Producto - Punto Aroma</title>
     <style>
+        .sticky-container {
+            position: sticky;
+            top: 20px;
+            /* Adjust this value to control when sticking starts */
+        }
+
+        .back-button {
+            margin-bottom: 1rem;
+        }
+
+        /* Preserve existing styles */
         .icon-container {
             position: relative;
             display: inline-flex;
@@ -91,14 +130,17 @@ WHERE p.id_producto = :id_producto;");
 
             <div class="row">
                 <div class="col-md-6">
-                    <div class="product-gall">
-                        <?php
-                        $image_path = './assets/productos/imagen/'. $id_producto ."/". ($info_producto["imagen_principal"] ? $info_producto["imagen_principal"] : '/otrasimagenes/noimagen.jpeg');
-                        if (!file_exists($image_path)) {
-                            $image_path = './assets/productos/otrasimagenes/noimagen.jpeg';
-                        }
-                        ?>
-                        <img src="<?php echo $image_path; ?>" alt="<?php echo $info_producto["nombre"] ?>" class="gall-main-image" id="main-image">
+                    <div class="sticky-container">
+                        <a href="catalogo.php" class="btn btn-outline-secondary back-button">Volver al Catálogo</a>
+                        <div class="product-gall">
+                            <?php
+                            $image_path = './assets/productos/imagen/' . $id_producto . "/" . ($info_producto["imagen_principal"] ? $info_producto["imagen_principal"] : '/otrasimagenes/noimagen.jpeg');
+                            if (!file_exists($image_path)) {
+                                $image_path = './assets/productos/otrasimagenes/noimagen.jpeg';
+                            }
+                            ?>
+                            <img src="<?php echo $image_path; ?>" alt="<?php echo $info_producto["nombre"] ?>" class="gall-main-image" id="main-image">
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -106,6 +148,7 @@ WHERE p.id_producto = :id_producto;");
                     <p class="lead">Disfruta de la calidez y el aroma relajante de nuestras velas aromáticas de alta calidad.</p>
                     <p>
                         <strong>Precio:</strong>
+                        <?php if (strtolower($info_producto["marca"]) == 'saphirus') { ?>
                     <div class="icon-container" style="display: inline-flex; align-items: center;">
                         <i class="fas fa-info-circle" style="font-size: 24px; cursor: pointer; margin-right: 10px;"></i>
                         <span><?php echo $info_producto["precio"]; ?></span>
@@ -113,77 +156,80 @@ WHERE p.id_producto = :id_producto;");
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>Título 1</th>
-                                        <th>Título 2</th>
-                                        <th>Título 3</th>
+                                        <th>6 productos</th>
+                                        <th>48 productos</th>
+                                        <th>>120 productos</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>Dato 1</td>
-                                        <td>Dato 2</td>
-                                        <td>Dato 3</td>
+                                        <td><?php echo $categorias["6 productos"] ?? 'N/A'; ?></td>
+                                        <td><?php echo $categorias["48 productos"] ?? 'N/A'; ?></td>
+                                        <td><?php echo $categorias["120 productos"] ?? 'N/A'; ?></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
-                    </p>
+                <?php } else { ?>
+                    <span><?php echo $info_producto["precio"]; ?></span>
+                <?php } ?>
+                </p>
 
-                    <p>Elige entre nuestras diferentes fragancias y personaliza tu experiencia aromática.</p>
+                <p>Elige entre nuestras diferentes fragancias y personaliza tu experiencia aromática.</p>
 
-                    <form id="product-form">
-                        <input type="hidden" id="id-producto" value="<?php echo $id_producto ?>">
-                        <input type="hidden" id="precio-producto" value="<?php echo $info_producto['precio'] ?>">
-                        <input type="hidden" id="nombre-producto" value="<?php echo $info_producto['nombre'] ?>">
+                <form id="product-form">
+                    <input type="hidden" id="id-producto" value="<?php echo $id_producto ?>">
+                    <input type="hidden" id="precio-producto" value="<?php echo $info_producto['precio'] ?>">
+                    <input type="hidden" id="nombre-producto" value="<?php echo $info_producto['nombre'] ?>">
 
-                        <div class="card mb-4">
-                            <div class="card-body">
-                                <div id="variants">
-                                    <?php foreach ($variantes as $variante) { ?>
-                                        <?php if ($variante['id_estado_producto'] == 1) { ?>
-                                            <div class="fragrance-item" data-sku="<?php echo $variante['sku']; ?>" data-aroma="<?php echo $variante['aroma']; ?>">
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    <div>
-                                                        <strong><?php echo $variante["nombre_variante"] ?></strong>
-                                                        <p class="text-muted mb-0 small">
-                                                            <?php
-                                                            echo !empty($variante["aroma"]) ? "Aroma: " . $variante["aroma"] : "";
-                                                            echo (!empty($variante["aroma"]) && !empty($variante["color"])) ? " | " : "";
-                                                            echo !empty($variante["color"]) ? "Color: " . $variante["color"] : "";
-                                                            ?>
-                                                        </p>
-                                                    </div>
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div id="variants">
+                                <?php foreach ($variantes as $variante) { ?>
+                                    <?php if ($variante['id_estado_producto'] == 1) { ?>
+                                        <div class="fragrance-item" data-sku="<?php echo $variante['sku']; ?>" data-aroma="<?php echo $variante['aroma']; ?>">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <strong><?php echo $variante["nombre_variante"] ?></strong>
+                                                    <p class="text-muted mb-0 small">
+                                                        <?php
+                                                        echo !empty($variante["aroma"]) ? "Aroma: " . $variante["aroma"] : "";
+                                                        echo (!empty($variante["aroma"]) && !empty($variante["color"])) ? " | " : "";
+                                                        echo !empty($variante["color"]) ? "Color: " . $variante["color"] : "";
+                                                        ?>
+                                                    </p>
+                                                </div>
 
-                                                    <div class="product-count">
-                                                        <div class="d-flex align-items-center">
-                                                            <button type="button" class="btn-primary-custom qtyminus" onclick="decrementQuantity('<?php echo $variante['sku'] ?>')">-</button>
+                                                <div class="product-count">
+                                                    <div class="d-flex align-items-center">
+                                                        <button type="button" class="btn-primary-custom qtyminus" onclick="decrementQuantity('<?php echo $variante['sku'] ?>')">-</button>
 
-                                                            <input type="number" id="quantity-<?php echo $variante['sku'] ?>" class="cantidad" value="0" min="0">
-                                                            <button type="button" class="btn-primary-custom qtyplus" onclick="incrementQuantity('<?php echo $variante['sku'] ?>')">+</button>
-                                                        </div>
+                                                        <input type="number" id="quantity-<?php echo $variante['sku'] ?>" class="cantidad" value="0" min="0">
+                                                        <button type="button" class="btn-primary-custom qtyplus" onclick="incrementQuantity('<?php echo $variante['sku'] ?>')">+</button>
                                                     </div>
                                                 </div>
                                             </div>
-                                        <?php } ?>
+                                        </div>
                                     <?php } ?>
+                                <?php } ?>
 
 
 
-                                </div>
                             </div>
                         </div>
-                        <div class="mt-4">
-                            <h4>Total: $<span id="total-price">0.00</span></h4>
-                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <h4>Total: $<span id="total-price">0.00</span></h4>
+                    </div>
 
-                        <button type="button" class="btn btn-primary-custom btn-lg mt-3" onclick="addToCart()">
-                            Agregar al Carrito
-                        </button>
+                    <button type="button" class="btn btn-primary-custom btn-lg mt-3" onclick="addToCart()">
+                        Agregar al Carrito
+                    </button>
 
-                    </form>
+                </form>
 
-                    <a href="catalogo.php" class="btn btn-outline-secondary mt-3">Volver al Catálogo</a>
+                <a href="catalogo.php" class="btn btn-outline-secondary mt-3">Volver al Catálogo</a>
                 </div>
             </div>
 
