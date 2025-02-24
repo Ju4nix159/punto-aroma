@@ -67,33 +67,9 @@ function btnCancelar() {
 
   // Reiniciar los formularios a los datos que tenía antes
   formUsuario.reset();
-
   infoUsuario.classList.remove("hidden");
   formUsuario.classList.add("hidden");
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-  // Función para manejar la confirmación de eliminar
-  document
-    .getElementById("deleteConfirm")
-    .addEventListener("click", function () {
-      // Aquí iría la lógica para eliminar el elemento
-      alert("Elemento eliminado");
-      bootstrap.Modal.getInstance(
-        document.getElementById("confirmDeleteModal")
-      ).hide();
-    });
-
-  // Función para manejar la confirmación de actualizar información personal
-  document
-    .getElementById("updateInfoConfirm")
-    .addEventListener("click", function () {
-      // Aquí iría la lógica para actualizar la información personal
-      alert("Información personal actualizada");
-      bootstrap.Modal.getInstance(
-        document.getElementById("confirmUpdateInfoModal")
-      ).hide();
-    });
-});
 
 
