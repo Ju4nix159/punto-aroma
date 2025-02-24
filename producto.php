@@ -14,28 +14,26 @@ if (isset($_GET['id_producto'])) {
     $sql_producto->execute();
     $info_producto = $sql_producto->fetch(PDO::FETCH_ASSOC);
 
-    if (strtolower($info_producto["marca"]) == "saphirus") {
-        $sql_precios = $con->prepare("SELECT vtp.precio, vtp.cantidad_minima, tp.nombre as tipo_precio 
+    $sql_precios = $con->prepare("SELECT vtp.precio, vtp.cantidad_minima, tp.nombre as tipo_precio 
         FROM variantes_tipo_precio vtp 
         JOIN tipos_precios tp ON vtp.id_tipo_precio = tp.id_tipo_precio 
         WHERE vtp.id_producto = :id_producto");
-        $sql_precios->bindParam(":id_producto", $id_producto, PDO::PARAM_INT);
-        $sql_precios->execute();
-        $precios = $sql_precios->fetchAll(PDO::FETCH_ASSOC);
+    $sql_precios->bindParam(":id_producto", $id_producto, PDO::PARAM_INT);
+    $sql_precios->execute();
+    $precios = $sql_precios->fetchAll(PDO::FETCH_ASSOC);
 
-        $categorias = [
-            "6 productos" => null,
-            "48 productos" => null,
-            "120 productos" => null
-        ];
-        foreach ($precios as $precio) {
-            if (strtolower($precio["cantidad_minima"]) == 6) {
-                $categorias["6 productos"] = $precio["precio"];
-            } elseif (strtolower($precio["cantidad_minima"]) == 48) {
-                $categorias["48 productos"] = $precio["precio"];
-            } elseif (strtolower($precio["cantidad_minima"]) == 120) {
-                $categorias["120 productos"] = $precio["precio"];
-            }
+    $categorias = [
+        "6 productos" => null,
+        "48 productos" => null,
+        "120 productos" => null
+    ];
+    foreach ($precios as $precio) {
+        if (strtolower($precio["cantidad_minima"]) == 6) {
+            $categorias["6 productos"] = $precio["precio"];
+        } elseif (strtolower($precio["cantidad_minima"]) == 48) {
+            $categorias["48 productos"] = $precio["precio"];
+        } elseif (strtolower($precio["cantidad_minima"]) == 120) {
+            $categorias["120 productos"] = $precio["precio"];
         }
     }
     $sql_variantes = $con->prepare("SELECT DISTINCT v.aroma , v.sku, v.nombre_variante, v.color, v.id_estado_producto
@@ -172,7 +170,11 @@ WHERE p.id_producto = :id_producto;");
                         </div>
                     </div>
                 <?php } else { ?>
-                    <span><?php echo $info_producto["precio"]; ?></span>
+                    <span><?php foreach ($precios as $precio) {
+                                if (strtolower($precio["tipo_precio"]) == "minorista") {
+                                    echo $precio["precio"];
+                                }
+                            }; ?></span>
                 <?php } ?>
                 </p>
 
@@ -180,8 +182,11 @@ WHERE p.id_producto = :id_producto;");
 
                 <form id="product-form">
                     <input type="hidden" id="id-producto" value="<?php echo $id_producto ?>">
-                    <input type="hidden" id="precio-producto" value="<?php echo $info_producto['precio'] ?>">
                     <input type="hidden" id="nombre-producto" value="<?php echo $info_producto['nombre'] ?>">
+                    <input type="hidden" id="precio-producto" value="<?php echo $info_producto["precio"]; ?>">
+                    <input type="hidden" id="precio-6-productos" value="<?php echo isset($categorias["6 productos"]) ? $categorias["6 productos"] : ''; ?>">
+                    <input type="hidden" id="precio-48-productos" value="<?php echo isset($categorias["48 productos"]) ? $categorias["48 productos"] : ''; ?>">
+                    <input type="hidden" id="precio-120-productos" value="<?php echo isset($categorias["120 productos"]) ? $categorias["120 productos"] : ''; ?>">
 
                     <div class="card mb-4">
                         <div class="card-body">
@@ -221,6 +226,7 @@ WHERE p.id_producto = :id_producto;");
                     </div>
                     <div class="mt-4">
                         <h4>Total: $<span id="total-price">0.00</span></h4>
+                        <p class="text-muted" id="leyendaPrecio">Agregue 6 productos para tener el precio por mayor </p>
                     </div>
 
                     <button type="button" class="btn btn-primary-custom btn-lg mt-3" onclick="addToCart()">

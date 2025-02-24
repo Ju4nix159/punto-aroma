@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
   cargarCarrito();
 });
+
 let openCollapses = new Set();
 
 function guardarEstadoColapsables() {
@@ -53,15 +54,18 @@ function mostrarCarrito(items) {
 
     // Actualizar el total sumando la cantidad total de fragancias * precio del producto
     total += totalCantidadFragancias * item.precio;
-
+    const precioPorMayor = item.esPrecioMayor ? " (Precio por mayor)" : "";
     const itemDiv = document.createElement("div");
     itemDiv.classList.add("cart-item", "mb-3");
 
     itemDiv.innerHTML = `
         <div class="d-flex justify-content-between align-items-center">
             <div>
-                <h6 class="mb-0">${item.nombre}</h6>
+                <h6 class="mb-0">${item.nombre}${precioPorMayor}</h6>
                 <small>Cantidad total de fragancias: ${totalCantidadFragancias}</small>
+                <small class="d-block">Precio unitario: $${parseFloat(
+                  item.precio
+                ).toFixed(2)}</small>
             </div>
             <div>
                 <span>$${(totalCantidadFragancias * item.precio).toFixed(
@@ -100,9 +104,11 @@ function mostrarCarrito(items) {
     cartItemsContainer.appendChild(itemDiv);
   });
 
-  document.getElementById("empty-cart-message").style.display = "none";
-  document.getElementById("cart-summary").style.display = "block";
-  document.getElementById("cart-total").innerText = `$${total.toFixed(2)}`; // Mostrar el total actualizado
+  document.getElementById("empty-cart-message").style.display =
+    items.length > 0 ? "none" : "block";
+  document.getElementById("cart-summary").style.display =
+    items.length > 0 ? "block" : "none";
+  document.getElementById("cart-total").innerText = `$${total.toFixed(2)}`;
 }
 
 function eliminarProducto(productId) {
@@ -163,6 +169,7 @@ function modificarCantidadFragancia(
       productId: productId,
       fraganciaAroma: fraganciaAroma,
       cantidadModificacion: cantidadModificacion,
+      recalcularPrecio: true,
     }),
   })
     .then((response) => response.json())
@@ -174,11 +181,15 @@ function modificarCantidadFragancia(
       }
     });
 }
+function updateLeyenda() {
+  let leyenda = document.getElementById("leyendaPrecio").innerText;
+}
 
 function incrementQuantity(sku) {
   var quantityInput = document.getElementById("quantity-" + sku);
   var currentQuantity = parseInt(quantityInput.value);
   quantityInput.value = currentQuantity + 1;
+  cantidad = currentQuantity + 1;
   updateTotalPrice();
 }
 
@@ -187,6 +198,7 @@ function decrementQuantity(sku) {
   var currentQuantity = parseInt(quantityInput.value);
   if (currentQuantity > 0) {
     quantityInput.value = currentQuantity - 1;
+    cantidad = currentQuantity - 1;
     updateTotalPrice();
   }
 }
@@ -194,12 +206,94 @@ function decrementQuantity(sku) {
 function updateTotalPrice() {
   var total = 0;
   var quantities = document.querySelectorAll(".cantidad");
-  var precio = document.getElementById("precio-producto").value;
+  var totalQuantity = 0;
+
+  // Obtener el precio base con verificación de existencia
+  var precioBase = 0;
+  var precioProductoElement = document.getElementById("precio-producto");
+  if (precioProductoElement) {
+    precioBase = parseFloat(precioProductoElement.value) || 0;
+  }
+
+  // Obtener los precios por cantidad con verificación de existencia
+  var precio6 = 0;
+  var precio48 = 0;
+  var precio120 = 0;
+
+  var precio6Element = document.getElementById("precio-6-productos");
+  var precio48Element = document.getElementById("precio-48-productos");
+  var precio120Element = document.getElementById("precio-120-productos");
+
+  if (precio6Element && precio6Element.value) {
+    precio6 = parseFloat(precio6Element.value) || 0;
+  }
+
+  if (precio48Element && precio48Element.value) {
+    precio48 = parseFloat(precio48Element.value) || 0;
+  }
+
+  if (precio120Element && precio120Element.value) {
+    precio120 = parseFloat(precio120Element.value) || 0;
+  }
+
+  // Calcular la cantidad total
   quantities.forEach(function (input) {
-    var quantity = parseInt(input.value);
-    total += quantity * precio;
+    totalQuantity += parseInt(input.value) || 0;
   });
-  document.getElementById("total-price").innerText = total.toFixed(2);
+
+  // Determinar qué precio aplicar según la cantidad total
+  var precioAplicado = precioBase; // Por defecto, usar el precio base
+
+  if (totalQuantity >= 120 && precio120 > 0) {
+    precioAplicado = precio120;
+    if (document.getElementById("leyendaPrecio")) {
+      document.getElementById("leyendaPrecio").innerText =
+        "Precio por mayor (120+ productos)";
+    }
+  } else if (totalQuantity >= 48 && precio48 > 0) {
+    precioAplicado = precio48;
+    if (document.getElementById("leyendaPrecio")) {
+      document.getElementById("leyendaPrecio").innerText =
+        "Precio por mayor (48+ productos)";
+    }
+  } else if (totalQuantity >= 6 && precio6 > 0) {
+    precioAplicado = precio6;
+    if (document.getElementById("leyendaPrecio")) {
+      document.getElementById("leyendaPrecio").innerText =
+        "Precio por mayor (6+ productos)";
+    }
+  } else {
+    if (document.getElementById("leyendaPrecio")) {
+      document.getElementById("leyendaPrecio").innerText =
+        "Agregue 6 productos para tener el precio por mayor";
+    }
+  }
+
+  // Calcular el total
+  total = totalQuantity * precioAplicado;
+
+  // Actualizar el precio en la interfaz con verificación
+  var totalPriceElement = document.getElementById("total-price");
+  if (totalPriceElement) {
+    totalPriceElement.innerText = total.toFixed(2);
+  }
+
+  // Para debugging
+  console.log({
+    totalQuantity: totalQuantity,
+    precioBase: precioBase,
+    precio6: precio6,
+    precio48: precio48,
+    precio120: precio120,
+    precioAplicado: precioAplicado,
+    total: total,
+  });
+
+  return {
+    totalQuantity: totalQuantity,
+    precioAplicado: precioAplicado,
+    total: total,
+  };
 }
 
 function listarFragancias() {
@@ -230,9 +324,6 @@ function listarFragancias() {
 
 function addToCart() {
   var nombreProducto = document.getElementById("nombre-producto").value;
-  var precioProducto = parseFloat(
-    document.getElementById("precio-producto").value
-  );
   var idProducto = document.getElementById("id-producto").value;
   var fragancias = listarFragancias();
   if (fragancias.length === 0) {
@@ -240,16 +331,41 @@ function addToCart() {
     return;
   }
 
-  var producto = {
-    nombre: nombreProducto,
-    precio: precioProducto,
-    id: idProducto,
-    fragancias: fragancias,
-  };
+  var priceInfo = updateTotalPrice();
+  var precioAplicado = priceInfo.precioAplicado;
+  var totalQuantity = priceInfo.totalQuantity;
+
+  var precio6 = document.getElementById("precio-6-productos")
+    ? document.getElementById("precio-6-productos").value
+    : null;
+  var precio48 = document.getElementById("precio-48-productos")
+    ? document.getElementById("precio-48-productos").value
+    : null;
+  var precio120 = document.getElementById("precio-120-productos")
+    ? document.getElementById("precio-120-productos").value
+    : null;
+
+    var producto = {
+      nombre: nombreProducto,
+      precio: precioAplicado,
+      precioBase: document.getElementById("precio-producto").value,
+      id: idProducto, // Asegúrate de que esto sea único para cada producto
+      fragancias: fragancias,
+      totalQuantity: totalQuantity,
+      esPrecioMayor: totalQuantity >= 6,
+      precio6: precio6,
+      precio48: precio48,
+      precio120: precio120
+    };
+  
+
+  console.log("Producto a agregar:", producto);
 
   var xhr = new XMLHttpRequest();
   xhr.open("POST", "anadir_carrito.php", true);
   xhr.setRequestHeader("Content-Type", "application/json");
+
+
 
   xhr.onreadystatechange = function () {
     if (xhr.readyState === 4 && xhr.status === 200) {
@@ -266,7 +382,15 @@ function addToCart() {
   xhr.send(
     JSON.stringify({
       producto: producto,
+      precio6: precio6,
+      precio48: precio48,
+      precio120: precio120
     })
   );
   document.querySelectorAll(".cantidad").forEach((input) => (input.value = 0));
+  document.getElementById("total-price").innerText = "0.00";
+  if (document.getElementById("leyendaPrecio")) {
+    document.getElementById("leyendaPrecio").innerText =
+      "Agregue 6 productos para tener el precio por mayor";
+  }
 }

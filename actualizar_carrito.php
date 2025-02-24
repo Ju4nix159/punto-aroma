@@ -9,12 +9,41 @@ $data = json_decode(file_get_contents("php://input"), true);
 $action = $data['action'];
 $productId = $data['productId'];
 $fraganciaAroma = isset($data['fraganciaAroma']) ? $data['fraganciaAroma'] : null;
+$recalcularPrecio = isset($data['recalcularPrecio']) ? $data['recalcularPrecio'] : true;
 
 function actualizarSesionCarrito($productoIndex) {
     // Si no quedan fragancias, elimina el producto
     if (empty($_SESSION['cart'][$productoIndex]['fragancias'])) {
         unset($_SESSION['cart'][$productoIndex]);
         $_SESSION['cart'] = array_values($_SESSION['cart']); // Reindexa el arreglo
+    } else {
+        // Recalcular cantidad total de fragancias para este producto
+        $totalFragancias = 0;
+        foreach ($_SESSION['cart'][$productoIndex]['fragancias'] as $fragancia) {
+            $totalFragancias += $fragancia['cantidad'];
+        }
+        
+        $_SESSION['cart'][$productoIndex]['totalQuantity'] = $totalFragancias;
+        
+        // Determinar si aplica precio por mayor basado en la cantidad
+        $precioBase = $_SESSION['cart'][$productoIndex]['precioBase'];
+        $precio = $precioBase; // Por defecto
+        $esPrecioMayor = false;
+        
+        // Verificar precios por mayoreo (asumiendo que estos están disponibles en la sesión)
+        if ($totalFragancias >= 120 && isset($_SESSION['cart'][$productoIndex]['precio120']) && $_SESSION['cart'][$productoIndex]['precio120'] > 0) {
+            $precio = $_SESSION['cart'][$productoIndex]['precio120'];
+            $esPrecioMayor = true;
+        } elseif ($totalFragancias >= 48 && isset($_SESSION['cart'][$productoIndex]['precio48']) && $_SESSION['cart'][$productoIndex]['precio48'] > 0) {
+            $precio = $_SESSION['cart'][$productoIndex]['precio48'];
+            $esPrecioMayor = true;
+        } elseif ($totalFragancias >= 6 && isset($_SESSION['cart'][$productoIndex]['precio6']) && $_SESSION['cart'][$productoIndex]['precio6'] > 0) {
+            $precio = $_SESSION['cart'][$productoIndex]['precio6'];
+            $esPrecioMayor = true;
+        }
+        
+        $_SESSION['cart'][$productoIndex]['precio'] = $precio;
+        $_SESSION['cart'][$productoIndex]['esPrecioMayor'] = $esPrecioMayor;
     }
 }
 
