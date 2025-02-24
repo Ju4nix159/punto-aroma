@@ -260,6 +260,5 @@ WHERE p.id_producto = :id_producto;");
         <?php include 'footer.php'; ?>
     </footer>
 </body>
-<script src="carrito.js"></script>
 
 </html>
