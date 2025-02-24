@@ -2,7 +2,6 @@ document.addEventListener("DOMContentLoaded", function () {
   cargarCarrito();
 });
 
-let openCollapses = new Set();
 
 function guardarEstadoColapsables() {
   openCollapses = new Set();
@@ -77,10 +76,10 @@ function mostrarCarrito(items) {
             </div>
         </div>
         <div class="mt-2">
-            <button class="btn btn-secondary-custom p-1" type="button" data-bs-toggle="collapse" data-bs-target="#fragancias-${index}" aria-expanded="false" aria-controls="fragancias-${index}">
+            <button class="btn btn-secondary-custom p-1" type="button" data-bs-toggle="collapse" data-bs-target="#fragancias-${item.id}" aria-expanded="false" aria-controls="fragancias-${item.id}">
                 Listar fragancias
             </button>
-            <div class="collapse" id="fragancias-${index}">
+            <div class="collapse" id="fragancias-${item.id}">
                 <ul class="list-group mt-2">
                     ${item.fragancias
                       .map(
