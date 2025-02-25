@@ -257,7 +257,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 ${data.fragancias
                   .map(
                     (fragancia) =>
-                      `<li class="list-inline-item badge bg-primary">${fragancia}</li>`
+                      `<li class="list-inline-item badge bg-primary mb-1">${fragancia}</li>`
                   )
                   .join("")}
               </ul>
