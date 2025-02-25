@@ -8,19 +8,16 @@ try {
         // Verifica si el parámetro SKU está presente
         if (isset($_POST['sku']) && !empty($_POST['sku'])) {
             $sku = $_POST['sku'];
-            $aroma = $_POST['aroma'];
-            $color = $_POST['color'];
-            $nombre = $_POST['nombre_variante'];
+            $atributo = $_POST['atributo'];
+            $valor = $_POST['valor'];
 
             // Inicia una transacción
             $con->beginTransaction();
 
             // Prepara la consulta para actualizar el estado de la variante por SKU
-            $editar_variante = $con->prepare("UPDATE variantes SET aroma = :aroma , color = :color , nombre_variante = :nombre_variante WHERE sku = :sku");
+            $editar_variante = $con->prepare("UPDATE variantes SET $atributo = :valor WHERE sku = :sku");
             $editar_variante->bindParam(':sku', $sku, PDO::PARAM_STR);
-            $editar_variante->bindParam(':aroma', $aroma, PDO::PARAM_STR);
-            $editar_variante->bindParam(':color', $color, PDO::PARAM_STR);
-            $editar_variante->bindParam(':nombre_variante', $nombre, PDO::PARAM_STR);
+            $editar_variante->bindParam(':valor', $valor, PDO::PARAM_STR);
 
 
             if ($editar_variante->execute()) {

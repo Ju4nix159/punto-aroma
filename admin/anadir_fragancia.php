@@ -7,22 +7,18 @@ try {
         // Obtener los datos enviados por POST
         $id_producto = $_POST['id_producto'];
         $sku = $_POST['sku'];
-        $aroma = $_POST['aroma'];
-        $color = $_POST['color'];
-        $nombre = $_POST['nombre_variante'];
-
+        $atributo = $_POST["atributo"];
+        $valor = $_POST["valor"];
         // Inicia una transacción
         $con->beginTransaction();
 
         // Insertar la variante en la tabla de variantes
-        $sqlInsertVariante = "INSERT INTO variantes (id_producto, aroma, sku, color, nombre_variante) 
-                              VALUES (:id_producto, :aroma, :sku, :color, :nombre);";
+        $sqlInsertVariante = "INSERT INTO variantes (sku, id_producto, $atributo) 
+                      VALUES (:sku ,:id_producto, :valor);";
         $stmtVariante = $con->prepare($sqlInsertVariante);
+        $stmtVariante->bindParam("sku", $sku);
         $stmtVariante->bindParam(':id_producto', $id_producto, PDO::PARAM_INT);
-        $stmtVariante->bindParam(':aroma', $aroma, PDO::PARAM_STR);
-        $stmtVariante->bindParam(':sku', $sku, PDO::PARAM_STR);
-        $stmtVariante->bindParam(':color', $color, PDO::PARAM_STR);
-        $stmtVariante->bindParam(':nombre', $nombre, PDO::PARAM_STR);
+        $stmtVariante->bindParam(':valor', $valor, PDO::PARAM_STR);
 
         if ($stmtVariante->execute()) {
             // Confirmar la transacción

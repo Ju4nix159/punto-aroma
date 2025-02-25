@@ -7,40 +7,51 @@ include './config/sbd.php';
 $id_producto = $_GET['id_producto'];
 
 
-$sql_resume_producto = $con->prepare(" SELECT 
-            p.id_producto, 
-            p.nombre, 
-            p.descripcion, 
-            p.estado,
-            c.nombre AS categoria, 
-            p.destacado, 
-            i.nombre AS imagen_principal,
-            c.id_categoria,
-            m.nombre AS marca,
-            m.id_marca,
-            MIN(CASE WHEN vtp.id_tipo_precio = 1 THEN vtp.precio END) AS precio_minorista,
-            MIN(CASE WHEN vtp.id_tipo_precio = 2 THEN vtp.precio END) AS precio_mayorista
-        FROM 
-            productos p
-            JOIN categorias c ON p.id_categoria = c.id_categoria
-            JOIN marcas m ON p.id_marca = m.id_marca
-            LEFT JOIN imagenes i ON p.id_producto = i.id_producto AND i.principal = 1
-            LEFT JOIN variantes_tipo_precio vtp ON p.id_producto = vtp.id_producto
-        WHERE 
-            p.id_producto = :id_producto
-        GROUP BY 
-            p.id_producto, 
-            p.nombre, 
-            p.descripcion, 
-            c.nombre, 
-            p.destacado, 
-            i.nombre;");
+$sql_resume_producto = $con->prepare("SELECT 
+    p.id_producto, 
+    p.nombre, 
+    p.descripcion, 
+    p.estado,
+    c.nombre AS categoria, 
+    p.destacado, 
+    i.nombre AS imagen_principal,
+    c.id_categoria,
+    m.nombre AS marca,
+    m.id_marca,
+    sm.nombre AS submarca,
+    MIN(CASE WHEN vtp.id_tipo_precio = 1 THEN vtp.precio END) AS precio_mayorista,
+    MIN(CASE WHEN vtp.id_tipo_precio = 2 THEN vtp.precio END) AS precio_minorista,
+    MIN(CASE WHEN vtp.id_tipo_precio = 3 THEN vtp.precio END) AS precio_mayorista_6,
+    MIN(CASE WHEN vtp.id_tipo_precio = 4 THEN vtp.precio END) AS precio_mayorista_48,
+    MIN(CASE WHEN vtp.id_tipo_precio = 5 THEN vtp.precio END) AS precio_mayorista_120
+FROM 
+    productos p
+JOIN 
+    categorias c ON p.id_categoria = c.id_categoria
+JOIN 
+    marcas m ON p.id_marca = m.id_marca
+LEFT JOIN 
+    marcas sm ON p.id_submarca = sm.id_marca
+LEFT JOIN 
+    imagenes i ON p.id_producto = i.id_producto AND i.principal = 1
+LEFT JOIN 
+    variantes_tipo_precio vtp ON p.id_producto = vtp.id_producto
+WHERE 
+    p.id_producto = :id_producto
+GROUP BY 
+    p.id_producto, 
+    p.nombre, 
+    p.descripcion, 
+    c.nombre, 
+    p.destacado, 
+    i.nombre, 
+    sm.nombre;");
 $sql_resume_producto->bindParam(':id_producto', $id_producto);
 $sql_resume_producto->execute();
 $resumen = $sql_resume_producto->fetch(PDO::FETCH_ASSOC);
 
 
-$sql_variante = $con->prepare("SELECT  ep.id_estado_producto AS estado,ep.nombre AS estado_nombre, v.aroma, v.sku, v.nombre_variante, v.color
+$sql_variante = $con->prepare("SELECT ep.nombre AS estado, v.aroma, v.sku, v.color, v.titulo
             FROM variantes v
             JOIN estados_productos ep ON v.id_estado_producto = ep.id_estado_producto
             WHERE v.id_producto = :id_producto;");
@@ -146,6 +157,11 @@ $marcas = $sql_marca->fetchAll(PDO::FETCH_ASSOC);
                     </select>
 
                     <hr>
+                    <strong><i class="fas fa-tag mr-1"></i> Submarca</strong>
+                    <p class="text-muted mb-0" id="submarca-text"><?php echo !empty($resumen["submarca"]) ? $resumen["submarca"] : 'N/A'; ?></p>
+                    <input type="text" id="submarca-input" class="form-control d-none" value="<?php echo $resumen["submarca"] ?>">
+
+                    <hr>
                     <strong><i class="fas fa-tag mr-1"></i> Categoría</strong>
                     <p class="text-muted mb-0" id="categoria-text"><?php echo $resumen["categoria"] ?></p>
                     <select name="categoria" id="categoria-input" class="form-control d-none">
@@ -160,9 +176,23 @@ $marcas = $sql_marca->fetchAll(PDO::FETCH_ASSOC);
                     <input type="number" id="precio_minorista-input" class="form-control d-none" value="<?php echo $resumen["precio_minorista"] ?>">
 
                     <hr>
-                    <strong><i class="fas fa-warehouse mr-1"></i> Precio Mayorista</strong>
-                    <p class="text-muted mb-0" id="precio_mayorista-text">$<?php echo $resumen["precio_mayorista"] ?></p>
-                    <input type="number" id="precio_mayorista-input" class="form-control d-none" value="<?php echo $resumen["precio_mayorista"] ?>">
+                    <?php if (strtolower($resumen["marca"]) == "saphirus") { ?>
+                      <strong><i class="fas fa-warehouse mr-1"></i> Precio Mayorista 6</strong>
+                      <p class="text-muted mb-0" id="precio_mayorista_6-text">$<?php echo $resumen["precio_mayorista_6"] ?></p>
+                      <input type="number" id="precio_mayorista_6-input" class="form-control d-none" value="<?php echo $resumen["precio_mayorista_6"] ?>">
+                      <hr>
+                      <strong><i class="fas fa-warehouse mr-1"></i> Precio Mayorista 48</strong>
+                      <p class="text-muted mb-0" id="precio_mayorista_48-text">$<?php echo $resumen["precio_mayorista_48"] ?></p>
+                      <input type="number" id="precio_mayorista_48-input" class="form-control d-none" value="<?php echo $resumen["precio_mayorista_48"] ?>">
+                      <hr>
+                      <strong><i class="fas fa-warehouse mr-1"></i> Precio Mayorista 120</strong>
+                      <p class="text-muted mb-0" id="precio_mayorista_120-text">$<?php echo $resumen["precio_mayorista_120"] ?></p>
+                      <input type="number" id="precio_mayorista_120-input" class="form-control d-none" value="<?php echo $resumen["precio_mayorista_120"] ?>">
+                    <?php } else { ?>
+                      <strong><i class="fas fa-warehouse mr-1"></i> Precio Mayorista</strong>
+                      <p class="text-muted mb-0" id="precio_mayorista-text">$<?php echo $resumen["precio_mayorista"] ?></p>
+                      <input type="number" id="precio_mayorista-input" class="form-control d-none" value="<?php echo $resumen["precio_mayorista"] ?>">
+                    <?php } ?>
 
                     <hr>
                     <strong><i class="fas fa-cubes mr-1"></i> Destacado</strong>
@@ -221,9 +251,9 @@ $marcas = $sql_marca->fetchAll(PDO::FETCH_ASSOC);
                     <thead>
                       <tr>
                         <th>SKU</th>
-                        <th>Variante</th>
                         <th>aroma</th>
                         <th>color</th>
+                        <th>titulo</th>
                         <th>Estado</th>
                         <th>Acciones</th>
                       </tr>
@@ -232,20 +262,24 @@ $marcas = $sql_marca->fetchAll(PDO::FETCH_ASSOC);
                       <?php foreach ($variantes as $variante) { ?>
                         <tr>
                           <td><?php echo $variante["sku"] ?></td>
-                          <td><?php echo $variante["nombre_variante"] ?></td>
                           <td><?php echo $variante["aroma"] ?></td>
                           <td><?php echo $variante["color"] ?></td>
-                          <td><?php echo $variante["estado_nombre"] ?></td>
+                          <td><?php echo $variante["titulo"] ?></td>
+                          <td><?php echo $variante["estado"] ?></td>
                           <td>
-                            <?php if ($variante["estado"] == 1) { // Disponible 
+                            <?php if (strtolower($variante["estado"]) == "disponible") { // Disponible 
                             ?>
                               <button type="button" class="btn btn-sm btn-danger" onclick="eliminarVariante(this)" data-sku="<?php echo $variante['sku']; ?>">
                                 <i class="fas fa-trash"></i> Eliminar
                               </button>
-                            <?php } elseif ($variante["estado"] == 2) { // Agotado 
+                            <?php } elseif (strtolower($variante["estado"]) == "agotado") { // Agotado 
                             ?>
-                              <button type="button" class="btn btn-sm bg-orange" onclick="editarVariante(this)" data-sku="<?php echo $variante['sku']; ?>">
-                                <i class="fas fa-edit"></i> Editar
+                              <button type="button" class="btn btn-sm bg-orange" onclick="editarVariante(this)"
+                                data-sku="<?php echo $variante['sku']; ?>"
+                                data-aroma="<?php echo $variante['aroma']; ?>"
+                                data-titulo="<?php echo $variante['titulo']; ?>"
+                                data-color="<?php echo $variante['color']; ?>"><i class="fas fa-edit"></i> Editar</button>
+
                               </button>
                               <button type="button" class="btn btn-sm btn-success" onclick="activarVariante(this)" data-sku="<?php echo $variante['sku']; ?>">
                                 <i class="fas fa-play"></i> Activar
@@ -276,7 +310,7 @@ $marcas = $sql_marca->fetchAll(PDO::FETCH_ASSOC);
                 <div class="card-body d-flex align-items-center justify-content-between">
                   <!-- Imagen izquierda -->
                   <div class="text-center mb-4">
-                    <img src="../assets/productos/<?php echo $imagen["imagen_principal"]; ?>"
+                    <img src="../assets/productos/imagen/<?php echo $id_producto; ?>/<?php echo $imagen["imagen_principal"]; ?>"
                       alt="<?php echo $resumen["nombre"]; ?>"
                       class="img-fluid"
                       style="max-height: 200px;">
@@ -331,22 +365,22 @@ $marcas = $sql_marca->fetchAll(PDO::FETCH_ASSOC);
         </div>
         <div class="modal-body">
           <form>
-            <div class="form-group">
-              <input type="hidden" name="id_producto" id="id_producto" value="<?php echo $id_producto ?>">
-              <label for="variante-name">Nombre de la variante</label>
-              <input type="text" class="form-control" id="variante-name" placeholder="Ingrese el nombre de la variante">
-            </div>
+            <input type="hidden" name="id_producto" id="id_producto" value="<?php echo $id_producto ?>">
             <div class="form-group">
               <label for="variante-sku">SKU</label>
-              <input type="text" class="form-control" id="variante-sku" placeholder="Ingrese SKU de la variante">
+              <input type="text" class="form-control" id="variante-sku">
             </div>
             <div class="form-group">
-              <label for="variante-color">color</label>
-              <input type="text" class="form-control" id="variante-color" placeholder="Ingrese color de la variante">
-            </div>
-            <div class="form-group">
-              <label for="variante-aroma">aroma</label>
-              <input type="text" class="form-control" id="variante-aroma" placeholder="Ingrese aroma de la variante">
+              <label for="variante-atributo">Atributo</label>
+              <select class="form-control" id="variante-atributo">
+                <option value="color">Color</option>
+                <option value="aroma">Aroma</option>
+                <option value="titulo">Título</option>
+              </select>
+              <div class="form-group">
+                <label for="variante-name">valor del atributo</label>
+                <input type="text" class="form-control" id="variante-name">
+              </div>
             </div>
           </form>
         </div>
@@ -372,20 +406,20 @@ $marcas = $sql_marca->fetchAll(PDO::FETCH_ASSOC);
         <div class="modal-body">
           <form id="edit-variante-form">
             <div class="form-group">
-              <label for="edit-variante-name">Nombre de la variante</label>
-              <input type="text" class="form-control" id="edit-variante-name">
-            </div>
-            <div class="form-group">
               <label for="edit-variante-sku">SKU</label>
               <input type="text" class="form-control" id="edit-variante-sku" readonly>
             </div>
             <div class="form-group">
-              <label for="edit-variante-color">Color</label>
-              <input type="text" class="form-control" id="edit-variante-color">
-            </div>
-            <div class="form-group">
-              <label for="edit-variante-aroma">Aroma</label>
-              <input type="text" class="form-control" id="edit-variante-aroma">
+              <label for="edit-variante-atributo">Atributo</label>
+              <select class="form-control" id="edit-variante-atributo">
+                <option value="color">Color</option>
+                <option value="aroma">Aroma</option>
+                <option value="titulo">Título</option>
+              </select>
+              <div class="form-group">
+                <label for="edit-variante-name">Nombre de la variante</label>
+                <input type="text" class="form-control" id="edit-variante-name">
+              </div>
             </div>
           </form>
         </div>
@@ -403,13 +437,12 @@ $marcas = $sql_marca->fetchAll(PDO::FETCH_ASSOC);
       // Obtener valores de los campos
       const id_producto = document.getElementById("id_producto").value;
       const sku = document.getElementById("variante-sku").value;
-      const aroma = document.getElementById("variante-aroma").value;
-      const color = document.getElementById("variante-color").value;
-      const nombre_variante = document.getElementById("variante-name").value;
+      const atributo = document.getElementById("variante-atributo").value;
+      const valor = document.getElementById("variante-name").value;
 
 
       // Validar campos obligatorios
-      if (!sku || !nombre_variante) {
+      if (!sku || !valor) {
         alert('Por favor, completa todos los campos obligatorios.');
         return;
       }
@@ -419,9 +452,8 @@ $marcas = $sql_marca->fetchAll(PDO::FETCH_ASSOC);
       const formData = new FormData();
       formData.append('id_producto', id_producto);
       formData.append('sku', sku);
-      formData.append('aroma', aroma);
-      formData.append('color', color);
-      formData.append('nombre_variante', nombre_variante);
+      formData.append('atributo', atributo);
+      formData.append('valor', valor);
 
 
       try {
@@ -488,15 +520,27 @@ $marcas = $sql_marca->fetchAll(PDO::FETCH_ASSOC);
     function editarVariante(button) {
       // Obtener datos del botón usando atributos data-*
       const sku = button.getAttribute('data-sku');
-      const nombre = button.closest('tr').querySelector('td:nth-child(2)').innerText;
-      const aroma = button.closest('tr').querySelector('td:nth-child(3)').innerText;
-      const color = button.closest('tr').querySelector('td:nth-child(4)').innerText;
+      const aroma = button.getAttribute('data-aroma') || null;
+      const color = button.getAttribute('data-color') || null;
+      const titulo = button.getAttribute('data-titulo') || null;
 
-      // Cargar los datos obtenidos en el modal
-      document.getElementById('edit-variante-name').value = nombre;
+      let atributo = '';
+      let valor = '';
+
+      if (aroma) {
+        atributo = 'aroma';
+        valor = aroma;
+      } else if (color) {
+        atributo = 'color';
+        valor = color;
+      } else if (titulo) {
+        atributo = 'titulo';
+        valor = titulo;
+      }
+
+      document.getElementById('edit-variante-atributo').value = atributo;
+      document.getElementById('edit-variante-name').value = valor;
       document.getElementById('edit-variante-sku').value = sku;
-      document.getElementById('edit-variante-color').value = color;
-      document.getElementById('edit-variante-aroma').value = aroma;
 
       // Mostrar el modal de edición
       $('#modal-edit-fragrance').modal('show');
@@ -505,17 +549,15 @@ $marcas = $sql_marca->fetchAll(PDO::FETCH_ASSOC);
     // Función para guardar la variante editada
     function guardarVarianteEditada() {
       // Recoger datos del formulario
-      const nombre = document.getElementById('edit-variante-name').value;
       const sku = document.getElementById('edit-variante-sku').value;
-      const color = document.getElementById('edit-variante-color').value;
-      const aroma = document.getElementById('edit-variante-aroma').value;
+      const atributo = document.getElementById('edit-variante-atributo').value;
+      const valor = document.getElementById('edit-variante-name').value;
 
       // Aquí debes hacer una llamada AJAX para actualizar los datos en el servidor
       const formData = new FormData();
       formData.append('sku', sku);
-      formData.append('nombre_variante', nombre);
-      formData.append('color', color);
-      formData.append('aroma', aroma);
+      formData.append("atributo", atributo);
+      formData.append("valor", valor);
 
       fetch('editar_variante.php', {
           method: 'POST',
@@ -538,8 +580,6 @@ $marcas = $sql_marca->fetchAll(PDO::FETCH_ASSOC);
       // Cerrar el modal después de la acción
       $('#modal-edit-fragrance').modal('hide');
     }
-
-
 
     function activarVariante(button) {
       const confirmar = confirm('¿Estás seguro de que deseas activar esta variante?');
@@ -577,9 +617,6 @@ $marcas = $sql_marca->fetchAll(PDO::FETCH_ASSOC);
       }
     }
 
-
-
-
     function iniciarEdicion() {
       document.querySelectorAll('#editable-fields p').forEach(p => p.classList.add('d-none'));
       document.querySelectorAll('#editable-fields input, #editable-fields select, #editable-fields textarea').forEach(input => input.classList.remove('d-none'));
@@ -601,8 +638,22 @@ $marcas = $sql_marca->fetchAll(PDO::FETCH_ASSOC);
       const nombre = document.getElementById('nombre-input').value;
       const categoria = document.getElementById('categoria-input').value;
       const marca = document.getElementById('marca-input').value;
+
       const precio_minorista = document.getElementById('precio_minorista-input').value;
-      const precio_mayorista = document.getElementById('precio_mayorista-input').value;
+
+      // Verifica si los elementos existen antes de acceder a sus valores
+      const precio_mayorista_input = document.getElementById('precio_mayorista-input'); 
+      const precio_mayorista = precio_mayorista_input ? precio_mayorista_input.value : null;
+
+      const precio_mayorista_6_input = document.getElementById('precio_mayorista_6-input');
+      const precio_mayorista_6 = precio_mayorista_6_input ? precio_mayorista_6_input.value : null;
+
+      const precio_mayorista_48_input = document.getElementById('precio_mayorista_48-input');
+      const precio_mayorista_48 = precio_mayorista_48_input ? precio_mayorista_48_input.value : null;
+
+      const precio_mayorista_120_input = document.getElementById('precio_mayorista_120-input');
+      const precio_mayorista_120 = precio_mayorista_120_input ? precio_mayorista_120_input.value : null;
+
       const destacado = document.getElementById('destacado-input').value;
       const descripcion = document.getElementById('descripcion-input').value;
       const estado = document.getElementById('estado-input').value;
@@ -612,14 +663,18 @@ $marcas = $sql_marca->fetchAll(PDO::FETCH_ASSOC);
       formData.append('nombre', nombre);
       formData.append('categoria', categoria);
       formData.append('marca', marca);
-      formData.append('precio_minorista', precio_minorista);
-      formData.append('precio_mayorista', precio_mayorista);
-      formData.append('destacado', destacado);
       formData.append('descripcion', descripcion);
+
+      if (precio_minorista !== null) formData.append('precio_minorista', precio_minorista);
+      if (precio_mayorista !== null) formData.append('precio_mayorista', precio_mayorista);
+      if (precio_mayorista_6 !== null) formData.append('precio_mayorista_6', precio_mayorista_6);
+      if (precio_mayorista_48 !== null) formData.append('precio_mayorista_48', precio_mayorista_48);
+      if (precio_mayorista_120 !== null) formData.append('precio_mayorista_120', precio_mayorista_120);
+
+      formData.append('destacado', destacado);
       formData.append('estado', estado);
 
       console.log('Enviando datos:', Object.fromEntries(formData.entries()));
-
 
       fetch('guardar_producto.php', {
           method: 'POST',
