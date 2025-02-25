@@ -29,13 +29,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // State variables
   let paginaActual = 1;
-  let categoriaSeleccionada = "";
-  let marcaSeleccionada = "";
-  let nombreSeleccionado = "";
-  let precioMinSeleccionado = 0;
-  let precioMaxSeleccionado = 10000;
-  let ordenarDescendente = false;
-  let productosPorPagina = 12;
+  let categoriaSeleccionada = getSavedFilter("categoria") || "";
+  let marcaSeleccionada = getSavedFilter("marca") || "";
+  let nombreSeleccionado = getSavedFilter("nombre") || "";
+  let precioMinSeleccionado = parseInt(getSavedFilter("precioMin") || 0);
+  let precioMaxSeleccionado = parseInt(getSavedFilter("precioMax") || 10000);
+  let ordenarDescendente = getSavedFilter("ordenarDescendente") === "true";
+  let productosPorPagina = parseInt(getSavedFilter("productosPorPagina") || 12);
+
+  // Función para guardar filtro en localStorage
+  function saveFilter(key, value) {
+    localStorage.setItem(`catalogo_filtro_${key}`, value);
+  }
+
+  // Función para obtener filtro guardado
+  function getSavedFilter(key) {
+    return localStorage.getItem(`catalogo_filtro_${key}`);
+  }
+
+  // Función para guardar todos los filtros actuales
+  function saveAllFilters() {
+    saveFilter("categoria", categoriaSeleccionada);
+    saveFilter("marca", marcaSeleccionada);
+    saveFilter("nombre", nombreSeleccionado);
+    saveFilter("precioMin", precioMinSeleccionado);
+    saveFilter("precioMax", precioMaxSeleccionado);
+    saveFilter("ordenarDescendente", ordenarDescendente);
+    saveFilter("productosPorPagina", productosPorPagina);
+  }
 
   const cargarProductos = (pagina) => {
     const url = `get_catalogo.php?pagina=${pagina}&categoria=${encodeURIComponent(
@@ -48,19 +69,26 @@ document.addEventListener("DOMContentLoaded", () => {
       ordenarDescendente ? "desc" : "asc"
     }`;
 
+    // Guardar filtros antes de cargar para persistencia
+    saveAllFilters();
+
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
         if (pagina === 1) catalogo.innerHTML = "";
+
         if (data.productos.length === 0 && pagina === 1) {
           mensajeSinProductos.style.display = "block";
           catalogo.style.display = "none";
           mostrarMas.style.display = "none";
         } else {
           mensajeSinProductos.style.display = "none";
+          catalogo.style.display = "flex"; // Aseguramos que el catálogo sea visible cuando hay productos
+          catalogo.style.flexWrap = "wrap"; // Aseguramos que el flex tenga wrap
+
           data.productos.forEach((producto) => {
             const div = document.createElement("div");
-            div.classList.add("col-12", "col-sm-6", "col-md-4", "col-lg-3");
+            div.classList.add("col");
             div.innerHTML = `
               <div class="card h-100 product-card">
                 <div class="img-container position-relative">
@@ -91,6 +119,12 @@ document.addEventListener("DOMContentLoaded", () => {
           mostrarMas.style.display =
             data.total > pagina * productosPorPagina ? "block" : "none";
         }
+      })
+      .catch((error) => {
+        console.error("Error al cargar productos:", error);
+        mensajeSinProductos.textContent =
+          "Error al cargar los productos. Por favor, inténtelo de nuevo.";
+        mensajeSinProductos.style.display = "block";
       });
   };
 
@@ -102,14 +136,22 @@ document.addEventListener("DOMContentLoaded", () => {
         categoriaFiltro.innerHTML = '<option value="">Todas</option>';
         marcaFiltro.innerHTML = '<option value="">Todas</option>';
 
+        // También limpiar los filtros móviles
+        if (categoriaFiltroMobile)
+          categoriaFiltroMobile.innerHTML = '<option value="">Todas</option>';
+        if (marcaFiltroMobile)
+          marcaFiltroMobile.innerHTML = '<option value="">Todas</option>';
+
         data.categorias.forEach((categoria) => {
           const option = document.createElement("option");
           option.value = categoria.nombre;
           option.textContent = categoria.nombre;
           categoriaFiltro.appendChild(option);
 
-          const optionMobile = option.cloneNode(true);
-          categoriaFiltroMobile?.appendChild(optionMobile);
+          if (categoriaFiltroMobile) {
+            const optionMobile = option.cloneNode(true);
+            categoriaFiltroMobile.appendChild(optionMobile);
+          }
         });
 
         data.marcas.forEach((marca) => {
@@ -118,8 +160,10 @@ document.addEventListener("DOMContentLoaded", () => {
           option.textContent = marca.nombre;
           marcaFiltro.appendChild(option);
 
-          const optionMobile = option.cloneNode(true);
-          marcaFiltroMobile?.appendChild(optionMobile);
+          if (marcaFiltroMobile) {
+            const optionMobile = option.cloneNode(true);
+            marcaFiltroMobile.appendChild(optionMobile);
+          }
         });
 
         const setInitialPriceRange = (min, max) => {
@@ -127,7 +171,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (element) {
               element.min = min;
               element.max = max;
-              element.value = min;
+              element.value = precioMinSeleccionado || min;
             }
           });
 
@@ -135,23 +179,61 @@ document.addEventListener("DOMContentLoaded", () => {
             if (element) {
               element.min = min;
               element.max = max;
-              element.value = max;
+              element.value = precioMaxSeleccionado || max;
             }
           });
 
           [valorPrecioMin, valorPrecioMinMobile].forEach((element) => {
-            if (element) element.textContent = min;
+            if (element) element.textContent = precioMinSeleccionado || min;
           });
 
           [valorPrecioMax, valorPrecioMaxMobile].forEach((element) => {
-            if (element) element.textContent = max;
+            if (element) element.textContent = precioMaxSeleccionado || max;
           });
         };
 
         setInitialPriceRange(data.precioMin, data.precioMax);
-        precioMinSeleccionado = data.precioMin;
-        precioMaxSeleccionado = data.precioMax;
+
+        // Solo inicializar estos valores si no hay filtros guardados
+        if (!precioMinSeleccionado) precioMinSeleccionado = data.precioMin;
+        if (!precioMaxSeleccionado) precioMaxSeleccionado = data.precioMax;
+
+        // Restaurar valores de los filtros desde la persistencia
+        restaurarValoresFiltros();
+      })
+      .catch((error) => {
+        console.error("Error al cargar filtros:", error);
       });
+  };
+
+  // Función para restaurar valores de filtros guardados
+  const restaurarValoresFiltros = () => {
+    // Restaurar valores en selectores
+    if (categoriaFiltro && categoriaSeleccionada) {
+      categoriaFiltro.value = categoriaSeleccionada;
+    }
+    if (categoriaFiltroMobile && categoriaSeleccionada) {
+      categoriaFiltroMobile.value = categoriaSeleccionada;
+    }
+
+    if (marcaFiltro && marcaSeleccionada) {
+      marcaFiltro.value = marcaSeleccionada;
+    }
+    if (marcaFiltroMobile && marcaSeleccionada) {
+      marcaFiltroMobile.value = marcaSeleccionada;
+    }
+
+    if (nombreFiltro && nombreSeleccionado) {
+      nombreFiltro.value = nombreSeleccionado;
+    }
+    if (nombreFiltroMobile && nombreSeleccionado) {
+      nombreFiltroMobile.value = nombreSeleccionado;
+    }
+
+    // Restaurar valores para productos por página
+    if (productosPorPaginaSelect) {
+      productosPorPaginaSelect.value = productosPorPagina;
+    }
   };
 
   const abrirModal = (idProducto) => {
@@ -163,9 +245,9 @@ document.addEventListener("DOMContentLoaded", () => {
         modal.querySelector(".modal-body").innerHTML = `
         <div class="row g-4">
           <div class="col-12 col-md-4">
-            <img src="./assets/productos/imagen/${idProducto}/${data.imagen_principal}" alt="${
-          data.nombre
-        }" class="img-fluid rounded">
+            <img src="./assets/productos/imagen/${idProducto}/${
+          data.imagen_principal
+        }" alt="${data.nombre}" class="img-fluid rounded">
           </div>
           <div class="col-12 col-md-8">
             <h3>${data.nombre}</h3>
@@ -175,7 +257,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 ${data.fragancias
                   .map(
                     (fragancia) =>
-                      `<li class="list-inline-item badge bg-primary">${fragancia}</li>`
+                      `<li class="list-inline-item badge bg-primary mb-1">${fragancia}</li>`
                   )
                   .join("")}
               </ul>
@@ -186,7 +268,36 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
         const bootstrapModal = new bootstrap.Modal(modal);
         bootstrapModal.show();
+      })
+      .catch((error) => {
+        console.error("Error al cargar datos del modal:", error);
       });
+  };
+
+  // Función para limpiar los filtros
+  const limpiarFiltros = () => {
+    categoriaSeleccionada = "";
+    marcaSeleccionada = "";
+    nombreSeleccionado = "";
+
+    // No reiniciar los precios a 0 y 10000 aquí, ya que deberíamos usar los valores originales del catálogo
+    // Los recuperaremos en la próxima llamada a cargarFiltros
+
+    paginaActual = 1;
+
+    // Actualizar los campos visibles
+    if (categoriaFiltro) categoriaFiltro.value = "";
+    if (categoriaFiltroMobile) categoriaFiltroMobile.value = "";
+    if (marcaFiltro) marcaFiltro.value = "";
+    if (marcaFiltroMobile) marcaFiltroMobile.value = "";
+    if (nombreFiltro) nombreFiltro.value = "";
+    if (nombreFiltroMobile) nombreFiltroMobile.value = "";
+
+    // Guardar los filtros limpios
+    saveAllFilters();
+
+    // Recargar productos
+    cargarProductos(paginaActual);
   };
 
   // Event Listeners
@@ -196,6 +307,7 @@ document.addEventListener("DOMContentLoaded", () => {
       aplicarFiltro.addEventListener("click", () => {
         categoriaSeleccionada = categoriaFiltro.value;
         marcaSeleccionada = marcaFiltro.value;
+        nombreSeleccionado = nombreFiltro.value.trim();
         precioMinSeleccionado = parseInt(precioMinFiltro.value);
         precioMaxSeleccionado = parseInt(precioMaxFiltro.value);
         paginaActual = 1;
@@ -208,6 +320,7 @@ document.addEventListener("DOMContentLoaded", () => {
       aplicarFiltroMobile.addEventListener("click", () => {
         categoriaSeleccionada = categoriaFiltroMobile.value;
         marcaSeleccionada = marcaFiltroMobile.value;
+        nombreSeleccionado = nombreFiltroMobile.value.trim();
         precioMinSeleccionado = parseInt(precioMinFiltroMobile.value);
         precioMaxSeleccionado = parseInt(precioMaxFiltroMobile.value);
         paginaActual = 1;
@@ -215,11 +328,34 @@ document.addEventListener("DOMContentLoaded", () => {
         const offcanvas = document.getElementById("filtrosOffcanvas");
         if (offcanvas) {
           const bsOffcanvas = bootstrap.Offcanvas.getInstance(offcanvas);
-          bsOffcanvas?.hide();
+          if (bsOffcanvas) bsOffcanvas.hide();
         }
 
         cargarProductos(paginaActual);
       });
+    }
+
+    // Agregar botón para limpiar filtros (puedes añadir este HTML a tu página)
+    const limpiarFiltroBtn = document.createElement("button");
+    limpiarFiltroBtn.textContent = "Limpiar Filtros";
+    limpiarFiltroBtn.classList.add(
+      "btn",
+      "btn-outline-secondary",
+      "w-100",
+      "mt-2"
+    );
+    limpiarFiltroBtn.addEventListener("click", limpiarFiltros);
+
+    if (aplicarFiltro && aplicarFiltro.parentNode) {
+      aplicarFiltro.parentNode.appendChild(limpiarFiltroBtn);
+    }
+
+    // Agregar el mismo botón para móvil
+    const limpiarFiltroBtnMobile = limpiarFiltroBtn.cloneNode(true);
+    limpiarFiltroBtnMobile.addEventListener("click", limpiarFiltros);
+
+    if (aplicarFiltroMobile && aplicarFiltroMobile.parentNode) {
+      aplicarFiltroMobile.parentNode.appendChild(limpiarFiltroBtnMobile);
     }
 
     // Price range events
@@ -256,7 +392,7 @@ document.addEventListener("DOMContentLoaded", () => {
       modal.addEventListener("click", (event) => {
         if (event.target === modal) {
           const bootstrapModal = bootstrap.Modal.getInstance(modal);
-          bootstrapModal?.hide();
+          if (bootstrapModal) bootstrapModal.hide();
         }
       });
     }
@@ -264,30 +400,49 @@ document.addEventListener("DOMContentLoaded", () => {
     document
       .querySelectorAll("#cerrar-modal, #cerrar-modal-footer")
       .forEach((btn) => {
-        btn?.addEventListener("click", () => {
-          const modal = document.getElementById("modal");
-          const bootstrapModal = bootstrap.Modal.getInstance(modal);
-          bootstrapModal?.hide();
-        });
+        if (btn) {
+          btn.addEventListener("click", () => {
+            const modal = document.getElementById("modal");
+            const bootstrapModal = bootstrap.Modal.getInstance(modal);
+            if (bootstrapModal) bootstrapModal.hide();
+          });
+        }
       });
 
     // Other events
-    mostrarMas?.addEventListener("click", () => {
-      paginaActual++;
-      cargarProductos(paginaActual);
-    });
+    if (mostrarMas) {
+      mostrarMas.addEventListener("click", () => {
+        paginaActual++;
+        cargarProductos(paginaActual);
+      });
+    }
 
-    ordenarPrecio?.addEventListener("click", () => {
-      ordenarDescendente = !ordenarDescendente;
-      paginaActual = 1;
-      cargarProductos(paginaActual);
-    });
+    if (ordenarPrecio) {
+      ordenarPrecio.addEventListener("click", () => {
+        ordenarDescendente = !ordenarDescendente;
 
-    productosPorPaginaSelect?.addEventListener("change", () => {
-      productosPorPagina = parseInt(productosPorPaginaSelect.value);
-      paginaActual = 1;
-      cargarProductos(paginaActual);
-    });
+        // Actualizar el texto del botón para reflejar el orden
+        ordenarPrecio.textContent = ordenarDescendente
+          ? "Ordenar por precio (Mayor a Menor)"
+          : "Ordenar por precio (Menor a Mayor)";
+
+        paginaActual = 1;
+        cargarProductos(paginaActual);
+      });
+
+      // Inicializar el texto del botón según el estado actual
+      ordenarPrecio.textContent = ordenarDescendente
+        ? "Ordenar por precio (Mayor a Menor)"
+        : "Ordenar por precio (Menor a Mayor)";
+    }
+
+    if (productosPorPaginaSelect) {
+      productosPorPaginaSelect.addEventListener("change", () => {
+        productosPorPagina = parseInt(productosPorPaginaSelect.value);
+        paginaActual = 1;
+        cargarProductos(paginaActual);
+      });
+    }
   };
 
   // Initialize

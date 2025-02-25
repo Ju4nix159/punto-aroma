@@ -30,10 +30,10 @@ try {
     }
 
     // Consulta de fragancias
-    $sqlFragancias = "SELECT v.nombre_variante AS fragancia 
-                      FROM variantes v 
-                      JOIN productos p ON v.id_producto = p.id_producto 
-                      WHERE p.id_producto = :id_producto";
+    $sqlFragancias = "SELECT
+      COALESCE(titulo, aroma, color) AS atributo
+  FROM variantes
+  WHERE id_producto = :id_producto;";
     $stmtFragancias = $con->prepare($sqlFragancias);
     $stmtFragancias->bindParam(':id_producto', $idProducto, PDO::PARAM_INT);
     $stmtFragancias->execute();

@@ -108,6 +108,12 @@
                   </a>
                 </li>
                 <li class="nav-item">
+                  <a href="actualizar_excel.php" class="nav-link">
+                    <i class="fas fa-upload"></i>
+                    <p>actualizar prodctos</p>
+                  </a>
+                </li>
+                <li class="nav-item">
                   <a href="anadir_producto.php" class="nav-link">
                     <i class="fas fa-plus"></i>
                     <p>añadir producto</p>

@@ -1,0 +1,144 @@
+Array
+(
+    [0] => Array
+        (
+            [nombre] => SAHUMERIOS AMBAR
+            [precio] => 1400
+            [precioBase] => 1400.00
+            [id] => 89
+            [fragancias] => Array
+                (
+                    [0] => Array
+                        (
+                            [aroma] => White SAGE
+                            [sku] => SA.Z
+                            [cantidad] => 6
+                        )
+
+                )
+
+            [totalQuantity] => 5
+            [esPrecioMayor] => 
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [nombre] => SAHUMERIOS AMBAR
+            [precio] => 1400
+            [precioBase] => 1400.00
+            [id] => 89
+            [fragancias] => Array
+                (
+                    [0] => Array
+                        (
+                            [aroma] => White SAGE
+                            [sku] => SA.Z
+                            [cantidad] => 7
+                        )
+
+                )
+
+            [totalQuantity] => 5
+            [esPrecioMayor] => 
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [nombre] => SAHUMERIOS AMBAR
+            [precio] => 1400
+            [precioBase] => 1400.00
+            [id] => 89
+            [fragancias] => Array
+                (
+                    [0] => Array
+                        (
+                            [aroma] => White SAGE
+                            [sku] => SA.Z
+                            [cantidad] => 5
+                        )
+
+                )
+
+            [totalQuantity] => 5
+            [esPrecioMayor] => 
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [nombre] => SAHUMERIOS AMBAR
+            [precio] => 1400
+            [precioBase] => 1400.00
+            [id] => 89
+            [fragancias] => Array
+                (
+                    [0] => Array
+                        (
+                            [aroma] => White SAGE
+                            [sku] => SA.Z
+                            [cantidad] => 6
+                        )
+
+                )
+
+            [totalQuantity] => 5
+            [esPrecioMayor] => 
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [nombre] => SAHUMERIOS AMBAR
+            [precio] => 1400
+            [precioBase] => 1400.00
+            [id] => 89
+            [fragancias] => Array
+                (
+                    [0] => Array
+                        (
+                            [aroma] => White SAGE
+                            [sku] => SA.Z
+                            [cantidad] => 7
+                        )
+
+                )
+
+            [totalQuantity] => 5
+            [esPrecioMayor] => 
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [nombre] => SAHUMERIOS AMBAR
+            [precio] => 1400
+            [precioBase] => 1400.00
+            [id] => 89
+            [fragancias] => Array
+                (
+                    [0] => Array
+                        (
+                            [aroma] => White SAGE
+                            [sku] => SA.Z
+                            [cantidad] => 8
+                        )
+
+                )
+
+            [totalQuantity] => 5
+            [esPrecioMayor] => 
+        )
+
+)
