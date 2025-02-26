@@ -15,10 +15,29 @@ $sql_banner = $con->prepare("SELECT * FROM banner");
 $sql_banner->execute();
 $banners = $sql_banner->fetchAll(PDO::FETCH_ASSOC);
 
+$sql_categorias = $con->prepare("SELECT * FROM categorias WHERE destacado = 1");
+$sql_categorias->execute();
+$categorias_destacadas = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
+
+
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
+
+<head>
+    <style>
+        .categoria-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .categoria-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
 
 <body>
     <section id="hero" class="py-5 text-center">
@@ -79,44 +98,47 @@ $banners = $sql_banner->fetchAll(PDO::FETCH_ASSOC);
 
     <section id="categorias" class="py-5">
         <div class="container">
-            <h2 class="text-center mb-5 text-primary-custom" data-aos="fade-up">Nuestras Categorias Destacadas</h2>
+            <h2 class="text-center mb-5 text-primary-custom" data-aos="fade-up">Nuestras Categorías Destacadas</h2>
             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
-                <div class="col" data-aos="fade-up">
-                    <div class="h-100 bg-primary-light border-0">
-                        <div class="card-body text-center">
-                            <i class="bi bi-tree fs-1 text-primary-custom mb-3"></i>
-                            <h3 class="card-title text-black">Sahumerios</h3>
-                            <p class="card-text">Aromas naturales para purificar tu espacio.</p>
-                        </div>
+                <?php
+                $delay = 0;
+                foreach ($categorias_destacadas as $categoria) {
+                    $iconClass = "";
+                    // Asignar íconos según el nombre de la categoría (puedes personalizar esto según tus categorías)
+                    switch (strtolower($categoria['nombre'])) {
+                        case 'sahumerios':
+                            $iconClass = "bi-tree";
+                            break;
+                        case 'velas aromáticas':
+                        case 'velas aromaticas':
+                            $iconClass = "bi-fire";
+                            break;
+                        case 'perfumes':
+                            $iconClass = "bi-droplet";
+                            break;
+                        case 'aceites esenciales':
+                            $iconClass = "bi-flower1";
+                            break;
+                        default:
+                            $iconClass = "bi-star";
+                            break;
+                    }
+                ?>
+                    <div class="col" data-aos="fade-up" data-aos-delay="<?php echo $delay; ?>">
+                        <a href="catalogo.php?categoria=<?php echo urlencode($categoria['nombre']); ?>" class="text-decoration-none">
+                            <div class="h-100 bg-primary-light border-0 categoria-card">
+                                <div class="card-body text-center">
+                                    <i class="bi <?php echo $iconClass; ?> fs-1 text-primary-custom mb-3"></i>
+                                    <h3 class="card-title text-black"><?php echo $categoria['nombre']; ?></h3>
+                                    <p class="card-text"><?php echo $categoria['descripcion'] ?? 'Descubre nuestra selección de productos'; ?></p>
+                                </div>
+                            </div>
+                        </a>
                     </div>
-                </div>
-                <div class="col" data-aos="fade-up" data-aos-delay="200">
-                    <div class=" h-100 bg-primary-light border-0">
-                        <div class="card-body text-center">
-                            <i class="bi bi-fire fs-1 text-primary-custom mb-3"></i>
-                            <h3 class="card-title text-black">Velas Aromáticas</h3>
-                            <p class="card-text">Ilumina y perfuma tu hogar con nuestras velas.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col" data-aos="fade-up" data-aos-delay="400">
-                    <div class=" h-100 bg-primary-light border-0">
-                        <div class="card-body text-center">
-                            <i class="bi bi-droplet fs-1 text-primary-custom mb-3"></i>
-                            <h3 class="card-title text-black">Perfumes</h3>
-                            <p class="card-text">Fragancias únicas para cada ocasión.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col" data-aos="fade-up" data-aos-delay="600">
-                    <div class="card h-100 bg-primary-light border-0">
-                        <div class="card-body text-center">
-                            <i class="bi bi-flower1 fs-1 text-primary-custom mb-3"></i>
-                            <h3 class="card-title text-black">Aceites Esenciales</h3>
-                            <p class="card-text">Esencias puras para aromaterapia y bienestar.</p>
-                        </div>
-                    </div>
-                </div>
+                <?php
+                    $delay += 200; // Incrementar el delay para el efecto escalonado
+                }
+                ?>
             </div>
         </div>
     </section>
