@@ -42,6 +42,45 @@ $categorias_destacadas = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
             /* Ajusta el tamaño según necesites */
             height: 100px;
         }
+
+        /* Estilos para la sección de productos */
+        .producto-card {
+            height: 500px;
+            /* Altura fija para todas las tarjetas */
+            overflow: hidden;
+            position: relative;
+        }
+
+        .img-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-img-producto {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* Cubre toda el área disponible */
+            object-position: center;
+            /* Centra la imagen */
+        }
+
+        .card-img-overlay {
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.4) 40%, rgba(0, 0, 0, 0) 70%);
+            padding: 20px;
+        }
+
+        .card-index-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-index-text {
+            margin-bottom: 1rem;
+        }
     </style>
 </head>
 
@@ -134,42 +173,50 @@ $categorias_destacadas = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
     <section id="productos" class="container py-5">
         <div class="row row-cols-1 row-cols-md-2 g-4">
             <div class="col">
-                <div class="card text-white">
-                    <img src="i1.jpg" class="card-img" alt="Sahumerios Vishnu Masala">
+                <div class="card text-white producto-card">
+                    <div class="img-container">
+                        <img src="./assets/productos/imagen/65/FA.webp" class="card-img-producto" alt="aerosoles saphirus">
+                    </div>
                     <div class="card-img-overlay d-flex flex-column justify-content-end">
-                        <h5 class="card-index-title">Sahumerios Vishnu Masala</h5>
-                        <p class="card-index-text">Perfumes, flores y fibras vegetales de alta calidad. Aromas: Antiestrés, Energía, Relajación, Sensual, Meditación, Frescura El aroma perdura por más tiempo en el ambiente.</p>
-                        <a href="#" class="btn btn-primary-custom">CONOCELOS</a>
+                        <h5 class="card-index-title">Aerosoles SAPHIRUS</h5>
+                        <p class="card-index-text">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptatem voluptate natus dolorem ipsum qui at, commodi id eos nostrum laborum? Libero porro totam ex ab, eveniet vitae? Officia, asperiores ex.</p>
+                        <a href="producto.php?id_producto=65" class="btn btn-primary-custom">CONOCELOS</a>
                     </div>
                 </div>
             </div>
             <div class="col">
-                <div class="card text-white">
-                    <img src="i2.jpg" class="card-img" alt="Sahumerios Holi India">
+                <div class="card text-white producto-card">
+                    <div class="img-container">
+                        <img src="./assets/productos/imagen/66/FT.webp" class="card-img-producto" alt="textiles saphirus">
+                    </div>
                     <div class="card-img-overlay d-flex flex-column justify-content-end">
-                        <h5 class="card-index-title">Sahumerios Holi India</h5>
-                        <p class="card-index-text">Renovamos la línea de sahumerios Holi India Pack con más color y los excelentes aromas premium de siempre. Presentación aromas surtido x 100 unidades.</p>
-                        <a href="#" class="btn btn-primary-custom">CONOCELOS</a>
+                        <h5 class="card-index-title">Textiles saphirus</h5>
+                        <p class="card-index-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe, ullam nam nobis perferendis fugiat suscipit ut fugit libero ipsam ad illo beatae dicta mollitia labore atque laborum sint dolore tempora?</p>
+                        <a href="producto.php?id_producto=66" class="btn btn-primary-custom">CONOCELOS</a>
                     </div>
                 </div>
             </div>
             <div class="col">
-                <div class="card text-white">
-                    <img src="i3.jpg" class="card-img" alt="Aromatizantes textiles">
+                <div class="card text-white producto-card">
+                    <div class="img-container">
+                        <img src="./assets/productos/imagen/61/AM.webp" class="card-img-producto" alt="difusores saphirus">
+                    </div>
                     <div class="card-img-overlay d-flex flex-column justify-content-end">
-                        <h5 class="card-index-title">Aromatizantes textiles</h5>
-                        <p class="card-index-text">Perfume para aromatizar ropa y ambientes. Sentirás bien fresco un aroma especial.</p>
-                        <a href="#" class="btn btn-primary-custom">CONOCELOS</a>
+                        <h5 class="card-index-title">difusores saphirus</h5>
+                        <p class="card-index-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam dolorem at iure fugit illo optio consectetur tenetur, fugiat, odit quo nihil, adipisci molestias natus esse animi neque commodi id ex?</p>
+                        <a href="producto.php?id_producto=61" class="btn btn-primary-custom">CONOCELOS</a>
                     </div>
                 </div>
             </div>
             <div class="col">
-                <div class="card text-white">
-                    <img src="i4.png" class="card-img" alt="Aceites para hornito">
+                <div class="card text-white producto-card">
+                    <div class="img-container">
+                        <img src="./assets/productos/imagen/59/AE.webp" class="card-img-producto" alt="Aceites para hornito">
+                    </div>
                     <div class="card-img-overlay d-flex flex-column justify-content-end">
                         <h5 class="card-index-title">Aceites para hornito</h5>
-                        <p class="card-index-text">Nuevos aromas y nueva presentación x 5 unidades. Más variedad por el mismo precio.</p>
-                        <a href="#" class="btn btn-primary-custom">CONOCELOS</a>
+                        <p class="card-index-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure numquam laboriosam commodi, ex facere exercitationem soluta magni quo modi tempora similique fugit nesciunt itaque a ea? Neque iusto ullam nemo.</p>
+                        <a href="producto.php?id_producto=59" class="btn btn-primary-custom">CONOCELOS</a>
                     </div>
                 </div>
             </div>

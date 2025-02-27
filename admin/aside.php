@@ -96,6 +96,12 @@
               </a>
               <ul class="nav nav-treeview">
                 <li class="nav-item">
+                  <a href="destacados.php" class="nav-link">
+                    <i class="fas fa-solid fa-list"></i>
+                    <p>destacados</p>
+                  </a>
+                </li>
+                <li class="nav-item">
                   <a href="productos.php" class="nav-link">
                     <i class="fas fa-solid fa-list"></i>
                     <p>Mostrar todos</p>
