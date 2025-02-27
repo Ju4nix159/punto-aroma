@@ -4,20 +4,20 @@ include 'admin/config/sbd.php';
 
 if (isset($_GET['id_producto'])) {
     $id_producto = intval($_GET['id_producto']);
-    $sql_producto = $con->prepare(' SELECT p.id_producto, p.nombre, p.descripcion, vtp.precio AS precio, i.nombre AS imagen_principal, m.nombre as marca
-                                    FROM productos p
-                                    JOIN variantes_tipo_precio vtp ON p.id_producto = vtp.id_producto
-                                    LEFT JOIN imagenes i ON p.id_producto = i.id_producto AND i.principal = 1
-                                    LEFT JOIN marcas m on p.id_marca = m.id_marca 
-                                    WHERE p.id_producto = :id_producto AND vtp.id_tipo_precio = 2');
+    $sql_producto = $con->prepare(' SELECT p.id_producto, p.nombre, p.descripcion, vtp.precio AS precio, i.nombre AS imagen_principal, LOWER(m.nombre) as marca
+                                FROM productos p
+                                JOIN variantes_tipo_precio vtp ON p.id_producto = vtp.id_producto
+                                LEFT JOIN imagenes i ON p.id_producto = i.id_producto AND i.principal = 1
+                                LEFT JOIN marcas m on p.id_marca = m.id_marca 
+                                WHERE p.id_producto = :id_producto AND vtp.id_tipo_precio = 2');
     $sql_producto->bindParam(':id_producto', $id_producto, PDO::PARAM_INT);
     $sql_producto->execute();
     $info_producto = $sql_producto->fetch(PDO::FETCH_ASSOC);
 
-    $sql_precios = $con->prepare("SELECT vtp.precio, vtp.cantidad_minima, tp.nombre as tipo_precio 
-        FROM variantes_tipo_precio vtp 
-        JOIN tipos_precios tp ON vtp.id_tipo_precio = tp.id_tipo_precio 
-        WHERE vtp.id_producto = :id_producto");
+    $sql_precios = $con->prepare("SELECT vtp.precio, LOWER(vtp.cantidad_minima) AS cantidad_minima, LOWER(tp.nombre) AS tipo_precio 
+    FROM variantes_tipo_precio vtp 
+    JOIN tipos_precios tp ON vtp.id_tipo_precio = tp.id_tipo_precio 
+    WHERE vtp.id_producto = :id_producto");
     $sql_precios->bindParam(":id_producto", $id_producto, PDO::PARAM_INT);
     $sql_precios->execute();
     $precios = $sql_precios->fetchAll(PDO::FETCH_ASSOC);
@@ -36,7 +36,7 @@ if (isset($_GET['id_producto'])) {
             $categorias["120 productos"] = $precio["precio"];
         }
     }
-    $sql_variantes = $con->prepare("SELECT DISTINCT v.aroma , v.sku, v.nombre_variante, v.color, v.id_estado_producto
+    $sql_variantes = $con->prepare("SELECT DISTINCT v.aroma , v.sku, v.titulo, v.color, v.id_estado_producto
 FROM productos p
     JOIN variantes v ON p.id_producto = v.id_producto
 WHERE p.id_producto = :id_producto;");
@@ -196,7 +196,7 @@ WHERE p.id_producto = :id_producto;");
                                         <div class="fragrance-item" data-sku="<?php echo $variante['sku']; ?>" data-aroma="<?php echo $variante['aroma']; ?>">
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <div>
-                                                    <strong><?php echo $variante["nombre_variante"] ?></strong>
+                                                    <strong><?php echo $variante["aroma"] ?></strong>
                                                     <p class="text-muted mb-0 small">
                                                         <?php
                                                         echo !empty($variante["aroma"]) ? "Aroma: " . $variante["aroma"] : "";

@@ -83,9 +83,9 @@
                 <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
                     <h5>Contacto</h5>
                     <ul>
-                        <li><i class="bi bi-geo-alt-fill me-2"></i>Calle Principal 123, Ciudad</li>
-                        <li><i class="bi bi-telephone-fill me-2"></i>(123) 456-7890</li>
-                        <li><i class="bi bi-envelope-fill me-2"></i>info@puntoaroma.com</li>
+                        <li><i class="bi bi-geo-alt-fill me-2"></i>Esperanza 1572 , Rio Tercero</li>
+                        <li><i class="bi bi-telephone-fill me-2"></i>351 755-0374</li>
+                        <!-- <li><i class="bi bi-envelope-fill me-2"></i>info@puntoaroma.com</li> -->
                     </ul>
                 </div>
                 <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">

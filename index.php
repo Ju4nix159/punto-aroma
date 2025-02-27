@@ -36,6 +36,12 @@ $categorias_destacadas = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
+
+        .icono img {
+            width: 100px;
+            /* Ajusta el tamaño según necesites */
+            height: 100px;
+        }
     </style>
 </head>
 
@@ -103,34 +109,16 @@ $categorias_destacadas = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
                 <?php
                 $delay = 0;
                 foreach ($categorias_destacadas as $categoria) {
-                    $iconClass = "";
-                    // Asignar íconos según el nombre de la categoría (puedes personalizar esto según tus categorías)
-                    switch (strtolower($categoria['nombre'])) {
-                        case 'sahumerios':
-                            $iconClass = "bi-tree";
-                            break;
-                        case 'velas aromáticas':
-                        case 'velas aromaticas':
-                            $iconClass = "bi-fire";
-                            break;
-                        case 'perfumes':
-                            $iconClass = "bi-droplet";
-                            break;
-                        case 'aceites esenciales':
-                            $iconClass = "bi-flower1";
-                            break;
-                        default:
-                            $iconClass = "bi-star";
-                            break;
-                    }
+                    $iconoSVG = $categoria['icono']; // Se asume que esta columna contiene el SVG o la ruta del SVG
                 ?>
                     <div class="col" data-aos="fade-up" data-aos-delay="<?php echo $delay; ?>">
                         <a href="catalogo.php?categoria=<?php echo urlencode($categoria['nombre']); ?>" class="text-decoration-none">
                             <div class="h-100 bg-primary-light border-0 categoria-card">
                                 <div class="card-body text-center">
-                                    <i class="bi <?php echo $iconClass; ?> fs-1 text-primary-custom mb-3"></i>
+                                    <div class="icono fs-1 text-primary-custom mb-3">
+                                        <img src="./assets/iconos/<?php echo $iconoSVG; ?>" alt="<?php echo $categoria['nombre']; ?>" class="fs-1 text-primary-custom mb-3">
+                                    </div>
                                     <h3 class="card-title text-black"><?php echo $categoria['nombre']; ?></h3>
-                                    <p class="card-text"><?php echo $categoria['descripcion'] ?? 'Descubre nuestra selección de productos'; ?></p>
                                 </div>
                             </div>
                         </a>
@@ -197,7 +185,7 @@ $categorias_destacadas = $sql_categorias->fetchAll(PDO::FETCH_ASSOC);
                     <div class="col-md-3">
                         <a href="producto.php?id_producto=<?php echo $destacado["id_producto"] ?>" class="text-decoration-none">
                             <div class="product-card-destacado">
-                                <img src="./assets/productos<?php echo $destacado["imagen_principal"] ?>" alt="<?php echo $destacado["nombre"] ?>" class="img-fluid">
+                                <img src="./assets/productos/imagen/<?php echo $destacado["id_producto"] ?>/<?php echo $destacado["imagen_principal"] ?>" alt="<?php echo $destacado["nombre"] ?>" class="img-fluid">
                                 <div class="product-overlay">
                                     <h3 class="product-name"><?php echo $destacado["nombre"] ?></h3>
                                 </div>

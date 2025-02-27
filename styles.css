@@ -15,7 +15,7 @@ section[id] {
     min-height: 600px;
     /* Cambia este valor según el alto que desees */
     background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-        url('./assets/hero/hero1.jpg');
+        url('1.png');
     /* Reemplaza con tu imagen */
     background-size: cover;
     /* Asegura que la imagen cubra todo el ancho */

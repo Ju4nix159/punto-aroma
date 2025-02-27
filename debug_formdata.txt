@@ -437,3 +437,31 @@ Array
         )
 
 )
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [fechaNacimiento] => 2000-06-05
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => transferencia
+)
+
+FILES Data:
+Array
+(
+    [comprobante] => Array
+        (
+            [name] => 1.png
+            [full_path] => 1.png
+            [type] => image/png
+            [tmp_name] => C:\xampp\tmp\php85CF.tmp
+            [error] => 0
+            [size] => 401075
+        )
+
+)

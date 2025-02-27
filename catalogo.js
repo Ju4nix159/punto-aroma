@@ -29,7 +29,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // State variables
   let paginaActual = 1;
-  let categoriaSeleccionada = getSavedFilter("categoria") || "";
+
+  // Función para obtener parámetros de la URL
+  function getUrlParameter(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    const regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
+    const results = regex.exec(location.search);
+    return results === null
+      ? ""
+      : decodeURIComponent(results[1].replace(/\+/g, " "));
+  }
+
+  // Verificar si hay parámetros en la URL
+  const categoriaFromUrl = getUrlParameter("categoria");
+  if (categoriaFromUrl) {
+    categoriaSeleccionada = categoriaFromUrl;
+    // Guardar en localStorage para persistencia
+    saveFilter("categoria", categoriaSeleccionada);
+  } else {
+    categoriaSeleccionada = getSavedFilter("categoria") || "";
+  }
+
   let marcaSeleccionada = getSavedFilter("marca") || "";
   let nombreSeleccionado = getSavedFilter("nombre") || "";
   let precioMinSeleccionado = parseInt(getSavedFilter("precioMin") || 0);
@@ -102,7 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
                   <p class="card-text"><strong>$${producto.precio_minorista}</strong></p>
                 </div>
                 <div class="card-footer">
-                  <a href="producto.php?id_producto=${producto.id_producto}" class="btn btn-primary-custom w-100">Ver producto</a>
+                  <a href="producto.php?id_producto=${producto.id_producto}" class="btn btn-primary-custom w-100">Fragancias</a>
                 </div>
               </div>
             `;
@@ -208,7 +228,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Función para restaurar valores de filtros guardados
   const restaurarValoresFiltros = () => {
-    // Restaurar valores en selectores
+    if (categoriaFromUrl) {
+      // Agregar una clase visual para destacar el filtro aplicado
+      const filtroInfo = document.createElement("div");
+      filtroInfo.classList.add("alert", "alert-info", "mt-3");
+      filtroInfo.innerHTML = `Mostrando productos de la categoría: <strong>${categoriaFromUrl}</strong> <button class="btn btn-sm btn-outline-secondary ms-3" id="quitarFiltroCategoria">Quitar filtro</button>`;
+
+      // Insertar antes del catálogo
+      const container = document.querySelector("#catalogo").parentNode;
+      container.insertBefore(filtroInfo, document.querySelector("#catalogo"));
+
+      // Agregar evento para quitar el filtro
+      document
+        .getElementById("quitarFiltroCategoria")
+        .addEventListener("click", () => {
+          categoriaSeleccionada = "";
+          saveFilter("categoria", "");
+          window.location.href = "catalogo.php";
+        });
+    }
+
     if (categoriaFiltro && categoriaSeleccionada) {
       categoriaFiltro.value = categoriaSeleccionada;
     }
