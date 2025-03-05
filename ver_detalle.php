@@ -47,7 +47,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id_pedido'])) {
         </div>";
 
         // Consulta para obtener los pagos del pedido
-        $sql_pagos = $con->prepare("SELECT * FROM pagos WHERE id_pedido = :id_pedido");
+        $sql_pagos = $con->prepare("SELECT 
+    p.id_pago,
+    p.comprobante,
+    p.monto,
+    p.fecha,
+    p.descripcion,
+    mp.nombre_metodo_pago AS metodo_pago,
+    CASE 
+        WHEN p.comprobante IS NOT NULL THEN 'Comprobante Válido'
+        ELSE 'Sin Comprobante'
+    END AS estado_comprobante
+FROM pagos p
+LEFT JOIN metodos_pago mp ON p.id_metodo_pago = mp.id_metodo_pago
+WHERE p.id_pedido = :id_pedido
+ORDER BY p.fecha");
         $sql_pagos->bindParam(':id_pedido', $id_pedido, PDO::PARAM_INT);
         $sql_pagos->execute();
         $pagos = $sql_pagos->fetchAll(PDO::FETCH_ASSOC);
@@ -58,10 +72,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id_pedido'])) {
 
         foreach ($pagos as $pago) {
             if ($pago['comprobante'] !== null) {
-            $totalPagado += $pago['monto'];
-            if (strpos(strtolower($pago['descripcion']), 'seña') !== false) {
-                $seniaPagada += $pago['monto'];
-            }
+                $totalPagado += $pago['monto'];
+                if (strpos(strtolower($pago['descripcion']), 'seña') !== false) {
+                    $seniaPagada += $pago['monto'];
+                }
             }
         }
 
@@ -69,30 +83,37 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id_pedido'])) {
         $saldoPendiente = $resumen['total'] - $totalPagado;
 
         // Mostrar la información de pago
-        $detallePedidoHtml .= "<div class='payment-info mb-4'>
-            <h6 class='info-label mb-3'>Información de Pago</h6>
-            <div class='row g-2'>
-                <div class='col-6 col-md-3'>
-                    <span class='fw-medium'>Total:</span>
-                </div>
-                <div class='col-6 col-md-3'>
-                    $" . number_format($resumen['total'], 2) . "
-                </div>
-                <div class='col-6 col-md-3'>
-                    <span class='fw-medium'>Seña pagada:</span>
-                </div>
-                <div class='col-6 col-md-3'>
-                    $" . number_format($seniaPagada, 2) . "
-                </div>
-                <div class='col-6 col-md-3'>
-                    <span class='fw-medium'>Saldo pendiente:</span>
-                </div>
-                <div class='col-6 col-md-3'>
-                    <span class='text-danger fw-bold'>$" . number_format($saldoPendiente, 2) . "</span>
-                </div>
-            </div>
-        </div>";
+        $detallePedidoHtml .= "<div class='payment-details mb-4'>
+    <h6 class='info-label mb-3'>Historial de Pagos</h6>
+    <div class='table-responsive'>
+        <table class='table'>
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Método de Pago</th>
+                    <th>Monto</th>
+                    <th>Descripción</th>
+                    <th>Estado Comprobante</th>
+                </tr>
+            </thead>
+            <tbody>";
+        if (!empty($pagos)) {
+            foreach ($pagos as $pago) {
+                $detallePedidoHtml .= "<tr>
+                        <td>" . htmlspecialchars($pago['fecha']) . "</td>
+                        <td>" . htmlspecialchars($pago['metodo_pago']) . "</td>
+                        <td>$" . number_format($pago['monto'], 2) . "</td>
+                        <td>" . htmlspecialchars($pago['descripcion']) . "</td>
+                        <td>" . htmlspecialchars($pago['estado_comprobante']) . "</td>
+                    </tr>";
+            }
+        } else {
+            $detallePedidoHtml .= "<tr><td colspan='6' class='text-center'>No se encontraron pagos para este pedido.</td></tr>";
+        }
 
+        $detallePedidoHtml .= "</tbody></table>
+                </div>
+            </div>";
         // Consulta para los detalles de los productos
         $sql_detalle = $con->prepare("SELECT p.nombre AS producto, pp.precio, pp.estado AS estado_producto, pp.cantidad, 
         COALESCE(v.aroma, v.color, v.titulo) AS nombre
@@ -140,7 +161,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id_pedido'])) {
         $detallePedidoHtml .= "<div class='d-flex justify-content-end border-top pt-3'>
             <div class='text-end'>
                 <span class='fw-medium me-3'>Total a pagar:</span>
-                <span class='total-amount'>$" . number_format($saldoPendiente, 2) . "</span>
+                <span class='total-amount'>$" . number_format($resumen["total"], 2) . "</span>
             </div>
         </div>";
     } else {

@@ -69,14 +69,17 @@ try {
 
     // Determinar método de pago
     $metodo = ($metodo_pago === 'mercadopago') ? 4 : 1;
+    $pago_total = "pago total";
 
     // Registrar el pago
-    $sql_registrar_pago_trasferencia = $con->prepare("INSERT INTO pagos(id_pedido, comprobante, id_metodo_pago, monto, fecha) 
-        VALUES(:id_pedido, :comprobante, :metodo, :monto, now());");
+    $sql_registrar_pago_trasferencia = $con->prepare("INSERT INTO pagos(id_pedido, comprobante, id_metodo_pago, monto, fecha, descropcion) 
+        VALUES(:id_pedido, :comprobante, :metodo, :monto, now()), :descripcion;");
     $sql_registrar_pago_trasferencia->bindParam(':id_pedido', $id_pedido);
     $sql_registrar_pago_trasferencia->bindParam(':comprobante', $nombre_comprobante, PDO::PARAM_STR);
     $sql_registrar_pago_trasferencia->bindParam(':metodo', $metodo, PDO::PARAM_INT);
     $sql_registrar_pago_trasferencia->bindParam(':monto', $monto, PDO::PARAM_STR);
+    $sql_registrar_pago_trasferencia->bindParam(':monto', $pago_total, PDO::PARAM_STR);
+    
 
     if (!$sql_registrar_pago_trasferencia->execute()) {
         throw new Exception('Error al registrar el pago.');
