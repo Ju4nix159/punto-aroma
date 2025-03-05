@@ -26,10 +26,6 @@
     border-radius: 15px;
     color: white;
 }
-.status-procesado {
-    background-color: #ffc107;
-}
-
 .status-pendiente {
     background-color: #ffc107;
 }
@@ -38,17 +34,20 @@
     background-color: #f57c00;
 }
 
-.status-en-camino {
+.status-en-camino,
+.status-procesado {
     background-color: #17a2b8;
 }
 
 .status-entregado,
-.status-pagado
+.status-pagado,
+.status-señado
 {
     background-color: #28a745;
 }
 
 
-.status-cancelado {
+.status-cancelado,
+.status-no-señado {
     background-color: #dc3545;
 }

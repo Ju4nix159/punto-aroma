@@ -465,3 +465,168 @@ Array
         )
 
 )
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [fechaNacimiento] => 2000-06-05
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => transferencia
+)
+
+FILES Data:
+Array
+(
+    [comprobante] => Array
+        (
+            [name] => heladera.jpg
+            [full_path] => heladera.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\php8425.tmp
+            [error] => 0
+            [size] => 207623
+        )
+
+)
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [fechaNacimiento] => 2000-06-05
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => transferencia
+)
+
+FILES Data:
+Array
+(
+    [comprobante] => Array
+        (
+            [name] => heladera.jpg
+            [full_path] => heladera.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\phpD892.tmp
+            [error] => 0
+            [size] => 207623
+        )
+
+)
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [fechaNacimiento] => 2000-06-05
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => transferencia
+)
+
+FILES Data:
+Array
+(
+    [comprobante] => Array
+        (
+            [name] => heladera.jpg
+            [full_path] => heladera.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\php78CA.tmp
+            [error] => 0
+            [size] => 207623
+        )
+
+)
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [fechaNacimiento] => 2000-06-05
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => pagoenlocal
+)
+
+FILES Data:
+Array
+(
+)
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [fechaNacimiento] => 2000-06-05
+    [delivery_method] => pickup
+    [id_local] => 1
+    [payment_method] => mercadopago
+)
+
+FILES Data:
+Array
+(
+    [comprobante] => Array
+        (
+            [name] => heladera.jpg
+            [full_path] => heladera.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\phpD204.tmp
+            [error] => 0
+            [size] => 207623
+        )
+
+)
+POST Data:
+Array
+(
+    [nombre] => juani
+    [apellido] => melillo
+    [dni] => 42695517
+    [phone] => 3571311240
+    [email] => juanimelillo@gmail.com
+    [fechaNacimiento] => 2000-06-05
+    [delivery_method] => delivery
+    [provincia] => cordoba
+    [localidad] => alberdi
+    [calle] => alem
+    [numero] => 972
+    [piso] => 58
+    [departamento] => 456
+    [codigo_postal] => 1212
+    [informacion_adicional] => 
+    [payment_method] => transferencia
+)
+
+FILES Data:
+Array
+(
+    [comprobante] => Array
+        (
+            [name] => heladera.jpg
+            [full_path] => heladera.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\php62C7.tmp
+            [error] => 0
+            [size] => 207623
+        )
+
+)

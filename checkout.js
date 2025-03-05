@@ -5,9 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const prevBtn = document.getElementById("prevBtn");
   const nextBtn = document.getElementById("nextBtn");
   const pickupCards = document.querySelectorAll(".pickup-card");
-  pickupCards[0].setAttribute("data-local-id", "1"); // Centro
-  /* pickupCards[1].setAttribute("data-local-id", "2"); // Norte
-  pickupCards[2].setAttribute("data-local-id", "3"); // Sur */
+  pickupCards[0].setAttribute("data-local-id", "2"); 
 
   // Validation rules for each field
   const validationRules = {

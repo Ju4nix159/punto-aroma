@@ -94,7 +94,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id_pedido'])) {
         </div>";
 
         // Consulta para los detalles de los productos
-        $sql_detalle = $con->prepare("SELECT p.nombre AS producto, v.nombre_variante AS variante, pp.precio, pp.estado AS estado_producto, pp.cantidad
+        $sql_detalle = $con->prepare("SELECT p.nombre AS producto, pp.precio, pp.estado AS estado_producto, pp.cantidad, 
+        COALESCE(v.aroma, v.color, v.titulo) AS nombre
         FROM productos_pedido pp
         JOIN productos p ON pp.id_producto = p.id_producto
         JOIN variantes v ON pp.sku = v.sku
@@ -124,7 +125,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id_pedido'])) {
                 $class = ($row['estado_producto'] == 0) ? "class='text-decoration-line-through'" : "";
                 $detallePedidoHtml .= "<tr $class>
                     <td>" . $row['producto'] . "</td>
-                    <td>" . $row['variante'] . "</td>
+                    <td>" . $row['nombre'] . "</td>
                     <td>" . intval($row['cantidad']) . "</td>
                     <td>$" . number_format($row['precio'], 2) . "</td>
                     <td><span class='badge badge-disponible'>" . ($row['estado_producto'] == 1 ? 'Disponible' : 'No disponible') . "</span></td>

@@ -133,7 +133,8 @@ WHERE i.id_usuario = :id_usuario AND ud.estado = 1 ");
             background-color: #28a745;
         }
 
-        .status-cancelado {
+        .status-cancelado,
+        .status-no-señado {
             background-color: #dc3545;
         }
 

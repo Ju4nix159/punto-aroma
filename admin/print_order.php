@@ -6,11 +6,16 @@ $id_pedido = $_GET['id_pedido'];
 
 // Fetch order details, user information, and address
 $sql = $con->prepare("
-    SELECT p.id_pedido,
+    SELECT 
+        p.id_pedido,
         p.total,
         p.fecha,
         p.envio,
+        p.id_domicilio,
+        p.id_local,
+        P.estado_seña,
         u.email,
+        -- Delivery address information
         d.calle,
         d.numero,
         d.codigo_postal,
@@ -20,6 +25,9 @@ $sql = $con->prepare("
         d.informacion_adicional,
         d.piso,
         d.departamento,
+        -- Local pickup information
+        l.nombre AS local_nombre,
+        -- User information
         iu.nombre,
         iu.apellido,
         iu.dni,
@@ -27,9 +35,10 @@ $sql = $con->prepare("
         iu.telefono
     FROM pedidos p
     JOIN usuarios u ON p.id_usuario = u.id_usuario
-    JOIN domicilios d ON p.id_domicilio  = d.id_domicilio
-    JOIN info_usuarios iu ON P.id_usuario = iu.id_usuario 
-    WHERE p.id_pedido = :id_pedido
+    JOIN info_usuarios iu ON p.id_usuario = iu.id_usuario 
+    LEFT JOIN domicilios d ON p.id_domicilio = d.id_domicilio
+    LEFT JOIN locales l ON p.id_local = l.id_local
+    WHERE p.id_pedido = :id_pedido;
 ");
 
 $sql->bindParam(':id_pedido', $id_pedido);
@@ -172,17 +181,24 @@ $items = $sql_items->fetchAll(PDO::FETCH_ASSOC);
         </div>
 
         <div class="address-info info-box">
-            <h2>Dirección de Entrega</h2>
-            <p><strong>Calle:</strong> <?php echo $order['calle'] . ' ' . $order['numero'] ?></p>
-            <p><strong>Provincia:</strong> <?php echo $order['provincia'] ?></p>
-            <p><strong>Localidad:</strong> <?php echo $order['localidad'] ?></p>
-            <p><strong>Barrio:</strong> <?php echo $order['barrio'] ?></p>
-            <p><strong>CP:</strong> <?php echo $order['codigo_postal'] ?></p>
-            <?php if (!empty($order['piso'])): ?>
-                <p><strong>Piso:</strong> <?php echo $order['piso'] ?></p>
-            <?php endif; ?>
-            <?php if (!empty($order['departamento'])): ?>
-                <p><strong>Departamento:</strong> <?php echo $order['departamento'] ?></p>
+            <h2><?php echo $order['id_domicilio'] ? 'Dirección de Entrega' : 'Retiro en Local' ?></h2>
+
+            <?php if ($order['id_domicilio']): ?>
+                <!-- Delivery Address -->
+                <p><strong>Calle:</strong> <?php echo $order['calle'] . ' ' . $order['numero'] ?></p>
+                <p><strong>Provincia:</strong> <?php echo $order['provincia'] ?></p>
+                <p><strong>Localidad:</strong> <?php echo $order['localidad'] ?></p>
+                <p><strong>Barrio:</strong> <?php echo $order['barrio'] ?></p>
+                <p><strong>CP:</strong> <?php echo $order['codigo_postal'] ?></p>
+                <?php if (!empty($order['piso'])): ?>
+                    <p><strong>Piso:</strong> <?php echo $order['piso'] ?></p>
+                <?php endif; ?>
+                <?php if (!empty($order['departamento'])): ?>
+                    <p><strong>Departamento:</strong> <?php echo $order['departamento'] ?></p>
+                <?php endif; ?>
+            <?php else: ?>
+                <!-- Local Pickup -->
+                <p><strong>Local:</strong> <?php echo $order['local_nombre'] ?></p>
             <?php endif; ?>
         </div>
     </div>

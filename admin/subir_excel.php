@@ -1,4 +1,7 @@
 <?php
+include './header.php';
+include './aside.php';
+include './footer.php';
 include "./config/sbd.php";
 require '../vendor/autoload.php';
 

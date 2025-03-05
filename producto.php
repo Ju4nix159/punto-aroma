@@ -36,9 +36,15 @@ if (isset($_GET['id_producto'])) {
             $categorias["120 productos"] = $precio["precio"];
         }
     }
-    $sql_variantes = $con->prepare("SELECT DISTINCT v.aroma , v.sku, v.titulo, v.color, v.id_estado_producto
+    $sql_variantes = $con->prepare("SELECT 
+    COALESCE(v.aroma, v.titulo, v.color) AS nombre,
+    v.sku, 
+    v.titulo, 
+    v.aroma, 
+    v.color, 
+    v.id_estado_producto
 FROM productos p
-    JOIN variantes v ON p.id_producto = v.id_producto
+JOIN variantes v ON p.id_producto = v.id_producto
 WHERE p.id_producto = :id_producto;");
     $sql_variantes->bindParam(':id_producto', $id_producto, PDO::PARAM_INT);
     $sql_variantes->execute();
@@ -196,14 +202,7 @@ WHERE p.id_producto = :id_producto;");
                                         <div class="fragrance-item" data-sku="<?php echo $variante['sku']; ?>" data-aroma="<?php echo $variante['aroma']; ?>">
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <div>
-                                                    <strong><?php echo $variante["aroma"] ?></strong>
-                                                    <p class="text-muted mb-0 small">
-                                                        <?php
-                                                        echo !empty($variante["aroma"]) ? "Aroma: " . $variante["aroma"] : "";
-                                                        echo (!empty($variante["aroma"]) && !empty($variante["color"])) ? " | " : "";
-                                                        echo !empty($variante["color"]) ? "Color: " . $variante["color"] : "";
-                                                        ?>
-                                                    </p>
+                                                    <strong><?php echo $variante["nombre"] ?></strong>
                                                 </div>
 
                                                 <div class="product-count">

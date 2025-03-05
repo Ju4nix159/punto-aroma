@@ -72,6 +72,11 @@ usort($detalles, function ($a, $b) {
         .comprobantes-container {
             margin-top: 20px;
         }
+
+        #confirmOrderBtn:disabled {
+            cursor: not-allowed;
+            opacity: 0.65;
+        }
     </style>
 </head>
 </head>
@@ -221,7 +226,7 @@ usort($detalles, function ($a, $b) {
                                     <button type="button" class="btn btn-danger" id="cancelChangesBtn">Cancelar Cambios</button>
                                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCambiarEstado">
                                         Cambiar Estado </button>
-                                    <button type="button" class="btn btn-primary float-right ml-2" id="confirmOrderBtn">Confirmar Pedido</button>
+                                    <button type="button" class="btn btn-primary float-right ml-2" id="confirmOrderBtn" <?php echo ($pedido["estado_seña"] == 0) ? 'disabled title="Debe pagar la seña para confirmar el pedido"' : ''; ?>>Confirmar Pedido</button>
                                     <button type="button" class="btn btn-success float-right" id="confirmChangesBtn">Confirmar Cambios</button>
                                 </div>
                             </div>
@@ -484,12 +489,12 @@ usort($detalles, function ($a, $b) {
 
             // Recolectar el estado actual de los productos visibles en la tabla
             productTableBody.querySelectorAll('tr').forEach((row) => {
-            const sku = row.dataset.sku;
-            const estado = row.classList.contains('line-through') ? 0 : 1; // Si está tachado, estado = 0
-            productos.push({
-                sku,
-                estado
-            });
+                const sku = row.dataset.sku;
+                const estado = row.classList.contains('line-through') ? 0 : 1; // Si está tachado, estado = 0
+                productos.push({
+                    sku,
+                    estado
+                });
             });
 
             // Determinar el estado del pedido
@@ -500,38 +505,36 @@ usort($detalles, function ($a, $b) {
             // Comprobar si es envío a domicilio y el costo de envío es distinto de 0
             const esEnvioDomicilio = <?php echo json_encode($pedido["nombre_local"] === null); ?>;
             if (esEnvioDomicilio && envio === 0) {
-            alert('El costo de envío no puede ser 0 para envíos a domicilio.');
-            return;
+                alert('El costo de envío no puede ser 0 para envíos a domicilio.');
+                return;
             }
 
             // Enviar datos al servidor
             fetch('./confirmar_pedido.php', {
-                method: 'POST',
-                headers: {
-                'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                id_pedido: idPedido,
-                productos,
-                nuevo_estado: nuevoEstado,
-                envio: envio
-                }),
-            })
-            .then((response) => response.json())
-            .then((data) => {
-                if (data.success) {
-                alert(`El pedido ha sido confirmado con estado: ${nuevoEstado}`);
-                // Opcional: Redirigir o actualizar la página
-                location.reload();
-                location.href = './pedidos.php';
-                } else {
-                alert(data.error || 'Hubo un error al confirmar el pedido.');
-                }
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                alert('No se pudo confirmar el pedido.');
-            });
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        id_pedido: idPedido,
+                        productos,
+                        nuevo_estado: nuevoEstado,
+                        envio: envio
+                    }),
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        alert(`El pedido ha sido confirmado con estado: ${nuevoEstado}`);
+                        location.reload();
+                    } else {
+                        alert(data.error || 'Hubo un error al confirmar el pedido.');
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('No se pudo confirmar el pedido.');
+                });
         });
 
         function mostrarComprobante() {
@@ -591,6 +594,7 @@ usort($detalles, function ($a, $b) {
         });
 
         function cambiarEstadoSeña(pedidoId, estado) {
+
             // Crear un objeto FormData para enviar los datos
             var formData = new FormData();
             formData.append('pedido_id', pedidoId);
@@ -614,8 +618,19 @@ usort($detalles, function ($a, $b) {
                 .catch(error => {
                     console.error('Error:', error);
                 });
-        }
-    
+
+        };
+        document.addEventListener('DOMContentLoaded', function() {
+            const confirmOrderBtn = document.getElementById('confirmOrderBtn');
+
+            // Si el botón está deshabilitado, prevenir eventos de clic
+            if (confirmOrderBtn && confirmOrderBtn.disabled) {
+                confirmOrderBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    alert('Debe pagar la seña para confirmar el pedido.');
+                });
+            }
+        });
     </script>
 
 </body>
