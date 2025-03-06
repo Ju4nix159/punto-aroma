@@ -243,13 +243,13 @@ WHERE p.id_producto = :id_producto;");
                     <h3 class="text-primary-custom">Descripción del Producto</h3>
                     <p><?php echo $info_producto["descripcion"] ?></p>
                     <p>Características:</p>
-                    <ul>
+                    <!-- <ul>
                         <li>Duración aproximada de 30 horas</li>
                         <li>Cera de soja natural y ecológica</li>
                         <li>Mecha de algodón sin plomo</li>
                         <li>Fragancias 100% naturales</li>
                         <li>Envase de vidrio reutilizable</li>
-                    </ul>
+                    </ul> -->
                 </div>
             </div>
         </div>

@@ -629,28 +629,31 @@ $importSuccess = true;
 
 <body>
 
+    <div class="wrapper">
+        <div class="content-wrapper">
+            <h1>Importar Productos desde Excel</h1>
 
-    <h1>Importar Productos desde Excel</h1>
+            <form method="post" enctype="multipart/form-data">
+                <h2>Seleccionar archivo Excel</h2>
+                <input type="file" name="excel_file" accept=".xlsx,.xls">
+                <input type="submit" name="submit" value="Procesar Archivo">
+            </form>
 
-    <form method="post" enctype="multipart/form-data">
-        <h2>Seleccionar archivo Excel</h2>
-        <input type="file" name="excel_file" accept=".xlsx,.xls">
-        <input type="submit" name="submit" value="Procesar Archivo">
-    </form>
-
-    <?php
-    if (isset($_POST['submit'])) {
-        if (!isset($_FILES['excel_file']) || $_FILES['excel_file']['error'] !== UPLOAD_ERR_OK) {
-            echo "<div style='border: 2px solid red; padding: 15px; margin: 20px 0; background-color: #fff0f0;'>";
-            echo "<h3 style='color:red;'>ERROR AL SUBIR EL ARCHIVO</h3>";
-            echo "<p>Por favor, verifique el archivo e inténtelo de nuevo. Código de error: " .
-                (isset($_FILES['excel_file']) ? $_FILES['excel_file']['error'] : 'Archivo no encontrado') . "</p>";
-            echo "</div>";
-        } else {
-            processExcelData($_FILES['excel_file'], $con);
-        }
-    }
-    ?>
+            <?php
+            if (isset($_POST['submit'])) {
+                if (!isset($_FILES['excel_file']) || $_FILES['excel_file']['error'] !== UPLOAD_ERR_OK) {
+                    echo "<div style='border: 2px solid red; padding: 15px; margin: 20px 0; background-color: #fff0f0;'>";
+                    echo "<h3 style='color:red;'>ERROR AL SUBIR EL ARCHIVO</h3>";
+                    echo "<p>Por favor, verifique el archivo e inténtelo de nuevo. Código de error: " .
+                        (isset($_FILES['excel_file']) ? $_FILES['excel_file']['error'] : 'Archivo no encontrado') . "</p>";
+                    echo "</div>";
+                } else {
+                    processExcelData($_FILES['excel_file'], $con);
+                }
+            }
+            ?>
+        </div>
+    </div>
 </body>
 
 </html>

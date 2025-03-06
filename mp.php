@@ -5,7 +5,7 @@ use MercadoPago\MercadoPagoConfig;
 
 require "vendor/autoload.php";
 
-MercadoPagoConfig::setAccessToken("APP_USR-8591228501780042-012715-2b2f8f8922d7ae2e755916da6e518e43-2110071685");
+MercadoPagoConfig::setAccessToken("APP_USR-2137766256478019-030608-453575c61c4dc8e621871049f174e621-671010115");
 $client = new PreferenceClient();
 $backUrls = [
     "success" => "http://localhost:8080/feedback",
@@ -50,7 +50,7 @@ $preference = $client->create([
 </head>
 
 <script>
-    const mp = new MercadoPago('APP_USR-52d256c0-1c6e-4fcb-90fc-d88d5ee231f6', {
+    const mp = new MercadoPago('APP_USR-479e75a3-dd9c-46a5-9e9f-c3757a1457a0', {
         locale: 'es-AR'
     });
     const bricksBuilder = mp.bricks();
