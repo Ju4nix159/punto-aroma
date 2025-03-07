@@ -320,27 +320,12 @@ $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
                                 <div class="col-md-4">
                                     <div class="card mb-3">
                                         <div class="card-body">
-                                            <h5 class="card-title">Cuenta Bancaria 1</h5>
-                                            <p class="card-text">Banco: Banco Ejemplo<br>Cuenta: 123456789<br>CBU: 000000310000123456789</p>
+                                            <h5 class="card-title">Cuenta Bancaria</h5>
+                                            <p class="card-text">Banco: Banco Galicia<br>Cuenta: 123456789<br>CBU: 000000310000123456789</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="card mb-3">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Cuenta Bancaria 2</h5>
-                                            <p class="card-text">Banco: Otro Banco<br>Cuenta: 987654321<br>CBU: 000000320000987654321</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="card mb-3">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Cuenta Bancaria 3</h5>
-                                            <p class="card-text">Banco: Banco Más<br>Cuenta: 555555555<br>CBU: 000000330000555555555</p>
-                                        </div>
-                                    </div>
-                                </div>
+                                
                             </div>
                             <div class="mb-3">
                                 <label for="comprobanteTransferencia" class="form-label">Subir comprobante</label>
